@@ -1,0 +1,53 @@
+input[type="radio"] {
+    float: left;
+    clear: left;
+    margin-top: 3px;
+    margin-right: 2px;
+}
+input[type="checkbox"] {
+    float: left;
+    clear: left;
+    margin-top: 3px;
+    margin-right: 5px;
+}
+
+.checkbox  label {
+    clear: none;
+    text-align: left;
+    width: 400px;
+}
+
+label {
+    float: left;
+}
+
+table thead td {
+    font-weight: bold;
+    text-align: center;
+}
+
+.reportManagerFieldSelector .reportManagerFieldAdd {
+    width: 30px;
+}
+.reportManagerFieldSelector .reportManagerFieldPosition {
+    width: 100px;
+}
+
+.reportManagerFilterSelector .reportManagerFilterNot {
+    width: 30px;
+}
+
+.reportManagerFilterSelector .reportManagerFilterCriteria {
+    width: 50px;
+}
+
+.reportManagerFilterSelector .reportManagerFilterExample {
+    width: 100px;
+}
+
+.reportManagerOrderSelector .reportManagerFieldOrder1 {
+    width: 80px;
+}
+.reportManagerOrderSelector .reportManagerFieldOrder2 {
+    width: 80px;
+}
