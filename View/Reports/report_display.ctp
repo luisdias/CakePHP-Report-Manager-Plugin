@@ -84,7 +84,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             </tr>
          <?php } ?>
     </table>
-    <div class="counter">Total: <?php echo $counter;?></div>
+    <div class="counter">Count: <?php echo $counter;?></div>
     <div class="timestamp"><?php echo _('Report Created') . ' : ' . date('Y-m-d H:i:s'); ?></div>
     <?php endif; ?>
 </div>
