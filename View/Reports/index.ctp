@@ -22,6 +22,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 ?>
+<?php echo $this->Html->script('/ReportManager/js/index.js'); ?>
 <?php echo $this->Html->css('/ReportManager/css/report_manager'); ?>
 <div class="reportManager index">
     <h2><?php echo __('Report Manager');?></h2>
@@ -29,7 +30,20 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <fieldset>
         <legend><?php echo __('Models'); ?></legend>
     <?php
-        echo $this->Form->radio('model',$models);
+        echo $this->Form->input('model',array(
+            'type'=>'select',            
+            'label'=>__('Model'),
+            'options'=>$models,
+            'empty'=>__('--Select--')
+            ));
+        echo '<div id="ReportManagerOneToManyOptionSelect">';
+        echo $this->Form->input('one_to_many_option',array(
+            'type'=>'select',
+            'label'=>__('One to many option'),
+            'options'=>array(),
+            'empty'=>__('<None>')
+            ));
+        echo '</div>';
     ?>
     </fieldset>
 <?php echo $this->Form->end(__('Submit')) ?>         

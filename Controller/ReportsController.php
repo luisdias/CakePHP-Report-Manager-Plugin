@@ -32,7 +32,7 @@ class ReportsController extends AppController {
             $modelIgnoreList = Configure::read('ReportManager.modelIgnoreList'); 
             
             $models = App::objects('Model');
-            $models = array_flip($models);            
+            $models = array_combine($models,$models);            
             
             if ( isset($modelIgnoreList) && is_array($modelIgnoreList)) {
                 foreach ($modelIgnoreList as $model) {
@@ -41,17 +41,41 @@ class ReportsController extends AppController {
                 }                
             }
             
-            foreach ($models as $key => $value) {             
-                $models[$key] = $key;
-            }
-            
             $this->set('models',$models);
         } else {
-            $this->redirect(array('action'=>'wizard',$this->data['ReportManager']['model']));
+            $this->redirect(array('action'=>'wizard',$this->data['ReportManager']['model'],$this->data['ReportManager']['one_to_many_option']));
         }
     }
+    
+    public function ajaxGetOneToManyOptions() {
+        if ($this->request->is('ajax')) {
+            Configure::write('debug',0);
+            $this->autoRender = false;
+            $this->layout = null;
 
-    public function wizard($modelClass) {      
+            $modelClass = $this->request->data['model'];
+            $this->loadModel($modelClass);
+            $associatedModels = $this->{$modelClass}->getAssociated('hasMany');
+            $associatedModels = array_combine($associatedModels, $associatedModels);
+
+            $modelIgnoreList = Configure::read('ReportManager.modelIgnoreList');
+            if ( isset($modelIgnoreList) && is_array($modelIgnoreList)) {
+                foreach ($modelIgnoreList as $model) {
+                    if (isset($associatedModels[$model]));
+                        unset($associatedModels[$model]);
+                }                
+            }            
+            
+            $this->set('associatedModels',$associatedModels);
+            $this->render('list_one_to_many_options');
+        }
+    }
+    
+    public function wizard($modelClass = null,$oneToManyOption = null) {
+        if (is_null($modelClass)) {
+            $this->Session->setFlash(__('Please select a model'));
+            $this->redirect(array('action'=>'index'));
+        }
         if (empty($this->data)) {        
             $displayForeignKeys = Configure::read('ReportManager.displayForeignKeys');
             $globalFieldIgnoreList = Configure::read('ReportManager.globalFieldIgnoreList');
@@ -106,20 +130,29 @@ class ReportsController extends AppController {
             $this->set('modelSchema',$modelSchema);
             $this->set('associatedModels',$associatedModels);
             $this->set('associatedModelsSchema',$associatedModelsSchema);
+            $this->set('oneToManyOption',$oneToManyOption);
         } else {
             Configure::write('debug',0);
             $this->loadModel($modelClass);
             $associatedModels = $this->{$modelClass}->getAssociated();
+            $oneToManyOption = $this->data['Report']['OneToManyOption'];
+            
             $fieldsList = array();
-            $conditions = array();
             $fieldsPosition = array();
-            $conditionsList = array();
             $fieldsType = array();
+            
+            $conditions = array();
+            $conditionsList = array();
+            
+            $oneToManyFieldsList  = array();
+            $oneToManyFieldsPosition  = array();
+            $oneToManyFieldsType  = array();
+            
             foreach ($this->data  as $model => $fields) {
                 if ($model != 'OrderBy1' && $model != 'OrderBy2') {
                     if ( is_array($fields) ) {
                         foreach ($fields  as $field => $parameters) {
-                            if ( is_array($parameters) ) {
+                            if ( is_array($parameters) ) {                          
                                 if ( (isset($associatedModels[$model]) && 
                                         $associatedModels[$model]!='hasMany') || 
                                         ($modelClass == $model) 
@@ -151,6 +184,14 @@ class ReportsController extends AppController {
                                         $conditionsList[$model.'.'.$field.$criteria] = null;                                        
                                     }
                                 }
+                                // One to many reports
+                                if ( $oneToManyOption != '') {
+                                    if ( isset($parameters['Add']) && $model == $oneToManyOption ) {
+                                        $oneToManyFieldsPosition[$model.'.'.$field] = ( $parameters['Position']!='' ? $parameters['Position'] : 0 );
+                                        $oneToManyFieldsType[$model.'.'.$field] = $parameters['Type'];
+                                    }                                    
+                                }
+                                
                             } // is array parameters
                         } // foreach field => parameters
                         if (count($conditionsList)>0) {
@@ -167,17 +208,37 @@ class ReportsController extends AppController {
             if ( isset($this->data['Report']['OrderBy2']) )
                 $order[] = $this->data['Report']['OrderBy2'] . ' ' . $this->data['Report']['OrderDirection'];
             
-            $reportData = $this->{$modelClass}->find('all',array('recursive'=>0,'fields'=>$fieldsList,'order'=>$order,'conditions'=>$conditions));
-
-            $this->set('fieldsType',$fieldsType);
+            if ($oneToManyOption == '') {
+                $recursive = 0;
+            } else {
+                asort($oneToManyFieldsPosition);
+                $oneToManyFieldsList = array_keys($oneToManyFieldsPosition);
+                $recursive = 1;
+            }
+            
+            $reportData = $this->{$modelClass}->find('all',array(
+                'recursive'=>$recursive,
+                'fields'=>$fieldsList,
+                'order'=>$order,
+                'conditions'=>$conditions
+            ));
+            
             $this->set('fieldList',$fieldsList);
+            $this->set('fieldsType',$fieldsType);
             $this->set('reportData',$reportData);
             $this->set('reportName',$this->data['Report']['ReportName']);
             $this->set('reportStyle',$this->data['Report']['Style']);
 
             $this->layout = 'report';
-
-            $this->render('report_display');
+            if ($oneToManyOption == '')
+                $this->render('report_display');
+            else {
+                $this->set('oneToManyOption',$oneToManyOption);
+                $this->set('oneToManyFieldsList',$oneToManyFieldsList);
+                $this->set('oneToManyFieldsType',$oneToManyFieldsType); 
+                $this->render('report_display_one_to_many');
+            }
+                
         }
     }
 }

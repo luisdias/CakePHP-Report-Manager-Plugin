@@ -66,8 +66,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         echo $this->Element('fields',array('plugin'=>'ReportManager','modelClass'=>$modelClass,'modelSchema'=>$modelSchema));
         foreach ($associatedModelsSchema as $key => $value) {
             // TODO: future development one to many reports
-            if ( $associatedModels[$key] != 'hasMany' && $associatedModels[$key] != 'hasAndBelongsToMany' )
-                echo $this->Element('fields',array('plugin'=>'ReportManager','modelClass'=>$key,'modelSchema'=>$value));
+            if ( ($associatedModels[$key] == 'hasMany' && $key != $oneToManyOption  ) || 
+                $associatedModels[$key] == 'hasAndBelongsToMany' )
+                continue;
+            echo $this->Element('fields',array('plugin'=>'ReportManager','modelClass'=>$key,'modelSchema'=>$value));
         }
         ?>         
         </div>
@@ -99,8 +101,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   <div id="step-4">
       <h2 class="StepTitle">Step 4 Style</h2>   
         <?php
-        echo $this->Element('report_style');
+        echo $this->Element('report_style',array('plugin'=>'ReportManager'));
         ?> 
   </div>    
 </div>
+<?php echo $this->Element('one_to_many_option',array('plugin'=>'ReportManager','oneToManyOption'=>$oneToManyOption)); ?> 
 <?php echo $this->Form->end() ;?>
