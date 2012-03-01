@@ -105,4 +105,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     clear: both; 
     font: normal normal 9pt arial; 
     margin-top: 10px;
+    page-break-after: always; 
+    margin-bottom: 10px;    
+}
+
+table {
+    float: left; 
+    clear: both;     
 }

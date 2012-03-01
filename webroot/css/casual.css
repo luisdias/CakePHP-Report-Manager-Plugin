@@ -108,4 +108,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     font: normal normal 9pt; 
     font-family: 'Times New Roman', Times, serif;  
     margin-top: 10px;
+    margin-bottom: 10px;    
+}
+
+table {
+    float: left; 
+    clear: both;     
 }

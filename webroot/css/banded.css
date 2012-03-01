@@ -101,4 +101,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #copyright { font: normal normal 8pt arial; float: left; clear: both;}
 
-.counter { float: left; clear: both; font: normal normal 9pt arial; margin-top: 10px;}
+.counter { 
+    float: left; 
+    clear: both; 
+    font: normal normal 9pt arial; 
+    margin-top: 10px;
+    page-break-after: always;
+    margin-bottom: 10px;    
+}
+
+table {
+    float: left; 
+    clear: both;     
+}
