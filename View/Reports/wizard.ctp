@@ -24,6 +24,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ?>
 <?php echo $this->Html->css('/ReportManager/css/report_manager'); ?>
 <?php echo $this->Html->css('/ReportManager/css/smart_wizard'); ?>
+<?php echo $this->Html->script(array('https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')); ?>
+<?php echo $this->Html->script(array('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js')); ?>
 <?php echo $this->Html->script(array('/ReportManager/js/jquery.smartWizard-2.0.js','/ReportManager/js/default.js')); ?>
 <?php echo $this->Form->create('Report',array('target'=>'blank'));?>
 <div id="wizard" class="swMain">
@@ -61,17 +63,38 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   <div id="step-1">   
       <h2 class="StepTitle">Step 1 Fields</h2>
         <div class="reportManager index">
-            <h2><?php echo __('Report Manager');?></h2>
         <?php  
-        echo $this->Element('fields',array('plugin'=>'ReportManager','modelClass'=>$modelClass,'modelSchema'=>$modelSchema));
+        echo $this->Element('fields_dnd_table_header',array(
+            'plugin'=>'ReportManager',
+            'title'=>__('Report Manager'),
+            'sortableClass'=>'sortable1'));
+        echo $this->Element('fields_dnd',array(
+            'plugin'=>'ReportManager',
+            'modelClass'=>$modelClass,
+            'modelSchema'=>$modelSchema));
         foreach ($associatedModelsSchema as $key => $value) {
-            // TODO: future development one to many reports
-            if ( ($associatedModels[$key] == 'hasMany' && $key != $oneToManyOption  ) || 
-                $associatedModels[$key] == 'hasAndBelongsToMany' )
+            if ( $associatedModels[$key] == 'hasMany' || $associatedModels[$key] == 'hasAndBelongsToMany' )
                 continue;
-            echo $this->Element('fields',array('plugin'=>'ReportManager','modelClass'=>$key,'modelSchema'=>$value));
+            echo $this->Element('fields_dnd',array(
+                'plugin'=>'ReportManager',
+                'modelClass'=>$key,
+                'modelSchema'=>$value));
         }
-        ?>         
+        echo $this->Element('fields_dnd_table_close',array('plugin'=>'ReportManager'));
+        if ( $oneToManyOption != '' ) {
+            echo $this->Element('fields_dnd_table_header',array(
+                'plugin'=>'ReportManager',
+                'title'=>$oneToManyOption,
+                'sortableClass'=>'sortable2'));
+            echo $this->Element('fields_dnd',array(
+                'plugin'=>'ReportManager',
+                'modelClass'=>$oneToManyOption,
+                'modelSchema'=>$associatedModelsSchema[$oneToManyOption])
+                );
+            echo $this->Element('fields_dnd_table_close',array('plugin'=>'ReportManager'));
+        }
+        ?>
+
         </div>
   </div>
   <div id="step-2">
@@ -80,7 +103,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         echo $this->Element('logical_operator');
         echo $this->Element('filter',array('plugin'=>'ReportManager','modelClass'=>$modelClass,'modelSchema'=>$modelSchema));
         foreach ($associatedModelsSchema as $key => $value) {
-            // TODO: future development one to many reports
             if ( $associatedModels[$key] != 'hasMany' && $associatedModels[$key] != 'hasAndBelongsToMany' )            
                 echo $this->Element('filter',array('plugin'=>'ReportManager','modelClass'=>$key,'modelSchema'=>$value));
         }
@@ -92,7 +114,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         echo $this->Element('order_direction');
         echo $this->Element('order',array('plugin'=>'ReportManager','modelClass'=>$modelClass,'modelSchema'=>$modelSchema));
         foreach ($associatedModelsSchema as $key => $value) {
-            // TODO: future development one to many reports
             if ( $associatedModels[$key] != 'hasMany' && $associatedModels[$key] != 'hasAndBelongsToMany' )            
                 echo $this->Element('order',array('plugin'=>'ReportManager','modelClass'=>$key,'modelSchema'=>$value));
         }
@@ -101,7 +122,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   <div id="step-4">
       <h2 class="StepTitle">Step 4 Style</h2>   
         <?php
-        echo $this->Element('report_style',array('plugin'=>'ReportManager'));
+        echo $this->Element('report_style',array('plugin'=>'ReportManager','oneToManyOption'=>$oneToManyOption));
         ?> 
   </div>    
 </div>
