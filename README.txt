@@ -2,10 +2,23 @@ Report Manager Plugin for CakePHP 2
 
 The report manager plugin can help users to create reports based on the application's models.
 
+Changelog for version 0.3
+* One to many reports
+* Sortable fields by drag and drop ( step 1 )
+* Click to add field change background color ( step 1 )
+* Click in model name check/uncheck all fields ( step 1 )
+* Validation ( step 1 )
+* Checkbox to enable counter option ( step 4 )
+* Check box for one to many reports : show items with no related records ( step 4 )
+* Datepicker for date fields ( step 2 )
+* Both jquery and jquery ui libraries are loaded from google
+
 
 Installation
 
 1. Download the plugin from github or sourceforge
+
+http://sourceforge.net/projects/repomancakephp/
 
 https://github.com/luisdias/CakePHP-Report-Manager-Plugin
 
@@ -60,8 +73,6 @@ The Report Manager Plugin does not load the jQuery library you must load it by y
 To do list for next releases:
 
 * Improve the query builder.
-
-* One to many reports. This version does not handle related models by hasMany relation
 
 * Save and load actions
 
