@@ -13,11 +13,31 @@
             echo '<tr>';
             echo '<td>';
             echo $this->Form->input('ReportName',array('size'=>'80','maxlength'=>'80'));            
-            echo '</td>';             
+            echo '</td>';
+            echo '</tr>';
+            
+            echo '<tr>';
             echo '<td>';
             echo $this->Form->input('Style',array('type'=>'select','options'=>$styleOptions));            
             echo '</td>';             
             echo '</tr>';
+            
+            echo '<tr>';
+            echo '<td>';
+            echo __('Show record counter');
+            echo $this->Form->checkbox('ShowRecordCounter',array('hiddenField' => false,'checked'=>true));                     
+            echo '</td>';             
+            echo '</tr>';            
+            
+            if ($oneToManyOption != '') {
+                echo '<tr>';
+                echo '<td>';
+                echo __('Show items with no related records');
+                echo $this->Form->checkbox('ShowNoRelated',array('hiddenField' => false,'checked'=>false));
+                echo '</td>';             
+                echo '</tr>';
+            }
+            
         ?>
         </table>
     </fieldset>
