@@ -35,12 +35,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             <?php 
             $i = 0;        
             foreach ($reportData as $reportItem): 
-                $class = null;
-                if ($i++ % 2 == 0) {
-                    $class = ' altrow';
-                } 
+                if ( !$showNoRelated && count($reportItem[$oneToManyOption])==0)
+                    continue;
+                $class = null; 
             ?>
-            <table cellpadding = "0" cellspacing = "0" class="report">
+            <table cellpadding = "0" cellspacing = "0" class="report" width="<?php echo $tableWidth;?>">
+                <colgroup>
+                    <?php foreach ($tableColumnWidth as $field => $width): ?>
+                    <col width="<?php echo $width;?>">
+                    <?php endforeach; ?>                    
+                </colgroup>
                 <tr class="header">
                         <?php foreach ($fieldList as $field): ?>
                         <th>
@@ -86,7 +90,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             </table>
             <?php if ( count($reportItem[$oneToManyOption])>0 ) { ?>
                 <!-- BEGIN: one to many report -->
-                <table cellpadding = "0" cellspacing = "0" class="report">
+                <table cellpadding = "0" cellspacing = "0" class="report" width="<?php echo $oneToManyTableWidth;?>">
+                    <colgroup>
+                        <?php foreach ($oneToManyTableColumnWidth as $field => $width): ?>
+                        <col width="<?php echo $width;?>">
+                        <?php endforeach; ?>                    
+                    </colgroup>                    
                     <tr class="header">
                             <?php foreach ($oneToManyFieldsList as $field): ?>
                             <th>
@@ -96,7 +105,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             $displayField = str_replace('_', ' ', $displayField);
                             $displayField = ucfirst($displayField);
                             echo $displayField; 
-                            if ( $oneToManyfieldsType[$field] == 'float') // init array for float fields sum
+                            if ( $oneToManyFieldsType[$field] == 'float') // init array for float fields sum
                                 $oneToManyFloatFields[$field] = 0;
                             ?>
                             </th>
@@ -139,13 +148,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             </td>
                             <?php endforeach; ?>
                         </tr>
-                     <?php } ?>            
-                </table>                
-                <div class="counter">Count: <?php echo $counter;?></div>
+                     <?php } ?>
+                     <?php if ( $showRecordCounter ) { ?>
+                        <tr class="footer">
+                            <td colspan="<?php echo $oneToManyColumns; ?>"><i>Count:</i> <?php echo $counter;?></td>
+                        </tr>
+                    <?php } ?>
+                </table>
+                <div class="page-break">&nbsp;</div>
                 <?php $oneToManyFloatFields = array();?>
                 <!-- END one to many report -->
             <?php } else { ?>
-                <div class="counter">Count: 0</div>
+                <div class="page-break">&nbsp;</div>
             <?php } ; ?>
             <?php endforeach; ?>
         
