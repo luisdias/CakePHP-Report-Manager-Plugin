@@ -70,7 +70,44 @@ class ReportsController extends AppController {
             $this->render('list_one_to_many_options');
         }
     }
+
+    // calculate the html table columns width
+    public function getTableColumnWidth($fieldsLength=array(),$fieldsType=array()) {
+        $maxWidth = 50;
+        $tableColumnWidth = array();
+        foreach ($fieldsLength as $field => $length): 
+            if ( $length != '') {
+                if ( $length < $maxWidth ) 
+                    $width = $length * 9;
+                else
+                    $width = $maxWidth * 9;
+                $tableColumnWidth[$field] = $width;
+            } else {
+                $fieldType = $fieldsType[$field];
+                switch ($fieldType) {
+                    case "date":
+                        $width = 120;
+                        break;
+                    case "float":
+                        $width = 150;
+                        break;                
+                    default:
+                        $width = 120;
+                        break;
+                }
+                $tableColumnWidth[$field] = $width;
+            }
+        endforeach; 
+        return $tableColumnWidth;
+    }
     
+    // calculate the html table width
+    public function getTableWidth($tableColumnWidth = array()) {
+        $tableWidth = array_sum($tableColumnWidth);
+        return $tableWidth;
+    }
+
+
     public function wizard($modelClass = null,$oneToManyOption = null) {
         if (is_null($modelClass)) {
             $this->Session->setFlash(__('Please select a model'));
@@ -140,6 +177,7 @@ class ReportsController extends AppController {
             $fieldsList = array();
             $fieldsPosition = array();
             $fieldsType = array();
+            $fieldsLength = array();
             
             $conditions = array();
             $conditionsList = array();
@@ -147,58 +185,59 @@ class ReportsController extends AppController {
             $oneToManyFieldsList  = array();
             $oneToManyFieldsPosition  = array();
             $oneToManyFieldsType  = array();
+            $oneToManyFieldsLength = array();
             
             foreach ($this->data  as $model => $fields) {
-                if ($model != 'OrderBy1' && $model != 'OrderBy2') {
-                    if ( is_array($fields) ) {
-                        foreach ($fields  as $field => $parameters) {
-                            if ( is_array($parameters) ) {                          
-                                if ( (isset($associatedModels[$model]) && 
-                                        $associatedModels[$model]!='hasMany') || 
-                                        ($modelClass == $model) 
-                                   ) {
-                                    if ( isset($parameters['Add']) ) {
-                                        $fieldsPosition[$model.'.'.$field] = ( $parameters['Position']!='' ? $parameters['Position'] : 0 );
-                                        $fieldsType[$model.'.'.$field] = $parameters['Type'];
-                                    }
-                                    $criteria = '';                                    
-                                    if ($parameters['Example'] != '' && $parameters['Filter']!='null' ) {
-                                        if ( isset($parameters['Not']) ) {
-                                            $criteria = ' !';
-                                            $criteria .= $parameters['Filter'];
-                                        } else {
-                                            if ($parameters['Filter']!='=') 
-                                                $criteria .= ' '.$parameters['Filter'];
-                                        }
-                                        
-                                        if ($parameters['Filter']=='LIKE')
-                                            $example = '%'. mysql_real_escape_string($parameters['Example']) . '%';
-                                        else
-                                            $example = mysql_real_escape_string($parameters['Example']);
-                                        
-                                        $conditionsList[$model.'.'.$field.$criteria] = $example;
-                                    }
-                                    if ( $parameters['Filter']=='null' ) {
-                                        if ( isset($parameters['Not']) )
-                                            $criteria = ' !=';                                        
-                                        $conditionsList[$model.'.'.$field.$criteria] = null;                                        
-                                    }
+                if ( is_array($fields) ) {
+                    foreach ($fields  as $field => $parameters) {
+                        if ( is_array($parameters) ) {                          
+                            if ( (isset($associatedModels[$model]) && 
+                                    $associatedModels[$model]!='hasMany') || 
+                                    ($modelClass == $model) 
+                                ) {
+                                if ( isset($parameters['Add']) ) {
+                                    $fieldsPosition[$model.'.'.$field] = ( $parameters['Position']!='' ? $parameters['Position'] : 0 );
+                                    $fieldsType[$model.'.'.$field] = $parameters['Type'];
+                                    $fieldsLength[$model.'.'.$field] = $parameters['Length'];
                                 }
-                                // One to many reports
-                                if ( $oneToManyOption != '') {
-                                    if ( isset($parameters['Add']) && $model == $oneToManyOption ) {
-                                        $oneToManyFieldsPosition[$model.'.'.$field] = ( $parameters['Position']!='' ? $parameters['Position'] : 0 );
-                                        $oneToManyFieldsType[$model.'.'.$field] = $parameters['Type'];
-                                    }                                    
+                                $criteria = '';                                    
+                                if ($parameters['Example'] != '' && $parameters['Filter']!='null' ) {
+                                    if ( isset($parameters['Not']) ) {
+                                        $criteria = ' !';
+                                        $criteria .= $parameters['Filter'];
+                                    } else {
+                                        if ($parameters['Filter']!='=') 
+                                            $criteria .= ' '.$parameters['Filter'];
+                                    }
+
+                                    if ($parameters['Filter']=='LIKE')
+                                        $example = '%'. mysql_real_escape_string($parameters['Example']) . '%';
+                                    else
+                                        $example = mysql_real_escape_string($parameters['Example']);
+
+                                    $conditionsList[$model.'.'.$field.$criteria] = $example;
                                 }
-                                
-                            } // is array parameters
-                        } // foreach field => parameters
-                        if (count($conditionsList)>0) {
-                            $conditions[$this->data['Report']['Logical']] = $conditionsList;
-                        }
-                    } // is array fields
-                } // ! OrderBy
+                                if ( $parameters['Filter']=='null' ) {
+                                    if ( isset($parameters['Not']) )
+                                        $criteria = ' !=';                                        
+                                    $conditionsList[$model.'.'.$field.$criteria] = null;                                        
+                                }
+                            }
+                            // One to many reports
+                            if ( $oneToManyOption != '') {
+                                if ( isset($parameters['Add']) && $model == $oneToManyOption ) {
+                                    $oneToManyFieldsPosition[$model.'.'.$field] = ( $parameters['Position']!='' ? $parameters['Position'] : 0 );
+                                    $oneToManyFieldsType[$model.'.'.$field] = $parameters['Type'];
+                                    $oneToManyFieldsLength[$model.'.'.$field] = $parameters['Length'];
+                                }                                    
+                            }
+
+                        } // is array parameters
+                    } // foreach field => parameters
+                    if (count($conditionsList)>0) {
+                        $conditions[$this->data['Report']['Logical']] = $conditionsList;
+                    }
+                } // is array fields
             } // foreach model => fields
             asort($fieldsPosition);
             $fieldsList = array_keys($fieldsPosition);
@@ -208,9 +247,14 @@ class ReportsController extends AppController {
             if ( isset($this->data['Report']['OrderBy2']) )
                 $order[] = $this->data['Report']['OrderBy2'] . ' ' . $this->data['Report']['OrderDirection'];
             
+            $tableColumnWidth = $this->getTableColumnWidth($fieldsLength,$fieldsType);
+            $tableWidth = $this->getTableWidth($tableColumnWidth);
+            
             if ($oneToManyOption == '') {
                 $recursive = 0;
             } else {
+                $oneToManyTableColumnWidth = $this->getTableColumnWidth($oneToManyFieldsLength,$oneToManyFieldsType);
+                $oneToManyTableWidth = $this->getTableWidth($oneToManyTableColumnWidth);                
                 asort($oneToManyFieldsPosition);
                 $oneToManyFieldsList = array_keys($oneToManyFieldsPosition);
                 $recursive = 1;
@@ -223,19 +267,28 @@ class ReportsController extends AppController {
                 'conditions'=>$conditions
             ));
             
+            $this->layout = 'report';
+                        
+            $this->set('tableColumnWidth',$tableColumnWidth);
+            $this->set('tableWidth',$tableWidth);
+            
             $this->set('fieldList',$fieldsList);
             $this->set('fieldsType',$fieldsType);
+            $this->set('fieldsLength',$fieldsLength);
             $this->set('reportData',$reportData);
             $this->set('reportName',$this->data['Report']['ReportName']);
             $this->set('reportStyle',$this->data['Report']['Style']);
+            $this->set('showRecordCounter',$this->data['Report']['ShowRecordCounter']);            
 
-            $this->layout = 'report';
             if ($oneToManyOption == '')
                 $this->render('report_display');
             else {
                 $this->set('oneToManyOption',$oneToManyOption);
                 $this->set('oneToManyFieldsList',$oneToManyFieldsList);
-                $this->set('oneToManyFieldsType',$oneToManyFieldsType); 
+                $this->set('oneToManyFieldsType',$oneToManyFieldsType);
+                $this->set('oneToManyTableColumnWidth',$oneToManyTableColumnWidth);
+                $this->set('oneToManyTableWidth',$oneToManyTableWidth);
+                $this->set('showNoRelated',$this->data['Report']['ShowNoRelated']);
                 $this->render('report_display_one_to_many');
             }
                 
