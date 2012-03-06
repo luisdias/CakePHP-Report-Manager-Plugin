@@ -39,7 +39,11 @@
             echo $this->Form->input($modelClass.'.'.$field.'.'.'Filter',array('type'=>'select','options'=>$filterOptions,'label'=>false));
             echo '</td>';                   
             echo '<td>';
-            echo $this->Form->input($modelClass.'.'.$field.'.'.'Example',array('type'=>'text','label'=>false));
+            if ($attributes['type']=='date' || $attributes['type']=='datetime')
+                $class = "datepicker";
+            else
+                $class = null;
+            echo $this->Form->input($modelClass.'.'.$field.'.'.'Example',array('type'=>'text','label'=>false,'class'=>$class));
             echo '</td>';          
             echo '</tr>';
             $i++;
