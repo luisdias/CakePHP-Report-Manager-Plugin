@@ -20,14 +20,19 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
+body {
+    font-family: Arial;    
+}
+
 #reportManagerDisplay .reportName {
-    font: normal normal bold 19pt arial; 
+    font: normal normal bold 19pt; 
     color: #333333;
 }
 
 #reportManagerDisplay .timestamp {
     margin-top: 15px;
-    font: normal normal 8pt arial; 
+    font: normal normal 8pt; 
     color: #333333;
     float: left;  
     clear: both;      
@@ -45,13 +50,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     border-style: solid;
     border-color: #cccccc;
     border-collapse: collapse;
-    font: normal normal bold 11pt arial; 
+    font: normal normal bold 11pt; 
     color: #ffffff;
 }
 
 #reportManagerDisplay .report tr.header th
 {
-    padding: 4px 25px 4px 4px;
     background: #333333;
     border-top-width: 0px;
     border-bottom-width: 1px;
@@ -59,7 +63,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     border-right-width: 0px;
     border-style: solid;
     border-color: #eeeeee;
-    font: normal normal 10pt arial; 
+    font: normal normal 10pt; 
     color: #ffffff;
     text-align: left;
 }
@@ -67,7 +71,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #reportManagerDisplay .report tr.body td
 {
-    padding: 4px 25px 4px 4px;
     background: #FFFFFF;
     border-top-width: 0px;
     border-bottom-width: 1px;
@@ -76,40 +79,20 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     border-style: solid;
     border-color: #CCCCCC;
     text-align: left;
-    font: normal normal 9pt arial; 
+    font: normal normal 9pt; 
     color: #555555;
 }
 
 #reportManagerDisplay .report tr.footer td
 {
-    padding: 4px 25px 4px 4px;
-    background: #333333;
+    background: #FFFFFF;
     border-top-width: 0px;
     border-bottom-width: 1px;
-    border-left-width: 0px;
-    border-right-width: 0px;
+    border-left-width: 1px;
+    border-right-width: 1px;
     border-style: solid;
-    border-color: #eeeeee;
-    font: normal normal 9pt arial; 
-    color: #ffffff;
+    border-color: #CCCCCC;
+    font: normal normal 9pt; 
+    color: #555555;
     text-align: left;
-}
-
-.floatRight {float:right !important}
-
-#copyright { font: normal normal 8pt arial; float: left; clear: both;}
-
-.counter 
-{ 
-    float: left; 
-    clear: both; 
-    font: normal normal 9pt arial; 
-    margin-top: 10px;
-    page-break-after: always; 
-    margin-bottom: 10px;    
-}
-
-table {
-    float: left; 
-    clear: both;     
 }
