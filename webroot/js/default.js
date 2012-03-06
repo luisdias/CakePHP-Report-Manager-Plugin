@@ -20,11 +20,34 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 $(document).ready(function() {
-    $('#wizard').smartWizard({onFinish:onFinishCallback});
+    $('#wizard').smartWizard({onLeaveStep:leaveAStepCallback,
+                              onFinish:onFinishCallback});
+
+    function leaveAStepCallback(obj){
+        var step_num= obj.attr('rel'); 
+        return validateSteps(step_num); 
+    }
+                          
     function onFinishCallback(){
         if(validateAllSteps()){
             $('#ReportWizardForm').submit();
         }
+    }
+    
+    function validateSteps(stepnumber){
+        var isStepValid = true;
+        if(stepnumber == 1){
+            isStepValid = false;
+            $("tr :checkbox[name*='[Add]']").each(function(){
+                if ( $(this).is(':checked')) {
+                    isStepValid = true;
+                }
+            });            
+        }
+        if ( !isStepValid )
+            $('#wizard').smartWizard('showMessage','No field selected');
+        return isStepValid;
+        
     }
     
     function validateAllSteps(){
@@ -36,9 +59,58 @@ $(document).ready(function() {
     $('#wizardSubmit').hide();
     
     // fields position default values
-    i = 1;
-    $('input.position').each(function(){
-        this.value = i;
-        i++;
+    $('input.position').reNumberPosition();
+    
+    // change tr background color when checked
+    // closest parent element
+    $("tr :checkbox[name*='[Add]']").live("click", function() {
+        $(this).closest("tr").css("background-color", this.checked ? "#eee" : "");
+    });
+    
+    // init: all checkbox fields are checked
+    $("tr :checkbox[name*='[Add]']").each(function(){
+        $(this).closest("tr").css("background-color", this.checked ? "#eee" : "");
+    });
+
+    $( ".sortable1 tbody" ).sortable({
+        items: "tr",
+        cancel: "thead",
+        axis: 'y',
+        stop: function(event, ui) {
+            $('input.position').reNumberPosition();
+        }
+    });    
+    
+    $( ".sortable2 tbody" ).sortable({
+        items: "tr",
+        cancel: "thead",
+        axis: 'y',
+        stop: function(event, ui) {
+            $('input.position').reNumberPosition();
+        }
+    });
+    
+    $('.checkAll').click(function () {
+        model = $(this).text();
+        $("tr :checkbox[name^=\"data["+model+"]\"][name*='[Add]']").each(function(){
+            $(this).attr('checked', !this.checked);
+            $(this).closest("tr").css("background-color", this.checked ? "#eee" : "");
+        });
+    });
+    
+    $( ".datepicker" ).datepicker({
+            showOn: "button",
+            buttonImageOnly: true
     });
 });
+
+
+jQuery.fn.reNumberPosition = function() {
+    var e = $(this);
+    var c = null;
+    var i = 1;
+    e.each(function(){
+        this.value = i;
+        i++;
+    });      
+};
