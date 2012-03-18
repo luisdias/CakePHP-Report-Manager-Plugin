@@ -2,15 +2,19 @@ Report Manager Plugin for CakePHP 2
 
 The report manager plugin can help users to create reports based on the application's models.
 
+Changelog for version 0.4
+* Load and Save reports
+* Export to XLS
+
 Changelog for version 0.3
 * One to many reports
 * Sortable fields by drag and drop ( step 1 )
 * Click to add field change background color ( step 1 )
 * Click in model name check/uncheck all fields ( step 1 )
-* Validation ( step 1 )
+* SmartWizard validation ( step 1 )
+* Datepicker for date fields ( step 2 )
 * Checkbox to enable counter option ( step 4 )
 * Check box for one to many reports : show items with no related records ( step 4 )
-* Datepicker for date fields ( step 2 )
 * Both jquery and jquery ui libraries are loaded from google
 
 
@@ -56,6 +60,8 @@ Some parameters could be configured in the app/Plugin/ReportManager/Config/boots
 
 * Ignore list for specific model's fields
 
+* Reports directory path
+
 
 Notes: 
 
@@ -67,14 +73,6 @@ It also uses a Jquery plugin called SmartWizard by Tech Laboratory.
 
 http://techlaboratory.net/products.php?product=smartwizard
 
-The Report Manager Plugin does not load the jQuery library you must load it by yourself
-
-
-To do list for next releases:
-
-* Improve the query builder.
-
-* Save and load actions
-
+Since version 0.3 the Report Manager Plugin load the jQuery and jQuery UI libraries from Google
 
 Luis E. S. Dias
