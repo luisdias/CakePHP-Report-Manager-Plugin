@@ -32,8 +32,12 @@
             echo '<td>';
             echo $field;
             echo '</td>';
-            echo '<td >';            
-            echo $this->Form->checkbox($modelClass.'.'.$field.'.'.'Not',array('hiddenField' => false));
+            echo '<td >';
+            if (isset($this->data[$modelClass][$field]['Not']))
+                $modelFieldNot = $this->data[$modelClass][$field]['Not'];
+            else
+                $modelFieldNot = false;            
+            echo $this->Form->checkbox($modelClass.'.'.$field.'.'.'Not',array('hiddenField' => true,'checked'=>$modelFieldNot));
             echo '</td>';            
             echo '<td>';
             echo $this->Form->input($modelClass.'.'.$field.'.'.'Filter',array('type'=>'select','options'=>$filterOptions,'label'=>false));

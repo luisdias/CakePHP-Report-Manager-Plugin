@@ -2,9 +2,13 @@
 	<?php
 	foreach ($modelSchema as $field => $attributes): 
             echo '<tr>';
-            echo '<td>';            
-            echo $this->Form->checkbox($modelClass.'.'.$field.'.'.'Add',array('hiddenField' => false,'checked'=>true));
-            echo '</td>';         
+            echo '<td>';
+            if (isset($this->data[$modelClass][$field]['Add']))
+                $modelFieldAdd = $this->data[$modelClass][$field]['Add'];
+            else
+                $modelFieldAdd = true;
+            echo $this->Form->checkbox($modelClass.'.'.$field.'.'.'Add',array('hiddenField' => true,'checked'=>$modelFieldAdd));
+            echo '</td>';
             echo '<td>';
             echo '<b><span class="checkAll">'.$modelClass.'</span></b>.'.$field;
             echo '</td>';

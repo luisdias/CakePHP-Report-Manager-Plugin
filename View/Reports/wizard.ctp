@@ -27,7 +27,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <?php echo $this->Html->script(array('https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')); ?>
 <?php echo $this->Html->script(array('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js')); ?>
 <?php echo $this->Html->script(array('/ReportManager/js/jquery.smartWizard-2.0.js','/ReportManager/js/default.js')); ?>
-<?php echo $this->Form->create('Report',array('target'=>'blank'));?>
+<?php echo $this->Form->create('Report');?>
 <div id="wizard" class="swMain">
   <ul>
     <li><a href="#step-1">
@@ -68,17 +68,29 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             'plugin'=>'ReportManager',
             'title'=>__('Report Manager'),
             'sortableClass'=>'sortable1'));
+        
+        if ( isset($this->data[$modelClass]) ) // load from file
+            $currentModelSchema = $this->data[$modelClass];
+        else // new report
+            $currentModelSchema = $modelSchema;
+        
         echo $this->Element('fields_dnd',array(
             'plugin'=>'ReportManager',
             'modelClass'=>$modelClass,
-            'modelSchema'=>$modelSchema));
+            'modelSchema'=>$currentModelSchema));
         foreach ($associatedModelsSchema as $key => $value) {
             if ( $associatedModels[$key] == 'hasMany' || $associatedModels[$key] == 'hasAndBelongsToMany' )
                 continue;
+            
+            if ( isset($this->data[$key]) ) // load from file
+                $currentModelSchema = $this->data[$key];
+            else // new report
+                $currentModelSchema = $value;
+            
             echo $this->Element('fields_dnd',array(
                 'plugin'=>'ReportManager',
                 'modelClass'=>$key,
-                'modelSchema'=>$value));
+                'modelSchema'=>$currentModelSchema));
         }
         echo $this->Element('fields_dnd_table_close',array('plugin'=>'ReportManager'));
         if ( $oneToManyOption != '' ) {
@@ -86,10 +98,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 'plugin'=>'ReportManager',
                 'title'=>$oneToManyOption,
                 'sortableClass'=>'sortable2'));
+            
+            if ( isset($this->data[$oneToManyOption]) ) // load from file
+                $currentModelSchema = $this->data[$oneToManyOption];
+            else // new report
+                $currentModelSchema = $associatedModelsSchema[$oneToManyOption];
+            
             echo $this->Element('fields_dnd',array(
                 'plugin'=>'ReportManager',
                 'modelClass'=>$oneToManyOption,
-                'modelSchema'=>$associatedModelsSchema[$oneToManyOption])
+                'modelSchema'=>$currentModelSchema)
                 );
             echo $this->Element('fields_dnd_table_close',array('plugin'=>'ReportManager'));
         }
