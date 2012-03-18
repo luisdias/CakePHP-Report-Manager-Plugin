@@ -77,6 +77,7 @@ $(document).ready(function() {
         cancel: "thead",
         axis: 'y',
         stop: function(event, ui) {
+            this.update();
             $('input.position').reNumberPosition();
         }
     });    
@@ -86,6 +87,7 @@ $(document).ready(function() {
         cancel: "thead",
         axis: 'y',
         stop: function(event, ui) {
+            this.update();
             $('input.position').reNumberPosition();
         }
     });
@@ -102,6 +104,7 @@ $(document).ready(function() {
             showOn: "button",
             buttonImageOnly: true
     });
+    
 });
 
 
