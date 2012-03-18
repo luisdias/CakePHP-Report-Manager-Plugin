@@ -22,13 +22,29 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 App::uses('AppController', 'Controller');
+App::uses('Folder', 'Utility');
+App::uses('File', 'Utility');
 
 class ReportsController extends AppController {
     
-    public $uses = null;
+    public $uses = array();
     public $helpers = array('Number');
+    public $path = null;
+    
+    public function __construct( $request = NULL, $response = NULL ) {
+        $reportPath = Configure::read('ReportManager.reportPath');
+        if ( !isset($reportPath) )
+            $reportPath = 'tmp'.DS.'reports'.DS;
+        $this->path = $reportPath;
+        if(!is_dir(APP.$this->path)) {
+            $folder = new Folder();
+            $folder->create(APP.$this->path);
+        }
+        parent::__construct($request,$response);        
+    }    
+    
     public function index() {
-        if (empty($this->data)) {        
+        if (empty($this->data)) {
             $modelIgnoreList = Configure::read('ReportManager.modelIgnoreList'); 
             
             $models = App::objects('Model');
@@ -40,10 +56,25 @@ class ReportsController extends AppController {
                         unset($models[$model]);
                 }                
             }
-            
+            $this->set('files',$this->listReports());
             $this->set('models',$models);
         } else {
-            $this->redirect(array('action'=>'wizard',$this->data['ReportManager']['model'],$this->data['ReportManager']['one_to_many_option']));
+            $modelClass = null;
+            $oneToManyOption = null;
+            $fileName = $this->data['ReportManager']['saved_report_option'];
+            if ($fileName!='') {
+                $params = explode('.', $fileName);
+                if (count($params)>=3) {
+                    $modelClass = $params[0];
+                    if (count($params)>3) {
+                        $oneToManyOption = $params[1];
+                    }
+                }
+            } else {
+                $modelClass = $this->data['ReportManager']['model'];
+                $oneToManyOption = $this->data['ReportManager']['one_to_many_option'];
+            }
+            $this->redirect(array('action'=>'wizard',$modelClass,$oneToManyOption,  urlencode($fileName)));
         }
     }
     
@@ -73,6 +104,7 @@ class ReportsController extends AppController {
 
     // calculate the html table columns width
     public function getTableColumnWidth($fieldsLength=array(),$fieldsType=array()) {
+        $minWidth = 4;
         $maxWidth = 50;
         $tableColumnWidth = array();
         foreach ($fieldsLength as $field => $length): 
@@ -81,6 +113,8 @@ class ReportsController extends AppController {
                     $width = $length * 9;
                 else
                     $width = $maxWidth * 9;
+                if ( $length < $minWidth ) 
+                    $width = $length * 40;                
                 $tableColumnWidth[$field] = $width;
             } else {
                 $fieldType = $fieldsType[$field];
@@ -107,12 +141,69 @@ class ReportsController extends AppController {
         return $tableWidth;
     }
 
+    public function export2Xls(&$reportData = array(),&$fieldsList=array(), &$fieldsType=array(), &$oneToManyOption=null, &$oneToManyFieldsList=null, &$oneToManyFieldsType = null, &$showNoRelated = false ) {
+        App::import('Vendor', 'ReportManager.Excel');
+        $xls = new Excel();      
+        $xls->buildXls($reportData,$fieldsList, $fieldsType, $oneToManyOption, $oneToManyFieldsList, $oneToManyFieldsType, $showNoRelated );
+    }
+ 
+    public function saveReport($modelClass = null,$oneToManyOption = null) {
+        $content='<? $reportFields=';
+        $content.= var_export($this->data,1);
+        $content.='; ?>'; 
 
-    public function wizard($modelClass = null,$oneToManyOption = null) {
+
+        
+        if ($this->data['Report']['ReportName'] != '') {
+            $reportName = str_replace('.', '_', $this->data['Report']['ReportName']);
+            $reportName = str_replace(' ', '_', $this->data['Report']['ReportName']);
+        } else {
+            $reportName = date('Ymd_His');
+        }
+        
+        $oneToManyOption = ( $oneToManyOption == '' ? $oneToManyOption : $oneToManyOption . '.' );
+        $fileName = $modelClass . '.' . $oneToManyOption . $reportName.".crp";
+        $file = new File(APP.$this->path.$fileName, true, 777);
+        $file->write($content,'w',true);
+        $file->close();
+    }
+
+    public function loadReport($fileName) {
+        require(APP.$this->path.$fileName);
+        $this->data = $reportFields;
+        $this->set($this->data);
+    }
+
+    public function deleteReport($fileName) {
+        if ($this->request->is('ajax')) {
+            Configure::write('debug',0);
+            $this->autoRender = false;
+            $this->layout = null;
+            
+            $fileName = APP.$this->path.$fileName;
+            $file = new File($fileName, false, 777);
+            $file->delete();
+            $this->set('files',$this->listReports());
+            $this->render('list_reports');
+        }
+    }
+
+    public function listReports() {
+        $dir = new Folder(APP.$this->path);
+        $files = $dir->find('.*\.crp');
+        $files = array_combine($files,$files);        
+        return $files;
+    }
+
+
+    public function wizard($modelClass = null,$oneToManyOption = null, $fileName = null) {
         if (is_null($modelClass)) {
-            $this->Session->setFlash(__('Please select a model'));
+            $this->Session->setFlash(__('Please select a model or a saved report'));
             $this->redirect(array('action'=>'index'));
         }
+        if (!is_null($fileName) )
+            $fileName = urldecode ($fileName);
+        
         if (empty($this->data)) {        
             $displayForeignKeys = Configure::read('ReportManager.displayForeignKeys');
             $globalFieldIgnoreList = Configure::read('ReportManager.globalFieldIgnoreList');
@@ -162,12 +253,16 @@ class ReportsController extends AppController {
                     }
                 }                
             }
-            
+
             $this->set('modelClass',$modelClass);
             $this->set('modelSchema',$modelSchema);
             $this->set('associatedModels',$associatedModels);
             $this->set('associatedModelsSchema',$associatedModelsSchema);
             $this->set('oneToManyOption',$oneToManyOption);
+            
+            if ($fileName != '')
+                $this->loadReport($fileName);
+
         } else {
             Configure::write('debug',0);
             $this->loadModel($modelClass);
@@ -195,16 +290,37 @@ class ReportsController extends AppController {
                                     $associatedModels[$model]!='hasMany') || 
                                     ($modelClass == $model) 
                                 ) {
-                                if ( isset($parameters['Add']) ) {
+                                if ( $parameters['Add'] ) {
                                     $fieldsPosition[$model.'.'.$field] = ( $parameters['Position']!='' ? $parameters['Position'] : 0 );
                                     $fieldsType[$model.'.'.$field] = $parameters['Type'];
                                     $fieldsLength[$model.'.'.$field] = $parameters['Length'];
                                 }
                                 $criteria = '';                                    
                                 if ($parameters['Example'] != '' && $parameters['Filter']!='null' ) {
-                                    if ( isset($parameters['Not']) ) {
-                                        $criteria = ' !';
-                                        $criteria .= $parameters['Filter'];
+                                    if ( $parameters['Not'] ) {
+                                        switch ($parameters['Filter']) {
+                                            case '=':
+                                                $criteria .= ' !'.$parameters['Filter'];
+                                                break;
+                                            case 'LIKE':
+                                                $criteria .= ' NOT '.$parameters['Filter'];
+                                                break;
+                                            case '>':
+                                                $criteria .= ' <=';
+                                                break;
+                                            case '<':
+                                                $criteria .= ' >=';
+                                                break;
+                                            case '>=':
+                                                $criteria .= ' <';
+                                                break;
+                                            case '<=':
+                                                $criteria .= ' >';
+                                                break;
+                                            case 'null':
+                                                $criteria = ' !=';
+                                                break;
+                                        }
                                     } else {
                                         if ($parameters['Filter']!='=') 
                                             $criteria .= ' '.$parameters['Filter'];
@@ -218,8 +334,6 @@ class ReportsController extends AppController {
                                     $conditionsList[$model.'.'.$field.$criteria] = $example;
                                 }
                                 if ( $parameters['Filter']=='null' ) {
-                                    if ( isset($parameters['Not']) )
-                                        $criteria = ' !=';                                        
                                     $conditionsList[$model.'.'.$field.$criteria] = null;                                        
                                 }
                             }
@@ -252,11 +366,13 @@ class ReportsController extends AppController {
             
             if ($oneToManyOption == '') {
                 $recursive = 0;
+                $showNoRelated = false;
             } else {
                 $oneToManyTableColumnWidth = $this->getTableColumnWidth($oneToManyFieldsLength,$oneToManyFieldsType);
                 $oneToManyTableWidth = $this->getTableWidth($oneToManyTableColumnWidth);                
                 asort($oneToManyFieldsPosition);
                 $oneToManyFieldsList = array_keys($oneToManyFieldsPosition);
+                $showNoRelated = $this->data['Report']['ShowNoRelated'];
                 $recursive = 1;
             }
             
@@ -278,20 +394,33 @@ class ReportsController extends AppController {
             $this->set('reportData',$reportData);
             $this->set('reportName',$this->data['Report']['ReportName']);
             $this->set('reportStyle',$this->data['Report']['Style']);
-            $this->set('showRecordCounter',$this->data['Report']['ShowRecordCounter']);            
+            $this->set('showRecordCounter',$this->data['Report']['ShowRecordCounter']);
 
-            if ($oneToManyOption == '')
-                $this->render('report_display');
-            else {
-                $this->set('oneToManyOption',$oneToManyOption);
-                $this->set('oneToManyFieldsList',$oneToManyFieldsList);
-                $this->set('oneToManyFieldsType',$oneToManyFieldsType);
-                $this->set('oneToManyTableColumnWidth',$oneToManyTableColumnWidth);
-                $this->set('oneToManyTableWidth',$oneToManyTableWidth);
-                $this->set('showNoRelated',$this->data['Report']['ShowNoRelated']);
-                $this->render('report_display_one_to_many');
+            if ( $this->data['Report']['Output'] == 'html') {
+                if ($oneToManyOption == '')
+                    $this->render('report_display');
+                else {
+                    $this->set('oneToManyOption',$oneToManyOption);
+                    $this->set('oneToManyFieldsList',$oneToManyFieldsList);
+                    $this->set('oneToManyFieldsType',$oneToManyFieldsType);
+                    $this->set('oneToManyTableColumnWidth',$oneToManyTableColumnWidth);
+                    $this->set('oneToManyTableWidth',$oneToManyTableWidth);
+                    $this->set('showNoRelated',$showNoRelated);
+                    $this->render('report_display_one_to_many');
+                }
+            } else { // Excel file
+                $this->layout = null;
+                $this->export2Xls(
+                        $reportData, 
+                        $fieldsList, 
+                        $fieldsType, 
+                        $oneToManyOption, 
+                        $oneToManyFieldsList, 
+                        $oneToManyFieldsType, 
+                        $showNoRelated );
             }
-                
+            if ($this->data['Report']['SaveReport'])
+                $this->saveReport($modelClass,$oneToManyOption);
         }
     }
 }
