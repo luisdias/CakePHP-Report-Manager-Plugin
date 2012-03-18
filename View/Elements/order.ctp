@@ -16,10 +16,26 @@
             echo $field;
             echo '</td>';
             echo '<td>';
-            echo '<input type="radio" name="data[Report][OrderBy1]" value="' .$modelClass.'.'.$field.'" id="'.$modelClass.$field.'OrderBy1'.'"/>';
+            echo $this->Form->input($modelClass.'.'.$field.'.'.'OrderBy1',
+                    array('name'=>'data[Report][OrderBy1]',
+                        'legend'=>false,
+                        'label'=>'',
+                        'type'=>'radio',
+                        'default'=>( $this->data['Report']['OrderBy1'] == $modelClass.'.'.$field ? $modelClass.'.'.$field : ''),
+                        'hiddenField' => false,
+                        'options'=>array($modelClass.'.'.$field => ''))
+                    );
             echo '</td>';          
             echo '<td>';
-            echo '<input type="radio" name="data[Report][OrderBy2]" value="' .$modelClass.'.'.$field.'" id="'.$modelClass.$field.'OrderBy2'.'"/>';
+            echo $this->Form->input($modelClass.'.'.$field.'.'.'OrderBy2',
+                    array('name'=>'data[Report][OrderBy2]',
+                        'legend'=>false,
+                        'label'=>'',
+                        'type'=>'radio',
+                        'default'=>( $this->data['Report']['OrderBy2'] == $modelClass.'.'.$field ? $modelClass.'.'.$field : ''),
+                        'hiddenField' => false,
+                        'options'=>array($modelClass.'.'.$field => ''))
+                    );            
             echo '</td>';                   
             echo '</tr>';
         endforeach;
