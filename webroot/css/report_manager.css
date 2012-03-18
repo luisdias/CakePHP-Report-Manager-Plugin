@@ -90,3 +90,47 @@ table thead td {
 .checkAll:hover {
     cursor: pointer;
 }
+
+#repoManLeftCol {
+    float: left;
+    width: 45%;
+}
+
+#repoManMiddleCol {
+    float: left;
+    width: 10%;    
+}
+
+#repoManRightCol {
+    float: left;
+    width: 45%;    
+}
+
+.reportManager.index {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+
+.reportManager.index fieldset {
+    height: 120px;
+}
+
+.reportManager.index label {
+    width: 80px;
+}
+
+.reportManager.index input[type="submit"] {
+    clear: both;
+    float: left;
+}
+
+.reportManager.index button[type="button"] {
+    padding: 0;
+    margin-left: 10px;
+    margin-top: -5px;
+}
+
+#repoManMiddleCol {
+    text-align: center;
+}
