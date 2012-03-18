@@ -21,10 +21,10 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-echo $this->Form->input('ReportManager.one_to_many_option',array(
-    'type'=>'select',    
-    'label'=>__('One to many option'),
-    'options'=>$associatedModels,
+echo $this->Form->input('saved_report_option',array(
+    'type'=>'select',
+    'label'=>__('Saved reports'),
+    'options'=>$files,
     'empty'=>__('--Select--')
     ));
 
