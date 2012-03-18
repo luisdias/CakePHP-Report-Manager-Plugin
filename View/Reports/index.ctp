@@ -27,16 +27,19 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 <?php echo $this->Html->css('/ReportManager/css/report_manager'); ?>
 <div class="reportManager index">
     <h2><?php echo __('Report Manager');?></h2>
-<?php echo $this->Form->create('ReportManager');?>        
-    <fieldset>
-        <legend><?php echo __('Models'); ?></legend>
     <?php
+        
+        echo '<div id="repoManLeftCol">';
+        echo $this->Form->create('ReportManager');
+        echo '<fieldset>';
+        echo '<legend>' . __('New report') . '</legend>';        
         echo $this->Form->input('model',array(
             'type'=>'select',            
             'label'=>__('Model'),
             'options'=>$models,
             'empty'=>__('--Select--')
             ));
+        
         echo '<div id="ReportManagerOneToManyOptionSelect">';
         echo $this->Form->input('one_to_many_option',array(
             'type'=>'select',
@@ -45,7 +48,33 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             'empty'=>__('<None>')
             ));
         echo '</div>';
+        echo '</fieldset>';
+        echo $this->Form->end(__('New'));
+        echo '</div>';
+        
+        echo '<div id="repoManMiddleCol">';
+        
+        echo $this->Html->tag('h2','OR');
+        
+        echo '</div>';
+        
+        echo '<div id="repoManRightCol">';
+        echo $this->Form->create('ReportManager');
+        echo '<fieldset>';
+        echo '<legend>' . __('Load report') . '</legend>';        
+        
+        echo '<div id="ReportManagerSavedReportOptionContainer">';
+        echo $this->Form->input('saved_report_option',array(
+            'type'=>'select',
+            'label'=>__('Saved reports'),
+            'options'=>$files,
+            'empty'=>__('--Select--')
+            ));
+        echo '</div>';
+        
+        echo '<button type="button" class="deleteReport">Delete</button>';
+        echo '</fieldset>';
+        echo $this->Form->end(__('Load'));
+        echo '</div>';
     ?>
-    </fieldset>
-<?php echo $this->Form->end(__('Submit')) ?>         
 </div>
