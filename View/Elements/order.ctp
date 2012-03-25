@@ -21,7 +21,7 @@
                         'legend'=>false,
                         'label'=>'',
                         'type'=>'radio',
-                        'default'=>( $this->data['Report']['OrderBy1'] == $modelClass.'.'.$field ? $modelClass.'.'.$field : ''),
+                        'default'=>( isset($this->data['Report']['OrderBy1']) && $this->data['Report']['OrderBy1'] == $modelClass.'.'.$field ? $modelClass.'.'.$field : ''),
                         'hiddenField' => false,
                         'options'=>array($modelClass.'.'.$field => ''))
                     );
@@ -32,7 +32,7 @@
                         'legend'=>false,
                         'label'=>'',
                         'type'=>'radio',
-                        'default'=>( $this->data['Report']['OrderBy2'] == $modelClass.'.'.$field ? $modelClass.'.'.$field : ''),
+                        'default'=>( isset($this->data['Report']['OrderBy2']) && $this->data['Report']['OrderBy2'] == $modelClass.'.'.$field ? $modelClass.'.'.$field : ''),
                         'hiddenField' => false,
                         'options'=>array($modelClass.'.'.$field => ''))
                     );            
