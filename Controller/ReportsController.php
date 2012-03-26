@@ -191,7 +191,8 @@ class ReportsController extends AppController {
     public function listReports() {
         $dir = new Folder(APP.$this->path);
         $files = $dir->find('.*\.crp');
-        $files = array_combine($files,$files);        
+        if (count($files)>0)
+            $files = array_combine($files,$files);        
         return $files;
     }
 
