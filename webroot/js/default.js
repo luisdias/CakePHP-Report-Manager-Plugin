@@ -77,8 +77,8 @@ $(document).ready(function() {
         cancel: "thead",
         axis: 'y',
         stop: function(event, ui) {
-            this.update();
             $('input.position').reNumberPosition();
+            this.update();            
         }
     });    
     
@@ -87,8 +87,8 @@ $(document).ready(function() {
         cancel: "thead",
         axis: 'y',
         stop: function(event, ui) {
-            this.update();
             $('input.position').reNumberPosition();
+            this.update();
         }
     });
     
