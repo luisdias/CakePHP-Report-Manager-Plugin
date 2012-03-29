@@ -2,6 +2,9 @@ Report Manager Plugin for CakePHP 2
 
 The report manager plugin can help users to create reports based on the application's models.
 
+Changelog for version 0.4.3
+* bugfix: default.js : update after renumber position
+
 Changelog for version 0.4.2
 * bugfix: order.ctp - test if OrderBy1 and OrderBy2 are set
 * bugfix: ReportsController listReports method - handle empty array 
