@@ -23,7 +23,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 ?>
 <script type="text/javascript">
-	firstLevel = "<?php echo Router::url('/') ?>";
+    firstLevel = "<?php echo Router::url('/'); ?>";
 </script>
 <?php
 
