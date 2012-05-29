@@ -22,14 +22,6 @@
 $(document).ready(function() {
     $('#ReportManagerModel').change(function(){
         if ( $(this).val() != '' ) {
-            var pathName = window.location.pathname;
-            var pathArray = pathName.split("/");
-            var firstLevel = null;
-            if ( pathName.substr(0,1) == "/" )       
-                firstLevel = "/" + pathArray[1];
-            else
-                firstLevel = "/" + pathArray[0];        
-
             $.ajax({
             type: "POST",
             url: firstLevel+"/report_manager/reports/ajaxGetOneToManyOptions",
@@ -48,14 +40,6 @@ $(document).ready(function() {
     $('.deleteReport').click(function(){
         var report = $('#ReportManagerSavedReportOption').val();
         if ( report != '' && confirm('Are you sure you want to delete '+report+'?')) {
-            var pathName = window.location.pathname;
-            var pathArray = pathName.split("/");
-            var firstLevel = null;
-            if ( pathName.substr(0,1) == "/" )       
-                firstLevel = "/" + pathArray[1];
-            else
-                firstLevel = "/" + pathArray[0];        
-
             $.ajax({
             type: "POST",
             url: firstLevel+"/report_manager/reports/deleteReport/"+report,
