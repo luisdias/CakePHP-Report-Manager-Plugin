@@ -24,7 +24,7 @@ $(document).ready(function() {
         if ( $(this).val() != '' ) {
             $.ajax({
             type: "POST",
-            url: firstLevel+"/report_manager/reports/ajaxGetOneToManyOptions",
+            url: firstLevel+"report_manager/reports/ajaxGetOneToManyOptions",
             dataType: 'text',
             data: "model=" + $(this).val(),
             success: function(oneToManyOptions){
@@ -42,7 +42,7 @@ $(document).ready(function() {
         if ( report != '' && confirm('Are you sure you want to delete '+report+'?')) {
             $.ajax({
             type: "POST",
-            url: firstLevel+"/report_manager/reports/deleteReport/"+report,
+            url: firstLevel+"report_manager/reports/deleteReport/"+report,
             dataType: 'text',
             success: function(reportList){
                 $('#ReportManagerSavedReportOptionContainer').html(reportList);
