@@ -2,6 +2,9 @@
 
 ## The report manager plugin can help users to create reports based on the application's models.
 
+**Changelog for version 0.4.5**  
+* bugfix: array index errors on loading reports  
+
 **Changelog for version 0.4.4**  
 * enhancement: JS changes to work on non-root URLs  
 
