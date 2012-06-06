@@ -93,7 +93,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 'modelSchema'=>$currentModelSchema));
         }
         echo $this->Element('fields_dnd_table_close',array('plugin'=>'ReportManager'));
-        if ( $oneToManyOption != '' ) {
+        if ( $oneToManyOption != null ) {
             echo $this->Element('fields_dnd_table_header',array(
                 'plugin'=>'ReportManager',
                 'title'=>$oneToManyOption,

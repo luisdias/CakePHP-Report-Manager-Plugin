@@ -14,8 +14,11 @@
             echo '</td>';
             echo '<td>';
             echo $this->Form->input($modelClass.'.'.$field.'.'.'Position',array('label'=>'','size'=>'4','maxlength'=>'4','class'=>'position'));
-            echo $this->Form->input($modelClass.'.'.$field.'.'.'Type',array('type'=>'hidden','value'=>$attributes['type']));
-            echo $this->Form->input($modelClass.'.'.$field.'.'.'Length',array('type'=>'hidden','value'=>$attributes['length']));
+            $currType = ( isset($attributes['type']) ? $attributes['type'] : $attributes['Type'] );
+            echo $this->Form->input($modelClass.'.'.$field.'.'.'Type',array('type'=>'hidden','value'=>$currType));
+            $currLength = ( isset($attributes['length']) ? $attributes['length'] : 
+                ( isset($attributes['Length']) ? $attributes['Length'] : 10) );
+            echo $this->Form->input($modelClass.'.'.$field.'.'.'Length',array('type'=>'hidden','value'=>$currLength));
             echo '</td>';          
             echo '</tr>';
         endforeach;

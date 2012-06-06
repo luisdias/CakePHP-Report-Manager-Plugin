@@ -59,22 +59,20 @@ class ReportsController extends AppController {
             $this->set('files',$this->listReports());
             $this->set('models',$models);
         } else {
-            $modelClass = null;
-            $oneToManyOption = null;
-            $fileName = $this->data['ReportManager']['saved_report_option'];
-            if ($fileName!='') {
-                $params = explode('.', $fileName);
-                if (count($params)>=3) {
-                    $modelClass = $params[0];
-                    if (count($params)>3) {
-                        $oneToManyOption = $params[1];
-                    }
-                }
-            } else {
+            if (isset($this->data['new'])) {
+                $reportButton = 'new';
                 $modelClass = $this->data['ReportManager']['model'];
                 $oneToManyOption = $this->data['ReportManager']['one_to_many_option'];
+                $this->redirect(array('action'=>'wizard',$reportButton, $modelClass, $oneToManyOption));
             }
-            $this->redirect(array('action'=>'wizard',$modelClass,$oneToManyOption,  urlencode($fileName)));
+                
+            if (isset($this->data['load'])) {
+                $reportButton = 'load';
+                $fileName = $this->data['ReportManager']['saved_report_option'];
+                $this->redirect(array('action'=>'wizard',$reportButton, urlencode($fileName)));                
+            }
+                
+            $this->redirect(array('action'=>'index'));
         }
     }
     
@@ -197,13 +195,35 @@ class ReportsController extends AppController {
     }
 
 
-    public function wizard($modelClass = null,$oneToManyOption = null, $fileName = null) {
-        if (is_null($modelClass)) {
+    public function wizard($param1 = null,$param2 = null, $param3 = null) {
+        if (is_null($param1) || is_null($param2)) {
             $this->Session->setFlash(__('Please select a model or a saved report'));
             $this->redirect(array('action'=>'index'));
         }
-        if (!is_null($fileName) )
-            $fileName = urldecode ($fileName);
+        
+        $reportAction = $param1;
+        $modelClass = null;
+        $oneToManyOption = null;
+        $fileName = null;
+        
+        if ( $reportAction == "new" ) {
+            $modelClass = $param2;
+            $oneToManyOption = $param3;
+        }
+        
+        if ( $reportAction == "load" ) {
+            $fileName = urldecode($param2);            
+
+            if ($fileName!='') {
+                $params = explode('.', $fileName);
+                if (count($params)>=3) {
+                    $modelClass = $params[0];
+                    if (count($params)>3) {
+                        $oneToManyOption = $params[1];
+                    } 
+                }
+            }             
+        }
         
         if (empty($this->data)) {        
             $displayForeignKeys = Configure::read('ReportManager.displayForeignKeys');
@@ -261,11 +281,10 @@ class ReportsController extends AppController {
             $this->set('associatedModelsSchema',$associatedModelsSchema);
             $this->set('oneToManyOption',$oneToManyOption);
             
-            if ($fileName != '')
+            if (!is_null($fileName))
                 $this->loadReport($fileName);
 
         } else {
-            Configure::write('debug',0);
             $this->loadModel($modelClass);
             $associatedModels = $this->{$modelClass}->getAssociated();
             $oneToManyOption = $this->data['Report']['OneToManyOption'];

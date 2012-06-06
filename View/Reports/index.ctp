@@ -55,7 +55,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             ));
         echo '</div>';
         echo '</fieldset>';
-        echo $this->Form->end(__('New'));
+        echo $this->Form->submit(__('New'),array('name'=>'new'));
         echo '</div>';
         
         echo '<div id="repoManMiddleCol">';
@@ -80,7 +80,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         
         echo '<button type="button" class="deleteReport">Delete</button>';
         echo '</fieldset>';
-        echo $this->Form->end(__('Load'));
+        echo $this->Form->submit(__('Load'),array('name'=>'load'));
         echo '</div>';
     ?>
 </div>
