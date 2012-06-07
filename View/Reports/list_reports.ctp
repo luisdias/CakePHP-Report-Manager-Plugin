@@ -25,7 +25,9 @@ echo $this->Form->input('saved_report_option',array(
     'type'=>'select',
     'label'=>__('Saved reports'),
     'options'=>$files,
-    'empty'=>__('--Select--')
+    'empty'=>__('--Select--'),
+    'id'=>'ReportManagerSavedReportOption',
+    'name'=>'data[ReportManager][saved_report_option]'
     ));
 
 ?>
