@@ -3,6 +3,7 @@
 ## The report manager plugin can help users to create reports based on the application's models.
 
 **Changelog for version 0.4.5**  
+* bugfix: delete saved report does not refresh the list properly  
 * bugfix: array index errors on loading reports  
 
 **Changelog for version 0.4.4**  
@@ -92,6 +93,7 @@ Collaborators:
 Suman (USA)  
 Santana (Brazil)  
 Tamer Solieman (Egypt)  
+jasonchua89
 
 Luis E. S. Dias  
 Contact: smartbyte.systems@gmail.com
