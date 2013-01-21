@@ -2,6 +2,10 @@
 
 ## The report manager plugin can help users to create reports based on the application's models.
 
+**Changelog for version 0.4.5.1**  
+* bugfix: php keyword added to saveReport method  
+* bugfix: translation function correction   
+
 **Changelog for version 0.4.5**  
 * bugfix: delete saved report does not refresh the list properly  
 * bugfix: array index errors on loading reports  
