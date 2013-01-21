@@ -92,6 +92,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <?php if ( $showRecordCounter ) { ?>    
         <div class="counter">Count: <?php echo $counter;?></div>
     <?php } ?>
-    <div class="timestamp"><?php echo _('Report Created') . ' : ' . date('Y-m-d H:i:s'); ?></div>
+    <div class="timestamp"><?php echo __('Report Created') . ' : ' . date('Y-m-d H:i:s'); ?></div>
     <?php endif; ?>
 </div>
