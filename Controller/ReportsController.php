@@ -146,7 +146,7 @@ class ReportsController extends AppController {
     }
  
     public function saveReport($modelClass = null,$oneToManyOption = null) {
-        $content='<? $reportFields=';
+        $content='<?php $reportFields=';
         $content.= var_export($this->data,1);
         $content.='; ?>'; 
 
