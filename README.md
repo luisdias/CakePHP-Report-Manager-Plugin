@@ -48,14 +48,14 @@ https://github.com/luisdias/CakePHP-Report-Manager-Plugin
 
 3. Add the following line to your bootstrap.php file ( located at app/Config folder )  
 
-    CakePlugin::load('ReportManager',array('bootstrap' => true));  
+ CakePlugin::load('ReportManager',array('bootstrap' => true));  
 
 Since Cake 2.2.x it is important to add:
 
-   Configure::write('Dispatcher.filters', array(  
-       'AssetDispatcher',  
-       'CacheDispatcher'  
-   ));
+ Configure::write('Dispatcher.filters', array(  
+  'AssetDispatcher',  
+  'CacheDispatcher'  
+ ));
 
 More info at:  
 http://book.cakephp.org/2.0/en/appendices/2-2-migration-guide.html  
