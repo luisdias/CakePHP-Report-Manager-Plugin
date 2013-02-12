@@ -250,9 +250,12 @@ class ReportsController extends AppController {
             $associatedModelsSchema = array();
 
             foreach ($associatedModels as $key => $value) {
-                $this->loadModel($key);
-                $associatedModelsSchema[$key] = $this->{$key}->schema();
-                
+                $className = $this->{$modelClass}->{$value}[$key]['className'];
+                //$this->loadModel($key);
+                $this->loadModel($className);
+                //$associatedModelsSchema[$key] = $this->{$key}->schema();
+                $associatedModelsSchema[$key] = $this->{$className}->schema();
+
                 if (isset($globalFieldIgnoreList) && is_array($globalFieldIgnoreList)) {
                     foreach ($globalFieldIgnoreList as $value) {
                         unset($associatedModelsSchema[$key][$value]);
@@ -347,9 +350,11 @@ class ReportsController extends AppController {
                                     }
 
                                     if ($parameters['Filter']=='LIKE')
-                                        $example = '%'. mysql_real_escape_string($parameters['Example']) . '%';
+                                        //$example = '%'. mysql_real_escape_string($parameters['Example']) . '%';
+                                        $example = '%'.$parameters['Example'] . '%';
                                     else
-                                        $example = mysql_real_escape_string($parameters['Example']);
+                                        //$example = mysql_real_escape_string($parameters['Example']);
+                                        $example = $parameters['Example'];
 
                                     $conditionsList[$model.'.'.$field.$criteria] = $example;
                                 }
