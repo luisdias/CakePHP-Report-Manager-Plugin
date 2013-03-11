@@ -1,6 +1,6 @@
 <?php
 /*
-Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br
+Copyright (c) 2012-2013 Luis E. S. Dias - smartbyte.systems@gmail.com
 
 based on an article from AppServ Open Project
 http://www.appservnetwork.com/modules.php?name=News&file=article&sid=8
@@ -30,7 +30,7 @@ class Excel {
         header("Pragma: public");
         header("Expires: 0");
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0"); 
-        header("Content-type: application/vnd.ms-excel");
+        header("Content-type: application/vnd.ms-excel; charset=utf-8");
         header("Content-Type: application/force-download");
         header("Content-Type: application/octet-stream");
         header("Content-Type: application/download");        
@@ -72,7 +72,7 @@ class Excel {
                         $displayField = substr($field, strpos($field, '.')+1);
                         $displayField = str_replace('_', ' ', $displayField);
                         $displayField = ucfirst($displayField);
-                        $this->xlsWriteLabel($row, $col, $displayField); 
+                        $this->xlsWriteLabel($row, $col, utf8_decode($displayField)); 
                         $col++;
                     endforeach; 
                     $row++;
@@ -81,10 +81,10 @@ class Excel {
                 foreach ($fieldList as $field): 
                     $params = explode('.',$field);
                     if ( $fieldsType[$field] == 'float') {
-                        $this->xlsWriteNumber($row, $col, $reportItem[$params[0]][$params[1]]);
+                        $this->xlsWriteNumber($row, $col, utf8_decode($reportItem[$params[0]][$params[1]]));
                     }                        
                     else
-                        $this->xlsWriteLabel($row, $col, $reportItem[$params[0]][$params[1]]); 
+                        $this->xlsWriteLabel($row, $col, utf8_decode($reportItem[$params[0]][$params[1]])); 
                     $col++;
                 endforeach;
                 $row++;
@@ -96,7 +96,7 @@ class Excel {
                             $displayField = substr($field, strpos($field, '.')+1);
                             $displayField = str_replace('_', ' ', $displayField);
                             $displayField = ucfirst($displayField);
-                            $this->xlsWriteLabel($row, $col, $displayField); 
+                            $this->xlsWriteLabel($row, $col, utf8_decode($displayField)); 
                             $col++;
                         endforeach; 
                         $row++;
@@ -105,10 +105,10 @@ class Excel {
                             foreach ($oneToManyFieldsList as $field): 
                                 $params = explode('.',$field);
                                 if ( $oneToManyFieldsType[$field] == 'float') {
-                                    $this->xlsWriteNumber($row, $col, $oneToManyReportItem[$params[1]]);
+                                    $this->xlsWriteNumber($row, $col, utf8_decode($oneToManyReportItem[$params[1]]));
                                 }                        
                                 else
-                                    $this->xlsWriteLabel($row, $col, $oneToManyReportItem[$params[1]]); 
+                                    $this->xlsWriteLabel($row, $col, utf8_decode($oneToManyReportItem[$params[1]])); 
                                 $col++;
                             endforeach;
                             $row++;
