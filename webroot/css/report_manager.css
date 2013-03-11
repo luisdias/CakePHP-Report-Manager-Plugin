@@ -134,3 +134,27 @@ table thead td {
 #repoManMiddleCol {
     text-align: center;
 }
+
+table.reportManagerFieldSelector,
+table.reportManagerFilterSelector,
+table.reportManagerOrderSelector,
+table.reportManagerReportStyleSelector
+{
+    width: 100%;
+}
+
+table.reportManagerFieldSelector td ,
+table.reportManagerFilterSelector td ,
+table.reportManagerOrderSelector td ,
+table.reportManagerReportStyleSelector td 
+{
+    border:1px solid #d9e6f0;
+}
+
+table.reportManagerFieldSelector thead,
+table.reportManagerFilterSelector thead,
+table.reportManagerOrderSelector thead,
+table.reportManagerReportStyleSelector thead
+{
+    background:#f3f9ff;
+}
