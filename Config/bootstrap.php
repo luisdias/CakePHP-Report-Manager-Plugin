@@ -16,5 +16,5 @@ Configure::write('ReportManager.modelFieldIgnoreList',array(
         'field3'=>'field3'
     )
 ));
-Configure::write('ReportManager.reportPath', 'tmp'.DS.'reports'.DS);
+
 ?>
