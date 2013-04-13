@@ -7,27 +7,11 @@
  * Redistributions of files must retain the above copyright notice.
  */
 
-App::uses('AppController', 'Controller');
-App::uses('Folder', 'Utility');
-App::uses('File', 'Utility');
-
-class ReportsController extends AppController {
+class CustomReportsController extends CustomReportingAppController {
     
-    public $uses = array();
+    public $uses = array('CustomReporting.CustomReport');
     public $helpers = array('Number');
     public $path = null;
-    
-    public function __construct( $request = NULL, $response = NULL ) {
-        $reportPath = Configure::read('ReportManager.reportPath');
-        if ( !isset($reportPath) )
-            $reportPath = 'tmp'.DS.'reports'.DS;
-        $this->path = $reportPath;
-        if(!is_dir(APP.$this->path)) {
-            $folder = new Folder();
-            $folder->create(APP.$this->path);
-        }
-        parent::__construct($request,$response);        
-    }    
     
     public function index() {
         if (empty($this->data)) {
