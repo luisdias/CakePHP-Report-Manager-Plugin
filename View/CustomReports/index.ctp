@@ -73,7 +73,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         echo $this->Form->input('saved_report_option',array(
             'type'=>'select',
             'label'=>__('Saved reports'),
-            'options'=>$files,
+            'options'=>$customReports,
             'empty'=>__('--Select--')
             ));
         echo '</div>';
