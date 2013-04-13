@@ -10,24 +10,19 @@
 class CustomReportsController extends CustomReportingAppController {
     
     public $uses = array('CustomReporting.CustomReport');
-    public $helpers = array('Number');
+    public $helpers = array('Number', 'Form');
+
     public $path = null;
     
     public function index() {
+	
         if (empty($this->data)) {
-            $modelIgnoreList = Configure::read('ReportManager.modelIgnoreList'); 
-            
-            $models = App::objects('Model');
-            $models = array_combine($models,$models);            
-            
-            if ( isset($modelIgnoreList) && is_array($modelIgnoreList)) {
-                foreach ($modelIgnoreList as $model) {
-                    if (isset($models[$model]));
-                        unset($models[$model]);
-                }                
-            }
-            $this->set('files',$this->listReports());
-            $this->set('models',$models);
+	
+			// Get the lists of models and saved reports, and pass them to the view
+			$models = $this->_getFilteredListOfModels();
+			$customReports = $this->CustomReport->find('list');			
+            $this->set(compact('models', 'customReports'));
+
         } else {
             if (isset($this->data['new'])) {
                 $reportButton = 'new';
@@ -155,15 +150,6 @@ class CustomReportsController extends CustomReportingAppController {
             $this->render('list_reports');
         }
     }
-
-    public function listReports() {
-        $dir = new Folder(APP.$this->path);
-        $files = $dir->find('.*\.crp');
-        if (count($files)>0)
-            $files = array_combine($files,$files);        
-        return $files;
-    }
-
 
     public function wizard($param1 = null,$param2 = null, $param3 = null) {
         if (is_null($param1) || is_null($param2)) {
@@ -418,4 +404,34 @@ class CustomReportsController extends CustomReportingAppController {
                 $this->saveReport($modelClass,$oneToManyOption);
         }
     }
+
+	/**
+	 * Get a list of all the Models we can report on, properly
+	 * respecting the Whitelist and Blacklist configurations
+	 * set in the bootstrap file.
+	 *
+	 * @return array Listing of Model Names
+	 */
+	function _getFilteredListOfModels() {
+		
+		// If we have a whitelist then we will use that. If there is no whitelist,
+		// then we will start with the complete list of models in the application.
+		if (Configure::read('CustomReporting.modelWhitelist') == false) {
+			$models = App::objects('Model');
+		} else {
+			$models = Configure::read('CustomReporting.modelWhitelist');
+		}			
+		
+		// Now remove any models from the list that also exist on the blacklist
+		$modelBlacklist = Configure::read('ReportManager.modelBlackist');            
+        if ($modelBlacklist != false) {
+            foreach ($models as $index => $model) {
+				if (in_array($modelBlacklist, $model)) {
+					unset($models[$index]);
+				}
+            }                
+        }
+
+		return $models;
+	}
 }
