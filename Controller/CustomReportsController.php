@@ -128,6 +128,9 @@ class CustomReportsController extends CustomReportingAppController {
             $this->set('modelClass',$modelClass);
             $this->set('modelSchema',$modelSchema);
 
+			// Make sure we render the wizard view. We might have arrived here via /load
+			$this->render('wizard');
+
         } else {
 			// Let's get the list of fields to make available to the report
 			$modelSchema = $this->_getCompleteFieldList($modelClass);
@@ -269,9 +272,6 @@ class CustomReportsController extends CustomReportingAppController {
             }
 
         }
-
-		// Make sure we render the wizard view. We might have arrived here via /load
-		$this->render('wizard');
     }
 
 	/**

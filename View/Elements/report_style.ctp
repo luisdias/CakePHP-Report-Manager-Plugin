@@ -48,18 +48,7 @@
             echo $this->Form->checkbox('CustomReport.ShowNoRelated',array('hiddenField' => true,'checked'=>$showNoRelated));
             echo '</td>';             
             echo '</tr>';
-            
-            echo '<tr>';
-            echo '<td>';
-            echo __('Save report');
-            if (isset($this->data['CustomReport']['SaveReport']))
-                $saveReport = $this->data['CustomReport']['SaveReport'];
-            else
-                $saveReport = false;            
-            echo $this->Form->checkbox('CustomReport.SaveReport',array('hiddenField' => true,'checked'=>$saveReport));                     
-            echo '</td>';             
-            echo '</tr>';            
-      
+                  
         ?>
         </table>
     </fieldset>

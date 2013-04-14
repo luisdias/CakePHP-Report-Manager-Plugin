@@ -14,12 +14,11 @@ echo $this->Html->css('/CustomReporting/css/smart_wizard.css');
 echo $this->Html->script(array('https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'));
 echo $this->Html->script(array('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js'));
 echo $this->Html->script(array('/CustomReporting/js/jquery.smartWizard-2.0.js','/CustomReporting/js/default.js'));
-
 ?>
 
 <div class="reportManager form">
 	<h2><?php echo __('Custom Report'); ?></h2>
-	<?php echo $this->Form->create('CustomReport',array('url' => '/custom_reporting/custom_report', 'target'=>'_blank', 'id' => 'ReportWizardForm')); ?>
+	<?php echo $this->Form->create('CustomReport',array('url' => array('action' => 'wizard', $modelClass), 'target'=>'_blank', 'id' => 'ReportWizardForm', $modelClass)); ?>
 	<?php echo $this->Form->input('CustomReport.modelClass',array('type'=>'hidden','value'=>$modelClass)); ?>
 	<?php echo $this->Form->input('CustomReport.Title',array('size'=>'80','label' => 'Title', 'maxlength'=>'100')); ?>
 	<?php echo $this->Form->submit(__('Save'), array('id'=>'CustomReportSave')); ?>
