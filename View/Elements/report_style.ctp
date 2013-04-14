@@ -1,4 +1,3 @@
-    <!-- Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br -->
     <fieldset>
         <legend><?php echo __('Report Style'); ?></legend>
         <table class="reportManagerReportStyleSelector" cellpadding="0" cellspacing="0">
