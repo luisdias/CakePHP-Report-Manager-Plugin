@@ -12,8 +12,6 @@ class CustomReportsController extends CustomReportingAppController {
     public $uses = array('CustomReporting.CustomReport');
     public $helpers = array('Number', 'Form');
 
-    public $path = null;
-    
     public function index() {
 	
         if (empty($this->request->data)) {

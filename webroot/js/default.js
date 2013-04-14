@@ -56,8 +56,6 @@ $(document).ready(function() {
         return isStepValid;
     }
     
-    $('#wizardSubmit').hide();
-    
     // fields position default values
     $('input.position').reNumberPosition();
     
@@ -82,16 +80,6 @@ $(document).ready(function() {
         }
     });    
     
-    $( ".sortable2 tbody" ).sortable({
-        items: "tr",
-        cancel: "thead",
-        axis: 'y',
-        stop: function(event, ui) {
-            $('input.position').reNumberPosition();
-            this.update();
-        }
-    });
-    
     $('.checkAll').click(function () {
         model = $(this).text();
         $("tr :checkbox[name^=\"data["+model+"]\"][name*='[Add]']").each(function(){
@@ -109,13 +97,13 @@ $(document).ready(function() {
 	 * When clicking the save button, over-ride the target attribute,
 	 * the form action, and then submit the form
 	 */
-	$("#CustomReportSave").click(function(e) {
+/*	$("#CustomReportSave").click(function(e) {
 		e.preventDefault();
 		var $saveForm = $(this).parents('form');
 		$saveForm.attr('action', '/custom_reporting/custom_reports/add');
 		$saveForm.attr('target', '');
 		$saveForm.submit();
-	});
+	}); */
     
 });
 
