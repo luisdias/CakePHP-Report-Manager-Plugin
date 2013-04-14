@@ -67,7 +67,6 @@ echo $this->Html->script(array('/CustomReporting/js/jquery.smartWizard-2.0.js','
 	            'sortableClass' => 'sortable1'));        
 
 			foreach($modelSchema as $model => $schema) {
-				// TODO - properly evaluate if associated models that are 'hasMany' or 'hasAndBelongsToMany' work
 		        echo $this->Element('fields_dnd',array(
 		            'plugin' => 'ReportManager',
 		            'modelClass' => $model,
@@ -85,7 +84,6 @@ echo $this->Html->script(array('/CustomReporting/js/jquery.smartWizard-2.0.js','
 	        <?php      
 	        echo $this->Element('logical_operator');
 			foreach($modelSchema as $model => $schema) {
-				// TODO - properly evaluate if associated models that are 'hasMany' or 'hasAndBelongsToMany' work
 	        	echo $this->Element('filter',array('plugin'=>'CustomReporting','modelClass' => $model, 'modelSchema' => $schema));
 			}
 	        ?> 
@@ -95,8 +93,6 @@ echo $this->Html->script(array('/CustomReporting/js/jquery.smartWizard-2.0.js','
 	        <?php
 	        echo $this->Element('order_direction');
 			foreach($modelSchema as $model => $schema) {
-				// TODO - properly evaluate if associated models that are 'hasMany' or 'hasAndBelongsToMany' work
-				// if ( $associatedModels[$key] != 'hasMany' && $associatedModels[$key] != 'hasAndBelongsToMany' )            
 	        	echo $this->Element('order',array('plugin'=>'CustomReporting','modelClass'=>$model,'modelSchema'=>$schema));
 	        }
 	        ?> 
