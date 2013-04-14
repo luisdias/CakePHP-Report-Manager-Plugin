@@ -43,7 +43,7 @@
 			<tr>
 				<td><?php echo $this->Html->link($customReport, array('action' => 'view', $id), array('target' => '_blank')); ?></td>
 				<td>
-					<?php echo $this->Html->link(__('Edit'), array('action' => 'load', $id)); ?> | 
+					<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $id)); ?> | 
 					<?php echo $this->Html->link(__('Delete'), array('action' => 'delete', $id), null, sprintf(__('Are you sure you want to delete "%s"?'), $customReport)); ?> | 
 					<?php echo $this->Html->link(__('Copy'), array('action' => 'duplicate', $id)); ?>
 				</td>

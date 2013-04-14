@@ -36,51 +36,6 @@ class CustomReportsController extends CustomReportingAppController {
         }
     }
 
-    // calculate the html table columns width
-    public function getTableColumnWidth($fieldsLength=array(),$fieldsType=array()) {
-        $minWidth = 4;
-        $maxWidth = 25;
-        $tableColumnWidth = array();
-        foreach ($fieldsLength as $field => $length): 
-            if ( $length != '') {
-                if ( $length < $maxWidth ) 
-                    $width = $length * 9;
-                else
-                    $width = $maxWidth * 9;
-                if ( $length < $minWidth ) 
-                    $width = $length * 40;                
-                $tableColumnWidth[$field] = $width;
-            } else {
-                $fieldType = $fieldsType[$field];
-                switch ($fieldType) {
-                    case "date":
-                        $width = 120;
-                        break;
-                    case "float":
-                        $width = 150;
-                        break;                
-                    default:
-                        $width = 120;
-                        break;
-                }
-                $tableColumnWidth[$field] = $width;
-            }
-        endforeach; 
-        return $tableColumnWidth;
-    }
-    
-    // calculate the html table width
-    public function getTableWidth($tableColumnWidth = array()) {
-        $tableWidth = array_sum($tableColumnWidth);
-        return $tableWidth;
-    }
-
-    public function export2Xls(&$reportData = array(),&$fieldsList=array(), &$fieldsType=array(), &$showNoRelated = false ) {
-        App::import('Vendor', 'CustomReporting.Excel');
-        $xls = new Excel();      
-        $xls->buildXls($reportData, $fieldsList, $fieldsType, $showNoRelated);
-    }
-
     public function wizard($modelClass = null, $reportData = null) {
 		if (is_null($modelClass)) {
             $this->Session->setFlash(__('Please select a model or a saved report'));
@@ -195,8 +150,8 @@ class CustomReportsController extends CustomReportingAppController {
             if ( isset($this->data['CustomReport']['OrderBy2']) )
                 $order[] = $this->data['CustomReport']['OrderBy2'] . ' ' . $this->data['CustomReport']['OrderDirection'];
             
-            $tableColumnWidth = $this->getTableColumnWidth($fieldsLength,$fieldsType);
-            $tableWidth = $this->getTableWidth($tableColumnWidth);
+            $tableColumnWidth = $this->_getTableColumnWidth($fieldsLength,$fieldsType);
+            $tableWidth = $this->_getTableWidth($tableColumnWidth);
 			$recursive = 1;
 
             $reportData = $this->{$modelClass}->find('all',array(
@@ -224,7 +179,7 @@ class CustomReportsController extends CustomReportingAppController {
                 $this->render('report_display');
             } else { // Excel file
                 $this->layout = null;
-                $this->export2Xls(
+                $this->_export2Xls(
                         $reportData, 
                         $fieldsList, 
                         $fieldsType, 
@@ -233,34 +188,6 @@ class CustomReportsController extends CustomReportingAppController {
 
         }
     }
-
-	/**
-	 * Load up the data from a stored report, and push it into
-	 * the wizard to manage.
-	 */
-	public function load($id = null) {
-		if (is_null($id)) {
-			$this->Session->setFlash(__('Please select a report to load'));
-			$this->redirect(array('action'=>'index'));
-			return;			
-		}
-		
-		$customReport = $this->CustomReport->find('first', array('conditions' => array('id' => $id)));
-		if (!$customReport || empty($customReport)) {
-			$this->Session->setFlash(__('Sorry, we could not load that report'));
-			$this->redirect(array('action'=>'index'));
-			return;
-		} else {
-			$reportData = unserialize($customReport['CustomReport']['options']);
-			if ($reportData === false) {
-				$this->Session->setFlash(__('Sorry, but that report appears to be corrupted.'));
-				$this->redirect(array('action'=>'index'));
-				return;
-			}
-			$reportData['CustomReport'] = array_merge($reportData['CustomReport'], $customReport['CustomReport']);
-			return($this->wizard($reportData['CustomReport']['modelClass'], $reportData));
-		}
-	}
 
 	/**
 	 * Load up the data from a stored report, and push it into
@@ -331,26 +258,46 @@ class CustomReportsController extends CustomReportingAppController {
 			return;			
 		}
 		
-		// Format the option data, which we will serialize
-		$reportOptions = $this->request->data;
-		if (isset($reportOptions['_Token'])) {
-			unset($reportOptions['_Token']);
-		}				
-
-		$data = array('CustomReport' => array(
-			'id' => $id,
-			'title' => $this->request->data['CustomReport']['Title'],
-			'options' => serialize($reportOptions),
-		));
-		
-		if ($this->CustomReport->save($data)) {
-			$this->redirect(array('action'=>'index'));
-			return;
+		if (empty($this->request->data)) {
+			
+			$customReport = $this->CustomReport->find('first', array('conditions' => array('id' => $id)));
+			if (!$customReport || empty($customReport)) {
+				$this->Session->setFlash(__('Sorry, we could not load that report'));
+				$this->redirect(array('action'=>'index'));
+				return;
+			} else {
+				$reportData = unserialize($customReport['CustomReport']['options']);
+				if ($reportData === false) {
+					$this->Session->setFlash(__('Sorry, but that report appears to be corrupted.'));
+					$this->redirect(array('action'=>'index'));
+					return;
+				}
+				$reportData['CustomReport'] = array_merge($reportData['CustomReport'], $customReport['CustomReport']);
+				return($this->wizard($reportData['CustomReport']['modelClass'], $reportData));
+			}
+			
 		} else {
-			$this->Session->setFlash(__('Sorry, but we could not save your report'));
-			return $this->wizard($this->request->data['CustomReport']['modelClass'], $this->request->data);
-		}
+			
+			// Format the option data, which we will serialize
+			$reportOptions = $this->request->data;
+			if (isset($reportOptions['_Token'])) {
+				unset($reportOptions['_Token']);
+			}				
 
+			$data = array('CustomReport' => array(
+				'id' => $id,
+				'title' => $this->request->data['CustomReport']['Title'],
+				'options' => serialize($reportOptions),
+			));
+		
+			if ($this->CustomReport->save($data)) {
+				$this->redirect(array('action'=>'index'));
+				return;
+			} else {
+				$this->Session->setFlash(__('Sorry, but we could not save your report'));
+				return $this->wizard($this->request->data['CustomReport']['modelClass'], $this->request->data);
+			}
+		}
 	}
 
 	function delete($id = null) {
@@ -532,4 +479,51 @@ class CustomReportsController extends CustomReportingAppController {
         }
 		return $modelSchema;
 	}
+
+    // calculate the html table columns width
+    public function _getTableColumnWidth($fieldsLength=array(),$fieldsType=array()) {
+        $minWidth = 4;
+        $maxWidth = 25;
+        $tableColumnWidth = array();
+        foreach ($fieldsLength as $field => $length): 
+            if ( $length != '') {
+                if ( $length < $maxWidth ) 
+                    $width = $length * 9;
+                else
+                    $width = $maxWidth * 9;
+                if ( $length < $minWidth ) 
+                    $width = $length * 40;                
+                $tableColumnWidth[$field] = $width;
+            } else {
+                $fieldType = $fieldsType[$field];
+                switch ($fieldType) {
+                    case "date":
+                        $width = 120;
+                        break;
+                    case "float":
+                        $width = 150;
+                        break;                
+                    default:
+                        $width = 120;
+                        break;
+                }
+                $tableColumnWidth[$field] = $width;
+            }
+        endforeach; 
+        return $tableColumnWidth;
+    }
+    
+    // calculate the html table width
+    public function _getTableWidth($tableColumnWidth = array()) {
+        $tableWidth = array_sum($tableColumnWidth);
+        return $tableWidth;
+    }
+
+    public function _export2Xls(&$reportData = array(),&$fieldsList=array(), &$fieldsType=array(), &$showNoRelated = false ) {
+        App::import('Vendor', 'CustomReporting.Excel');
+        $xls = new Excel();      
+        $xls->buildXls($reportData, $fieldsList, $fieldsType, $showNoRelated);
+    }
+
+
 }

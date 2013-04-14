@@ -39,7 +39,6 @@ If you are using an ACL, add ACO entries for
 - CustomReporting/CustomReports/add
 - CustomReporting/CustomReports/delete
 - CustomReporting/CustomReports/edit
-- CustomReporting/CustomReports/load
 - CustomReporting/CustomReports/wizard
 - CustomReporting/CustomReports/view
 - CustomReporting/CustomReports/copy
