@@ -301,6 +301,37 @@ class CustomReportsController extends CustomReportingAppController {
 			return($this->wizard($reportData['CustomReport']['modelClass'], $reportData));
 		}
 	}
+
+	/**
+	 * Load up the data from a stored report, and push it into
+	 * the wizard to manage.
+	 */
+	public function view($id = null) {
+		if (is_null($id)) {
+			$this->Session->setFlash(__('Please select a report to view'));
+			$this->redirect(array('action'=>'index'));
+			return;			
+		}
+		
+		$customReport = $this->CustomReport->find('first', array('conditions' => array('id' => $id)));
+		if (!$customReport || empty($customReport)) {
+			$this->Session->setFlash(__('Sorry, we could not load that report'));
+			$this->redirect(array('action'=>'index'));
+			return;
+		} else {
+			$reportData = unserialize($customReport['CustomReport']['options']);
+			if ($reportData === false) {
+				$this->Session->setFlash(__('Sorry, but that report appears to be corrupted.'));
+				$this->redirect(array('action'=>'index'));
+				return;
+			}
+			
+			$reportData['CustomReport'] = array_merge($reportData['CustomReport'], $customReport['CustomReport']);
+			$this->request->data = $reportData;				
+			
+			return($this->wizard($reportData['CustomReport']['modelClass']));
+		}
+	}
 	
 	public function add() {
 		if (empty($this->request->data)) {
