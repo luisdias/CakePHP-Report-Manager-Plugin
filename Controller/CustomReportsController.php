@@ -472,18 +472,23 @@ class CustomReportsController extends CustomReportingAppController {
 		// Add any associated models.
 		$associatedModels = $this->{$baseModelClass}->getAssociated();		
         foreach ($associatedModels as $key => $value) {
-
-			// Compare these models to the list of allowed models in
-			// the whitelists and blacklists.
-			if (is_array($modelBlacklist) && in_array($key, $modelBlacklist)) {
-				// It's on the blacklist. Destroy it.
-				unset($associatedModels[$key]);
-			} elseif (isset($modelWhitelist[$baseModelClass]) && is_array($modelWhitelist[$baseModelClass]) && !in_array($key, $modelWhitelist[$baseModelClass])) {
-				// There is a whitelist, and it's not on it. Destroy it.
-				unset($associatedModels[$key]);
-			} else {
-	            $associatedModelClassName = $this->{$baseModelClass}->{$value}[$key]['className'];
-	    		$completeSchema[$key] = $this->_getFilteredListOfModelFields($associatedModelClassName);				
+			// Only consider an associated model if it is a "HasOne" or "BelongsTo"
+			// Releationship. For HasMany or HasAndBelongsToMany, you should be using
+			// the association (or the relationship) model as the key centrepiece.
+			if ($value == 'belongsTo' || $value == 'hasOne') {
+				
+				// Compare these models to the list of allowed models in
+				// the whitelists and blacklists.
+				if (is_array($modelBlacklist) && in_array($key, $modelBlacklist)) {
+					// It's on the blacklist. Destroy it.
+					unset($associatedModels[$key]);
+				} elseif (isset($modelWhitelist[$baseModelClass]) && is_array($modelWhitelist[$baseModelClass]) && !in_array($key, $modelWhitelist[$baseModelClass])) {
+					// There is a whitelist, and it's not on it. Destroy it.
+					unset($associatedModels[$key]);
+				} else {
+		            $associatedModelClassName = $this->{$baseModelClass}->{$value}[$key]['className'];
+		    		$completeSchema[$key] = $this->_getFilteredListOfModelFields($associatedModelClassName);				
+				}
 			}
 		}
 				

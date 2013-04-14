@@ -31,6 +31,7 @@ Configure::write('CustomReporting.modelWhitelist',	array(
 	),
 	'AssignmentRecord',
 	'Application',
+	'ApplicationNote',
 ));
 
 /**
