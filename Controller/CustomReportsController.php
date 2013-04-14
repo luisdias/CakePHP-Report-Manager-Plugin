@@ -39,7 +39,7 @@ class CustomReportsController extends CustomReportingAppController {
     // calculate the html table columns width
     public function getTableColumnWidth($fieldsLength=array(),$fieldsType=array()) {
         $minWidth = 4;
-        $maxWidth = 50;
+        $maxWidth = 25;
         $tableColumnWidth = array();
         foreach ($fieldsLength as $field => $length): 
             if ( $length != '') {
