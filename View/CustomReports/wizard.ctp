@@ -21,6 +21,7 @@ echo $this->Html->script(array('/CustomReporting/js/jquery.smartWizard-2.0.js','
 	<?php echo $this->Form->create('CustomReport',array('url' => array('action' => 'wizard', $modelClass), 'target'=>'_blank', 'id' => 'ReportWizardForm', $modelClass)); ?>
 	<?php echo $this->Form->input('CustomReport.modelClass',array('type'=>'hidden','value'=>$modelClass)); ?>
 	<?php echo $this->Form->input('CustomReport.Title',array('size'=>'80','label' => 'Title', 'maxlength'=>'100')); ?>
+	<?php echo $this->Form->input('CustomReport.id',array('type' => 'hidden')); ?>
 	<?php echo $this->Form->submit(__('Save'), array('id'=>'CustomReportSave')); ?>
 	<div id="wizard" class="swMain">
 	  <ul>

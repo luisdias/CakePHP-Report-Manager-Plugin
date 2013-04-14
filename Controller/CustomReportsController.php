@@ -329,8 +329,37 @@ class CustomReportsController extends CustomReportingAppController {
 			return;
 		} else {
 			$this->Session->setFlash(__('Sorry, but we could not save your report'));
-			return $this->wizard($this->request->data['CustomReport']['modelClass']);
+			return $this->wizard($this->request->data['CustomReport']['modelClass'], $this->request->data);
 		}
+	}
+	
+	public function edit($id = null) {
+		if (is_null($id)) {
+			$this->Session->setFlash(__('Please select a report to load'));
+			$this->redirect(array('action'=>'index'));
+			return;			
+		}
+		
+		// Format the option data, which we will serialize
+		$reportOptions = $this->request->data;
+		if (isset($reportOptions['_Token'])) {
+			unset($reportOptions['_Token']);
+		}				
+
+		$data = array('CustomReport' => array(
+			'id' => $id,
+			'title' => $this->request->data['CustomReport']['Title'],
+			'options' => serialize($reportOptions),
+		));
+		
+		if ($this->CustomReport->save($data)) {
+			$this->redirect(array('action'=>'index'));
+			return;
+		} else {
+			$this->Session->setFlash(__('Sorry, but we could not save your report'));
+			return $this->wizard($this->request->data['CustomReport']['modelClass'], $this->request->data);
+		}
+
 	}
 
 	function delete($id = null) {
@@ -346,6 +375,31 @@ class CustomReportsController extends CustomReportingAppController {
 		$this->redirect(array('action'=>'index'));		
 	}
 	
+	function duplicate($id = null) {
+		if (is_null($id)) {
+			$this->Session->setFlash(__('Invalid Custom Report'));
+			$this->redirect(array('action'=>'index'));
+			return;
+		}
+		
+		$customReport = $this->CustomReport->find('first', array('conditions' => array('id' => $id)));
+		
+		// Clear out the ID, update the title, and save a copy
+		unset($customReport['CustomReport']['id']);
+		$customReport['CustomReport']['title'] = 'Copy of ' . $customReport['CustomReport']['title'];
+		
+		// Also update the title that's stored in the form data
+		$customReportOptions = unserialize($customReport['CustomReport']['options']);
+		$customReportOptions['CustomReport']['Title'] = $customReport['CustomReport']['title'] ;
+		$customReport['CustomReport']['options'] = serialize($customReportOptions);
+		
+		$this->CustomReport->create();
+		if (!$this->CustomReport->save($customReport)) {
+			$this->Session->setFlash(__('Sorry, but we could not save a copy of this report'));			
+		}
+		$this->redirect(array('action'=>'index'));		
+				
+	}
 	/**
 	 * Get a list of all the Models we can report on, properly
 	 * respecting the Whitelist and Blacklist configurations

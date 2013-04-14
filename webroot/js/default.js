@@ -97,13 +97,21 @@ $(document).ready(function() {
 	 * When clicking the save button, over-ride the target attribute,
 	 * the form action, and then submit the form
 	 */
-/*	$("#CustomReportSave").click(function(e) {
+	$("#CustomReportSave").click(function(e) {
 		e.preventDefault();
 		var $saveForm = $(this).parents('form');
-		$saveForm.attr('action', '/custom_reporting/custom_reports/add');
+		
+		// Depending on whether there is an ID already, we're going
+		// to be editing or saving
+		var id = $("#CustomReportId").val();
+		if(id == undefined || id == '') {
+			$saveForm.attr('action', '/custom_reporting/custom_reports/add');
+		} else {
+			$saveForm.attr('action', '/custom_reporting/custom_reports/edit/'+id);
+		}
 		$saveForm.attr('target', '');
-		$saveForm.submit();
-	}); */
+		$saveForm.submit();			
+	});
     
 });
 

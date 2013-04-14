@@ -42,7 +42,10 @@
 			<?php foreach($customReports as $id => $customReport): ?>
 			<tr>
 				<td><?php echo $this->Html->link($customReport, array('action' => 'load', $id)); ?></td>
-				<td><?php echo $this->Html->link(__('Delete'), array('action' => 'delete', $id), null, sprintf(__('Are you sure you want to delete "%s"?'), $customReport)); ?></td>
+				<td>
+					<?php echo $this->Html->link(__('Delete'), array('action' => 'delete', $id), null, sprintf(__('Are you sure you want to delete "%s"?'), $customReport)); ?> | 
+					<?php echo $this->Html->link(__('Copy'), array('action' => 'duplicate', $id)); ?>
+				</td>
 			</tr>
 			<?php endforeach; ?>
 		</tbody>
