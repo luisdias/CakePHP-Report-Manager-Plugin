@@ -106,49 +106,8 @@ class CustomReportsController extends CustomReportingAppController {
         $xls = new Excel();      
         $xls->buildXls($reportData,$fieldsList, $fieldsType, $oneToManyOption, $oneToManyFieldsList, $oneToManyFieldsType, $showNoRelated );
     }
- 
-    public function saveReport($modelClass = null,$oneToManyOption = null) {
-        $content='<?php $reportFields=';
-        $content.= var_export($this->data,1);
-        $content.='; ?>'; 
 
-
-        
-        if ($this->data['Report']['ReportName'] != '') {
-            $reportName = str_replace('.', '_', $this->data['Report']['ReportName']);
-            $reportName = str_replace(' ', '_', $this->data['Report']['ReportName']);
-        } else {
-            $reportName = date('Ymd_His');
-        }
-        
-        $oneToManyOption = ( $oneToManyOption == '' ? $oneToManyOption : $oneToManyOption . '.' );
-        $fileName = $modelClass . '.' . $oneToManyOption . $reportName.".crp";
-        $file = new File(APP.$this->path.$fileName, true, 777);
-        $file->write($content,'w',true);
-        $file->close();
-    }
-
-    public function loadReport($fileName) {
-        require(APP.$this->path.$fileName);
-        $this->data = $reportFields;
-        $this->set($this->data);
-    }
-
-    public function deleteReport($fileName) {
-        if ($this->request->is('ajax')) {
-            Configure::write('debug',0);
-            $this->autoRender = false;
-            $this->layout = null;
-            
-            $fileName = APP.$this->path.$fileName;
-            $file = new File($fileName, false, 777);
-            $file->delete();
-            $this->set('files',$this->listReports());
-            $this->render('list_reports');
-        }
-    }
-
-    public function wizard($modelClass = null) {
+    public function wizard($modelClass = null, $reportData = null) {
 		if (is_null($modelClass)) {
             $this->Session->setFlash(__('Please select a model or a saved report'));
             $this->redirect(array('action'=>'index'));			
@@ -158,6 +117,15 @@ class CustomReportsController extends CustomReportingAppController {
         if (empty($this->request->data)) {
 			// Let's get the list of fields to make available to the report
 			$modelSchema = $this->_getCompleteFieldList($modelClass);
+			
+			// We may be loading data from a previous report
+			if (!is_null($reportData)) {
+				
+				// I've never liked editing the request->data content, but it seems
+				// to be the method suggested by the CakePHP docmentation. See:
+				// http://book.cakephp.org/2.0/en/core-libraries/helpers/form.html
+				$this->request->data = $reportData;				
+			}
 
             $this->set('modelClass',$modelClass);
             $this->set('modelSchema',$modelSchema);
@@ -165,8 +133,6 @@ class CustomReportsController extends CustomReportingAppController {
         } else {
 			// Let's get the list of fields to make available to the report
 			$modelSchema = $this->_getCompleteFieldList($modelClass);
-pr($this->request->data);
-die();
             
             $fieldsList = array();
             $fieldsPosition = array();
@@ -304,11 +270,40 @@ die();
                         $showNoRelated );
             }
 
-//           if ($this->data['Report']['SaveReport'])
-//                $this->saveReport($modelClass);
         }
+
+		// Make sure we render the wizard view. We might have arrived here via /load
+		$this->render('wizard');
     }
 
+	/**
+	 * Load up the data from a stored report, and push it into
+	 * the wizard to manage.
+	 */
+	public function load($id = null) {
+		if (is_null($id)) {
+			$this->Session->setFlash(__('Please select a report to load'));
+			$this->redirect(array('action'=>'index'));
+			return;			
+		}
+		
+		$customReport = $this->CustomReport->find('first', array('conditions' => array('id' => $id)));
+		if (!$customReport || empty($customReport)) {
+			$this->Session->setFlash(__('Sorry, we could not load that report'));
+			$this->redirect(array('action'=>'index'));
+			return;
+		} else {
+			$reportData = unserialize($customReport['CustomReport']['options']);
+			if ($reportData === false) {
+				$this->Session->setFlash(__('Sorry, but that report appears to be corrupted.'));
+				$this->redirect(array('action'=>'index'));
+				return;
+			}
+			$reportData['CustomReport'] = array_merge($reportData['CustomReport'], $customReport['CustomReport']);
+			return($this->wizard($reportData['CustomReport']['modelClass'], $reportData));
+		}
+	}
+	
 	public function add() {
 		if (empty($this->request->data)) {
 			$this->Session->setFlash(__('Please configure a report to add'));
@@ -317,7 +312,7 @@ die();
 		}
 		
 		// Format the option data, which we will serialize
-		$reportOptions = $this->request_data;
+		$reportOptions = $this->request->data;
 		if (isset($reportOptions['_Token'])) {
 			unset($reportOptions['_Token']);
 		}
