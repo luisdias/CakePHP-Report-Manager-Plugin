@@ -6,8 +6,8 @@ _Option 1: Manual_
 
 1. Download this: http://github.com/TribeHR/CakePHP-Custom-Reporting-Plugin/zipball/master
 2. Unzip that download.
-3. Copy the resulting folder to app/Plugin
-4. Rename the folder you just copied to CustomReporting
+3. Copy the resulting folder to `app/Plugin`
+4. Rename the folder you just copied to `CustomReporting`
 
 _Option 2: GIT Submodule_
 
@@ -30,6 +30,7 @@ git clone git://github.com/TribeHR/CakePHP-Custom-Reporting-Plugin.git CustomRep
 In `app/Config/bootstrap.php` add:
 ```php
 CakePlugin::load('CustomReporting', array('bootstrap' => true, 'routes' => true));
+````
 
 ## Credits
 
