@@ -17,12 +17,6 @@
         
             echo '<tr>';
             echo '<td>';
-            echo $this->Form->input('CustomReport.Title',array('size'=>'80','maxlength'=>'100'));            
-            echo '</td>';
-            echo '</tr>';
-            
-            echo '<tr>';
-            echo '<td>';
             echo $this->Form->input('CustomReport.Style',array('type'=>'select','options'=>$styleOptions));            
             echo '</td>';             
             echo '</tr>';

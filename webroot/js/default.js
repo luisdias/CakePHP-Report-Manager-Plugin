@@ -104,6 +104,18 @@ $(document).ready(function() {
             showOn: "button",
             buttonImageOnly: true
     });
+
+	/**
+	 * When clicking the save button, over-ride the target attribute,
+	 * the form action, and then submit the form
+	 */
+	$("#CustomReportSave").click(function(e) {
+		e.preventDefault();
+		var $saveForm = $(this).parents('form');
+		$saveForm.attr('action', '/custom_reporting/custom_reports/add');
+		$saveForm.attr('target', '');
+		$saveForm.submit();
+	});
     
 });
 

@@ -29,10 +29,12 @@ class CustomReportsController extends CustomReportingAppController {
 				// TODO: validate the modelClass name - don't trust it
 				$modelIndex = $this->data['CustomReport']['model'];
 				$this->redirect(array('action' => 'wizard', $modelIndex));
+				return;
 			}
 			
 			// Submitted data we couldn't handle, so simply redirect to the index.
             $this->redirect(array('action'=>'index'));
+			return;
         }
     }
 
@@ -150,6 +152,7 @@ class CustomReportsController extends CustomReportingAppController {
 		if (is_null($modelClass)) {
             $this->Session->setFlash(__('Please select a model or a saved report'));
             $this->redirect(array('action'=>'index'));			
+			return;
 		}
 
         if (empty($this->request->data)) {
@@ -162,7 +165,8 @@ class CustomReportsController extends CustomReportingAppController {
         } else {
 			// Let's get the list of fields to make available to the report
 			$modelSchema = $this->_getCompleteFieldList($modelClass);
-
+pr($this->request->data);
+die();
             
             $fieldsList = array();
             $fieldsPosition = array();
@@ -305,6 +309,50 @@ class CustomReportsController extends CustomReportingAppController {
         }
     }
 
+	public function add() {
+		if (empty($this->request->data)) {
+			$this->Session->setFlash(__('Please configure a report to add'));
+			$this->redirect(array('action'=>'index'));
+			return;
+		}
+		
+		// Format the option data, which we will serialize
+		$reportOptions = $this->request_data;
+		if (isset($reportOptions['_Token'])) {
+			unset($reportOptions['_Token']);
+		}
+		
+		// Set a title, giving it a default if there isn't one already
+		$reportTitle = empty($this->request->data['CustomReport']['Title']) ? 'New Report' : trim($this->request->data['CustomReport']['Title']);
+		
+		$data = array('CustomReport' => array(
+			'title' => $reportTitle,
+			'options' => serialize($reportOptions),
+		));
+		
+		$this->CustomReport->create();
+		if ($this->CustomReport->save($data)) {
+			$this->redirect(array('action'=>'index'));
+			return;
+		} else {
+			$this->Session->setFlash(__('Sorry, but we could not save your report'));
+			return $this->wizard($this->request->data['CustomReport']['modelClass']);
+		}
+	}
+
+	function delete($id = null) {
+		if (is_null($id)) {
+			$this->Session->setFlash(__('Invalid Custom Report'));
+			$this->redirect(array('action'=>'index'));
+			return;
+		}
+		
+		if (!$this->CustomReport->delete($id)) {
+			$this->Session->setFlash(__('Delete failed. Please try again.'));
+		}
+		$this->redirect(array('action'=>'index'));		
+	}
+	
 	/**
 	 * Get a list of all the Models we can report on, properly
 	 * respecting the Whitelist and Blacklist configurations

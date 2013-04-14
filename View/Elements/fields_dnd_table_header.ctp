@@ -1,5 +1,5 @@
     <!-- Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br -->
-            <h2><?php echo $title; ?></h2>
+
             <table class="reportManagerFieldSelector <?php echo $sortableClass; ?>" cellpadding="0" cellspacing="0">
                 <thead>
                     <tr>
