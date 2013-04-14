@@ -1,4 +1,3 @@
-    <!-- Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br -->
     <fieldset>
         <legend><?php echo __('Report Style'); ?></legend>
         <table class="reportManagerReportStyleSelector" cellpadding="0" cellspacing="0">
@@ -17,57 +16,38 @@
         
             echo '<tr>';
             echo '<td>';
-            echo $this->Form->input('ReportName',array('size'=>'80','maxlength'=>'80'));            
-            echo '</td>';
-            echo '</tr>';
-            
-            echo '<tr>';
-            echo '<td>';
-            echo $this->Form->input('Style',array('type'=>'select','options'=>$styleOptions));            
+            echo $this->Form->input('CustomReport.Style',array('type'=>'select','options'=>$styleOptions));            
             echo '</td>';             
             echo '</tr>';
 
             echo '<tr>';
             echo '<td>';
-            echo $this->Form->input('Output',array('type'=>'select','options'=>$outputOptions));            
+            echo $this->Form->input('CustomReport.Output',array('type'=>'select','options'=>$outputOptions));            
             echo '</td>';             
             echo '</tr>';
             
             echo '<tr>';
             echo '<td>';
             echo __('Show record counter');
-            if (isset($this->data['Report']['ShowRecordCounter']))
-                $showRecordCounter = $this->data['Report']['ShowRecordCounter'];
+            if (isset($this->data['CustomReport']['ShowRecordCounter']))
+                $showRecordCounter = $this->data['CustomReport']['ShowRecordCounter'];
             else
                 $showRecordCounter = true;
-            echo $this->Form->checkbox('ShowRecordCounter',array('hiddenField' => true,'checked'=>$showRecordCounter));                     
+            echo $this->Form->checkbox('CustomReport.ShowRecordCounter',array('hiddenField' => true,'checked'=>$showRecordCounter));                     
             echo '</td>';             
             echo '</tr>';            
-            
-            if ($oneToManyOption != '') {
-                echo '<tr>';
-                echo '<td>';
-                echo __('Show items with no related records');
-                if (isset($this->data['Report']['ShowNoRelated']))
-                    $showNoRelated = $this->data['Report']['ShowNoRelated'];
-                else
-                    $showNoRelated = false;
-                echo $this->Form->checkbox('ShowNoRelated',array('hiddenField' => true,'checked'=>$showNoRelated));
-                echo '</td>';             
-                echo '</tr>';
-            }
             
             echo '<tr>';
             echo '<td>';
-            echo __('Save report');
-            if (isset($this->data['Report']['SaveReport']))
-                $saveReport = $this->data['Report']['SaveReport'];
+            echo __('Show items with no related records');
+            if (isset($this->data['CustomReport']['ShowNoRelated']))
+                $showNoRelated = $this->data['CustomReport']['ShowNoRelated'];
             else
-                $saveReport = false;            
-            echo $this->Form->checkbox('SaveReport',array('hiddenField' => true,'checked'=>$saveReport));                     
+                $showNoRelated = false;
+            echo $this->Form->checkbox('CustomReport.ShowNoRelated',array('hiddenField' => true,'checked'=>$showNoRelated));
             echo '</td>';             
-            echo '</tr>';            
-      
+            echo '</tr>';
+                  
         ?>
         </table>
     </fieldset>

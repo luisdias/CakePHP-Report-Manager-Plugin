@@ -1,38 +1,25 @@
-/*
-Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+/**
+ * Copyright (c) 2013 TribeHR Corp - http://tribehr.com
+ * Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br
+ * 
+ * Licensed under The MIT License. See LICENSE file for details.
+ * Redistributions of files must retain the above copyright notice.
+ */
 
 body {
     font-family: Arial;
 }
 
 #reportManagerDisplay .reportName {
-    font: normal normal bold 19pt; 
+    font-size: 19pt; 
+	font-weight: bold;
     color: #333333;
 }
 
 #reportManagerDisplay .timestamp {
     margin-top: 15px;
-    font: normal normal 8pt; 
+    font-size: 8pt; 
+	font-weight: normal;
     color: #333333;
     float: left;
     clear: both;
@@ -50,7 +37,8 @@ body {
     border-style: none;
     border-color: #cccccc;
     border-collapse: collapse;
-    font: normal normal bold 11pt; 
+    font-size: 11pt;
+	font-weight: bold;
     color: #ffffff;
 }
 
@@ -63,7 +51,8 @@ body {
     border-right-width: 0px;
     border-style: solid;
     border-color: #eeeeee;
-    font: normal normal 10pt; 
+    font-size: 10pt;
+	font-weight: normal;
     color: #ffffff;
     text-align: left;
 }
@@ -79,7 +68,8 @@ body {
     border-style: none;
     border-color: #CCCCCC;
     text-align: left;
-    font: normal normal 9pt; 
+    font-size: 9pt;
+	font-weight: normal;
     color: #555555;
 }
 
@@ -92,7 +82,8 @@ body {
     border-right-width: 0px;
     border-style: solid;
     border-color: #CCCCCC;
-    font: normal normal 9pt; 
+    font-size: 9pt;
+	font-weight: normal;
     color: #ffffff;
     text-align: left;
 }

@@ -1,26 +1,11 @@
 <?php
-/*
-Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+/**
+ * Copyright (c) 2013 TribeHR Corp - http://tribehr.com
+ * Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br
+ * 
+ * Licensed under The MIT License. See LICENSE file for details.
+ * Redistributions of files must retain the above copyright notice.
+ */
 ?>
 <h1><?php echo ($reportName == '' ? 'Report Manager' : $reportName);?></h1>
 <div id="reportManagerDisplay">
@@ -92,6 +77,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <?php if ( $showRecordCounter ) { ?>    
         <div class="counter">Count: <?php echo $counter;?></div>
     <?php } ?>
-    <div class="timestamp"><?php echo __('Report Created') . ' : ' . date('Y-m-d H:i:s'); ?></div>
+    <div class="timestamp"><?php echo __('Report Generated') . ' : ' . date('Y-m-d H:i:s'); ?></div>
     <?php endif; ?>
 </div>

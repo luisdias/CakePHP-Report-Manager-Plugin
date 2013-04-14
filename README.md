@@ -1,119 +1,56 @@
-# Report Manager Plugin for CakePHP 2.x  
-
-## The report manager plugin can help users to create reports based on the application's models.
-
-**Changelog for version 0.4.5.1**  
-* bugfix: php keyword added to saveReport method  
-* bugfix: translation function correction   
-
-**Changelog for version 0.4.5**  
-* bugfix: delete saved report does not refresh the list properly  
-* bugfix: array index errors on loading reports  
-
-**Changelog for version 0.4.4**  
-* enhancement: JS changes to work on non-root URLs  
-
-**Changelog for version 0.4.3**  
-* bugfix: default.js : update after renumber position  
-
-**Changelog for version 0.4.2**  
-* bugfix: order.ctp - test if OrderBy1 and OrderBy2 are set  
-* bugfix: ReportsController listReports method - handle empty array  
-
-**Changelog for version 0.4**  
-* Load and Save reports  
-* Export to XLS  
-
-**Changelog for version 0.3**  
-* One to many reports  
-* Sortable fields by drag and drop ( step 1 )  
-* Click to add field change background color ( step 1 )  
-* Click in model name check/uncheck all fields ( step 1 )  
-* SmartWizard validation ( step 1 )  
-* Datepicker for date fields ( step 2 )  
-* Checkbox to enable counter option ( step 4 )  
-* Check box for one to many reports : show items with no related records ( step 4 )  
-* Both jquery and jquery ui libraries are loaded from google  
-
+# Custom Reporting Plugin for CakePHP 2.x  
+The report manager plugin can help users to create reports based on the application's models.
 
 ## Installation  
+_Option 1: Manual_
 
-1. Download the plugin from github or sourceforge  
+1. Download this: http://github.com/TribeHR/CakePHP-Custom-Reporting-Plugin/zipball/master
+2. Unzip that download.
+3. Copy the resulting folder to `app/Plugin`
+4. Rename the folder you just copied to `CustomReporting`
 
-http://sourceforge.net/projects/repomancakephp/  
+_Option 2: GIT Submodule_
 
-https://github.com/luisdias/CakePHP-Report-Manager-Plugin  
-
-2. Extract the zip file on the app/Plugin folder ( the plugin folder must be named ReportManager )  
-
-3. Add the following line to your bootstrap.php file ( located at app/Config folder )  
-
-```php
-CakePlugin::load('ReportManager',array('bootstrap' => true));  
+In your app directory type:
+```bash
+git submodule add git://github.com/TribeHR/CakePHP-Custom-Reporting-Plugin.git Plugin/CustomReporting
+git submodule init
+git submodule update
 ```
 
-Since Cake 2.2.x it is important to add:
+_Option 3: GIT Clone_
 
-```php
-Configure::write('Dispatcher.filters', array(  
-    'AssetDispatcher',  
-    'CacheDispatcher'  
-));
+In your plugin directory type
+```bash
+git clone git://github.com/TribeHR/CakePHP-Custom-Reporting-Plugin.git CustomReporting
 ```
 
-More info at:  
-http://book.cakephp.org/2.0/en/appendices/2-2-migration-guide.html  
+## Setup
 
-4. Go to the url http://mycakeapp/report_manager/reports to see the main page listing all models  
+In `app/Config/bootstrap.php` add:
+```php
+CakePlugin::load('CustomReporting', array('bootstrap' => true, 'routes' => true));
+````
 
+Setup the `CustomReport` table by running the SQL found in  `Config/Schema/custom_reports.sql`
 
-## Using the plugin  
+If you are using an ACL, add ACO entries for
+- CustomReporting/CustomReports/index
+- CustomReporting/CustomReports/add
+- CustomReporting/CustomReports/delete
+- CustomReporting/CustomReports/edit
+- CustomReporting/CustomReports/wizard
+- CustomReporting/CustomReports/view
+- CustomReporting/CustomReports/copy
 
-The wizard interface is self explanatory.  
+## Credits
 
-1. On the first tab you can select the fields and their position  
+This plugin is a fork of the plugin written by Luis Dias from March 11, 2013
+http://github.com/luisdias/CakePHP-Report-Manager-Plugin
 
-2. On the second tab you can define a filter  
-
-3. On the third tab you can select up to two fields to sort  
-
-4. On the last tab you can enter a name for your report and choose between 5 style options  
-
-
-## Configuration:  
-
-Some parameters could be configured in the app/Plugin/ReportManager/Config/bootstrap.php  
-
-* Display foreign keys  
-
-* Ignore List for global fields ( affects all models )  
-
-* Ignore list for models  
-
-* Ignore list for specific model's fields  
-
-* Reports directory path  
-
-
-## Notes:  
-
-It was inspired by the Report Creator Component by Gene Kelly from Nov 9th 2006.  
-
+It was originally inspired by the Report Creator Component by Gene Kelly from Nov 9th 2006.  
 http://bakery.cakephp.org/articles/Gkelly/2006/11/09/report-creator-component  
 
 It also uses a Jquery plugin called SmartWizard by Tech Laboratory.  
-
 http://techlaboratory.net/products.php?product=smartwizard  
 
-Since version 0.3 the Report Manager Plugin load the jQuery and jQuery UI libraries from Google  
-
-Collaborators:  
-Suman (USA)  
-Santana (Brazil)  
-Tamer Solieman (Egypt)  
-jasonchua89  
-Tony George (Singapore)  
-Marduk netors (Mexico)  
-
-Luis E. S. Dias  
-Contact: smartbyte.systems@gmail.com
