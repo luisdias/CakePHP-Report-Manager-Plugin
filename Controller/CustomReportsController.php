@@ -172,6 +172,8 @@ class CustomReportsController extends CustomReportingAppController {
             $conditions = array();
             $conditionsList = array();
             
+			$containList = array();
+			
             $oneToManyFieldsList  = array();
             $oneToManyFieldsPosition  = array();
             $oneToManyFieldsType  = array();
@@ -180,13 +182,14 @@ class CustomReportsController extends CustomReportingAppController {
             foreach ($this->request->data  as $model => $fields) {
                 if ( is_array($fields) ) {
                     foreach ($fields  as $field => $parameters) {
-                        if ( is_array($parameters) ) {                          
-                            if ( (isset($associatedModels[$model]) && 
-                                    $associatedModels[$model]!='hasMany') || 
-                                    ($modelClass == $model) 
-                                ) {
+                        if ( is_array($parameters) ) {                    
+                            if ( isset($modelSchema[$model]) ) {
                                 if ( $parameters['Add'] ) {
-                                    $fieldsPosition[$model.'.'.$field] = ( $parameters['Position']!='' ? $parameters['Position'] : 0 );
+									// If we haven't previously added it to the contain, then add it
+									if ($model != $modelClass && !in_array($model, $containList)) {
+										$containList[] = $model;
+									}
+                                    $fieldsPosition[$model.'.'.$field] = ( $parameters['Position'] != '' ? $parameters['Position'] : 0 );
                                     $fieldsType[$model.'.'.$field] = $parameters['Type'];
                                     $fieldsLength[$model.'.'.$field] = $parameters['Length'];
                                 }
@@ -260,26 +263,16 @@ class CustomReportsController extends CustomReportingAppController {
             
             $tableColumnWidth = $this->getTableColumnWidth($fieldsLength,$fieldsType);
             $tableWidth = $this->getTableWidth($tableColumnWidth);
-            
-            if ($oneToManyOption == '') {
-                $recursive = 0;
-                $showNoRelated = false;
-            } else {
-                $oneToManyTableColumnWidth = $this->getTableColumnWidth($oneToManyFieldsLength,$oneToManyFieldsType);
-                $oneToManyTableWidth = $this->getTableWidth($oneToManyTableColumnWidth);                
-                asort($oneToManyFieldsPosition);
-                $oneToManyFieldsList = array_keys($oneToManyFieldsPosition);
-                $showNoRelated = $this->data['CustomReport']['ShowNoRelated'];
-                $recursive = 1;
-            }
-            
+			$recursive = 1;
+
             $reportData = $this->{$modelClass}->find('all',array(
-                'recursive'=>$recursive,
-                'fields'=>$fieldsList,
-                'order'=>$order,
-                'conditions'=>$conditions
+                'recursive' => $recursive,
+                'fields' => $fieldsList,
+                'order' => $order,
+                'conditions' => $conditions,
+				'contain' => $containList,
             ));
-            
+
             $this->layout = 'report';
                         
             $this->set('tableColumnWidth',$tableColumnWidth);
@@ -289,22 +282,12 @@ class CustomReportsController extends CustomReportingAppController {
             $this->set('fieldsType',$fieldsType);
             $this->set('fieldsLength',$fieldsLength);
             $this->set('reportData',$reportData);
-            $this->set('reportName',$this->data['Report']['ReportName']);
-            $this->set('reportStyle',$this->data['Report']['Style']);
-            $this->set('showRecordCounter',$this->data['Report']['ShowRecordCounter']);
+            $this->set('reportName',$this->data['CustomReport']['Title']);
+            $this->set('reportStyle',$this->data['CustomReport']['Style']);
+            $this->set('showRecordCounter',$this->data['CustomReport']['ShowRecordCounter']);
 
-            if ( $this->data['Report']['Output'] == 'html') {
-                if ($oneToManyOption == '')
-                    $this->render('report_display');
-                else {
-                    $this->set('oneToManyOption',$oneToManyOption);
-                    $this->set('oneToManyFieldsList',$oneToManyFieldsList);
-                    $this->set('oneToManyFieldsType',$oneToManyFieldsType);
-                    $this->set('oneToManyTableColumnWidth',$oneToManyTableColumnWidth);
-                    $this->set('oneToManyTableWidth',$oneToManyTableWidth);
-                    $this->set('showNoRelated',$showNoRelated);
-                    $this->render('report_display_one_to_many');
-                }
+            if ( $this->data['CustomReport']['Output'] == 'html') {
+                $this->render('report_display');
             } else { // Excel file
                 $this->layout = null;
                 $this->export2Xls(
@@ -316,8 +299,9 @@ class CustomReportsController extends CustomReportingAppController {
                         $oneToManyFieldsType, 
                         $showNoRelated );
             }
-            if ($this->data['Report']['SaveReport'])
-                $this->saveReport($modelClass,$oneToManyOption);
+
+//           if ($this->data['Report']['SaveReport'])
+//                $this->saveReport($modelClass);
         }
     }
 

@@ -27,7 +27,7 @@ Configure::write('CustomReporting.modelWhitelist',	array(
 		'Group',
 		'CurrentEmployeeRecord',
 		'CurrentAssignmentRecord',
-		'Goal',
+		'GoalParticipation',
 	),
 	'AssignmentRecord',
 	'Application',
