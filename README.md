@@ -32,10 +32,12 @@ In `app/Config/bootstrap.php` add:
 CakePlugin::load('CustomReporting', array('bootstrap' => true, 'routes' => true));
 ````
 
+Setup the `CustomReport` table by running the SQL found in  `Config/Schema/custom_reports.sql`
+
 ## Credits
 
 This plugin is a fork of the plugin written by Luis Dias from March 11, 2013
-https://github.com/luisdias/CakePHP-Report-Manager-Plugin
+http://github.com/luisdias/CakePHP-Report-Manager-Plugin
 
 It was originally inspired by the Report Creator Component by Gene Kelly from Nov 9th 2006.  
 http://bakery.cakephp.org/articles/Gkelly/2006/11/09/report-creator-component  
