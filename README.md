@@ -34,6 +34,14 @@ CakePlugin::load('CustomReporting', array('bootstrap' => true, 'routes' => true)
 
 Setup the `CustomReport` table by running the SQL found in  `Config/Schema/custom_reports.sql`
 
+If you are using an ACL, add ACO entries for
+- CustomReporting/CustomReports/index
+- CustomReporting/CustomReports/add
+- CustomReporting/CustomReports/delete
+- CustomReporting/CustomReports/edit
+- CustomReporting/CustomReports/load
+- CustomReporting/CustomReports/wizard
+
 ## Credits
 
 This plugin is a fork of the plugin written by Luis Dias from March 11, 2013
