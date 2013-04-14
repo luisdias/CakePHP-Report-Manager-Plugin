@@ -1,86 +1,50 @@
 <?php
-/*
-Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br
 
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+/**
+ * Copyright (c) 2013 TribeHR Corp - http://tribehr.com
+ * Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br
+ * 
+ * Licensed under The MIT License. See LICENSE file for details.
+ * Redistributions of files must retain the above copyright notice.
+ */
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
 ?>
 <script type="text/javascript">
     firstLevel = "<?php echo Router::url('/'); ?>";
 </script>
-<?php
 
-?>
 <?php echo $this->Html->script(array('https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')); ?>
-<?php echo $this->Html->script('/ReportManager/js/index.js'); ?>
-<?php echo $this->Html->css('/ReportManager/css/report_manager'); ?>
+<?php echo $this->Html->css('/CustomReporting/css/report_manager.css'); ?>
+
 <div class="reportManager index">
-    <h2><?php echo __('Report Manager');?></h2>
+    <h2><?php echo __('Custom Reports');?></h2>
     <?php
         
-        echo '<div id="repoManLeftCol">';
-        echo $this->Form->create('ReportManager');
-        echo '<fieldset>';
-        echo '<legend>' . __('New report') . '</legend>';        
+        echo $this->Form->create();
         echo $this->Form->input('model',array(
             'type'=>'select',            
             'label'=>__('Model'),
-            'options'=>$models,
+            'options' => $models,
             'empty'=>__('--Select--')
-            ));
+            ));        
+        echo $this->Form->submit(__('New Report'), array('name'=>'new'));
         
-        echo '<div id="ReportManagerOneToManyOptionSelect">';
-        echo $this->Form->input('one_to_many_option',array(
-            'type'=>'select',
-            'label'=>__('One to many option'),
-            'options'=>array(),
-            'empty'=>__('<None>')
-            ));
-        echo '</div>';
-        echo '</fieldset>';
-        echo $this->Form->submit(__('New'),array('name'=>'new'));
-        echo '</div>';
-        
-        echo '<div id="repoManMiddleCol">';
-        
-        echo $this->Html->tag('h2','OR');
-        
-        echo '</div>';
-        
-        echo '<div id="repoManRightCol">';
-        echo $this->Form->create('ReportManager');
-        echo '<fieldset>';
-        echo '<legend>' . __('Load report') . '</legend>';        
-        
-        echo '<div id="ReportManagerSavedReportOptionContainer">';
-        echo $this->Form->input('saved_report_option',array(
-            'type'=>'select',
-            'label'=>__('Saved reports'),
-            'options' => $customReports,
-            'empty'=>__('--Select--')
-            ));
-        echo '</div>';
-        
-        echo '<button type="button" class="deleteReport">Delete</button>';
-        echo '</fieldset>';
-        echo $this->Form->submit(__('Load'),array('name'=>'load'));
-        echo '</div>';
     ?>
+	<h3><?php echo __('Report Library'); ?></h3>
+	<table cellpadding="0" cellspacing="0">
+		<thead>
+			<tr>
+				<th><?php echo __('Report Name'); ?></th>
+				<th><?php echo __('Action'); ?></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach($customReports as $id => $customReport): ?>
+			<tr>
+				<td><?php echo $customReport; ?></td>
+				<td><?php echo $this->Html->link(__('Delete'), array('action' => 'delete', $id)); ?></td>
+			</tr>
+			<?php endforeach; ?>
+		</tbody>
+	</table>
 </div>

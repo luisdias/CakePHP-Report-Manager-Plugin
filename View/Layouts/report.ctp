@@ -7,15 +7,14 @@
 </title>
 <?php
     echo $this->Html->meta('icon');
-    echo $this->Html->css('/ReportManager/css/generic');
-    echo $this->Html->css('/ReportManager/css/'.$reportStyle);
+    echo $this->Html->css('/CustomReporting/css/generic');
+    echo $this->Html->css('/CustomReporting/css/'.$reportStyle.'.css');
     echo $scripts_for_layout;
 ?>
 </head>
 <body>
 <div id="main">    
     <?php echo $content_for_layout; ?>    
-    <div id="copyright"><br/>© 2012 Report Manager developed by <a href="mailto:smartbyte.systems@gmail.com">Luis E. S. Dias</a> - <a target="blank" href="http://www.smartbyte.com.br/site/contato/">Smartbyte</a></div>        
     <?php echo $this->element('sql_dump'); ?>      
 </div>
 </body>

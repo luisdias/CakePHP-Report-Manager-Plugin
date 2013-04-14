@@ -17,7 +17,7 @@
         
             echo '<tr>';
             echo '<td>';
-            echo $this->Form->input('ReportName',array('size'=>'80','maxlength'=>'80'));            
+            echo $this->Form->input('CustomReport.title',array('size'=>'80','maxlength'=>'100'));            
             echo '</td>';
             echo '</tr>';
             
@@ -36,32 +36,30 @@
             echo '<tr>';
             echo '<td>';
             echo __('Show record counter');
-            if (isset($this->data['Report']['ShowRecordCounter']))
-                $showRecordCounter = $this->data['Report']['ShowRecordCounter'];
+            if (isset($this->data['CustomReport']['ShowRecordCounter']))
+                $showRecordCounter = $this->data['CustomReport']['ShowRecordCounter'];
             else
                 $showRecordCounter = true;
             echo $this->Form->checkbox('ShowRecordCounter',array('hiddenField' => true,'checked'=>$showRecordCounter));                     
             echo '</td>';             
             echo '</tr>';            
             
-            if ($oneToManyOption != '') {
-                echo '<tr>';
-                echo '<td>';
-                echo __('Show items with no related records');
-                if (isset($this->data['Report']['ShowNoRelated']))
-                    $showNoRelated = $this->data['Report']['ShowNoRelated'];
-                else
-                    $showNoRelated = false;
-                echo $this->Form->checkbox('ShowNoRelated',array('hiddenField' => true,'checked'=>$showNoRelated));
-                echo '</td>';             
-                echo '</tr>';
-            }
+            echo '<tr>';
+            echo '<td>';
+            echo __('Show items with no related records');
+            if (isset($this->data['CustomReport']['ShowNoRelated']))
+                $showNoRelated = $this->data['CustomReport']['ShowNoRelated'];
+            else
+                $showNoRelated = false;
+            echo $this->Form->checkbox('ShowNoRelated',array('hiddenField' => true,'checked'=>$showNoRelated));
+            echo '</td>';             
+            echo '</tr>';
             
             echo '<tr>';
             echo '<td>';
             echo __('Save report');
-            if (isset($this->data['Report']['SaveReport']))
-                $saveReport = $this->data['Report']['SaveReport'];
+            if (isset($this->data['CustomReport']['SaveReport']))
+                $saveReport = $this->data['CustomReport']['SaveReport'];
             else
                 $saveReport = false;            
             echo $this->Form->checkbox('SaveReport',array('hiddenField' => true,'checked'=>$saveReport));                     

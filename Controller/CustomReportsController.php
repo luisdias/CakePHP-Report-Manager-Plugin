@@ -16,7 +16,7 @@ class CustomReportsController extends CustomReportingAppController {
     
     public function index() {
 	
-        if (empty($this->data)) {
+        if (empty($this->request->data)) {
 	
 			// Get the lists of models and saved reports, and pass them to the view
 			$models = $this->_getFilteredListOfModels();
@@ -24,23 +24,18 @@ class CustomReportsController extends CustomReportingAppController {
             $this->set(compact('models', 'customReports'));
 
         } else {
-            if (isset($this->data['new'])) {
-                $reportButton = 'new';
-                $modelClass = $this->data['ReportManager']['model'];
-                $oneToManyOption = $this->data['ReportManager']['one_to_many_option'];
-                $this->redirect(array('action'=>'wizard',$reportButton, $modelClass, $oneToManyOption));
-            }
-                
-            if (isset($this->data['load'])) {
-                $reportButton = 'load';
-                $fileName = $this->data['ReportManager']['saved_report_option'];
-                $this->redirect(array('action'=>'wizard',$reportButton, urlencode($fileName)));                
-            }
-                
+	
+			if (isset($this->request->data['CustomReport']['model'])) {
+				// TODO: validate the modelClass name - don't trust it
+				$modelIndex = $this->data['CustomReport']['model'];
+				$this->redirect(array('action' => 'wizard', $modelIndex));
+			}
+			
+			// Submitted data we couldn't handle, so simply redirect to the index.
             $this->redirect(array('action'=>'index'));
         }
     }
-    
+
     public function ajaxGetOneToManyOptions() {
         if ($this->request->is('ajax')) {
             Configure::write('debug',0);
@@ -151,102 +146,23 @@ class CustomReportsController extends CustomReportingAppController {
         }
     }
 
-    public function wizard($param1 = null,$param2 = null, $param3 = null) {
-        if (is_null($param1) || is_null($param2)) {
+    public function wizard($modelClass = null) {
+		if (is_null($modelClass)) {
             $this->Session->setFlash(__('Please select a model or a saved report'));
-            $this->redirect(array('action'=>'index'));
-        }
-        
-        $reportAction = $param1;
-        $modelClass = null;
-        $oneToManyOption = null;
-        $fileName = null;
-        
-        if ( $reportAction == "new" ) {
-            $modelClass = $param2;
-            $oneToManyOption = $param3;
-        }
-        
-        if ( $reportAction == "load" ) {
-            $fileName = urldecode($param2);            
+            $this->redirect(array('action'=>'index'));			
+		}
 
-            if ($fileName!='') {
-                $params = explode('.', $fileName);
-                if (count($params)>=3) {
-                    $modelClass = $params[0];
-                    if (count($params)>3) {
-                        $oneToManyOption = $params[1];
-                    } 
-                }
-            }             
-        }
-        
-        if (empty($this->data)) {        
-            $displayForeignKeys = Configure::read('ReportManager.displayForeignKeys');
-            $globalFieldIgnoreList = Configure::read('ReportManager.globalFieldIgnoreList');
-            $modelFieldIgnoreList = Configure::read('ReportManager.modelFieldIgnoreList');
-
-            $this->loadModel($modelClass);
-            $modelSchema = $this->{$modelClass}->schema();
-            
-            if (isset($globalFieldIgnoreList) && is_array($globalFieldIgnoreList)) {
-                foreach ($globalFieldIgnoreList as $field) {
-                    unset($modelSchema[$field]);
-                }                
-            }
-            
-            if (isset($displayForeignKeys) && !$displayForeignKeys) {               
-                foreach($modelSchema as $field => $value) {
-                    if ( substr($field,-3)=='_id' )
-                        unset($modelSchema[$field]);
-                }
-            }
-            
-            $associatedModels = $this->{$modelClass}->getAssociated();
-            $associatedModelsSchema = array();
-
-            foreach ($associatedModels as $key => $value) {
-                $className = $this->{$modelClass}->{$value}[$key]['className'];
-                //$this->loadModel($key);
-                $this->loadModel($className);
-                //$associatedModelsSchema[$key] = $this->{$key}->schema();
-                $associatedModelsSchema[$key] = $this->{$className}->schema();
-
-                if (isset($globalFieldIgnoreList) && is_array($globalFieldIgnoreList)) {
-                    foreach ($globalFieldIgnoreList as $value) {
-                        unset($associatedModelsSchema[$key][$value]);
-                    }
-                }
-                
-                if (isset($displayForeignKeys) && !$displayForeignKeys) {
-                    foreach($associatedModelsSchema as $model => $fields) {
-                        foreach($fields as $field => $values) {
-                            if ( substr($field,-3)=='_id' )
-                                unset($associatedModelsSchema[$model][$field]);                            
-                        }
-                    }
-                }
-                foreach($associatedModelsSchema as $model => $fields) {
-                    foreach($fields as $field => $values) {
-                        if ( isset($modelFieldIgnoreList[$model][$field]) )
-                            unset($associatedModelsSchema[$model][$field]);                            
-                    }
-                }                
-            }
+        if (empty($this->request->data)) {
+			// Let's get the list of fields to make available to the report
+			$modelSchema = $this->_getCompleteFieldList($modelClass);
 
             $this->set('modelClass',$modelClass);
             $this->set('modelSchema',$modelSchema);
-            $this->set('associatedModels',$associatedModels);
-            $this->set('associatedModelsSchema',$associatedModelsSchema);
-            $this->set('oneToManyOption',$oneToManyOption);
-            
-            if (!is_null($fileName))
-                $this->loadReport($fileName);
 
         } else {
-            $this->loadModel($modelClass);
-            $associatedModels = $this->{$modelClass}->getAssociated();
-            $oneToManyOption = $this->data['Report']['OneToManyOption'];
+			// Let's get the list of fields to make available to the report
+			$modelSchema = $this->_getCompleteFieldList($modelClass);
+
             
             $fieldsList = array();
             $fieldsPosition = array();
@@ -261,7 +177,7 @@ class CustomReportsController extends CustomReportingAppController {
             $oneToManyFieldsType  = array();
             $oneToManyFieldsLength = array();
             
-            foreach ($this->data  as $model => $fields) {
+            foreach ($this->request->data  as $model => $fields) {
                 if ( is_array($fields) ) {
                     foreach ($fields  as $field => $parameters) {
                         if ( is_array($parameters) ) {                          
@@ -318,29 +234,29 @@ class CustomReportsController extends CustomReportingAppController {
                                     $conditionsList[$model.'.'.$field.$criteria] = null;                                        
                                 }
                             }
-                            // One to many reports
+/*                            // One to many reports
                             if ( $oneToManyOption != '') {
                                 if ( isset($parameters['Add']) && $model == $oneToManyOption ) {
                                     $oneToManyFieldsPosition[$model.'.'.$field] = ( $parameters['Position']!='' ? $parameters['Position'] : 0 );
                                     $oneToManyFieldsType[$model.'.'.$field] = $parameters['Type'];
                                     $oneToManyFieldsLength[$model.'.'.$field] = $parameters['Length'];
                                 }                                    
-                            }
+                            } */
 
                         } // is array parameters
                     } // foreach field => parameters
                     if (count($conditionsList)>0) {
-                        $conditions[$this->data['Report']['Logical']] = $conditionsList;
+                        $conditions[$this->data['CustomReport']['Logical']] = $conditionsList;
                     }
                 } // is array fields
             } // foreach model => fields
             asort($fieldsPosition);
             $fieldsList = array_keys($fieldsPosition);
             $order = array();
-            if ( isset($this->data['Report']['OrderBy1']) )
-                $order[] = $this->data['Report']['OrderBy1'] . ' ' . $this->data['Report']['OrderDirection'];
-            if ( isset($this->data['Report']['OrderBy2']) )
-                $order[] = $this->data['Report']['OrderBy2'] . ' ' . $this->data['Report']['OrderDirection'];
+            if ( isset($this->data['CustomReport']['OrderBy1']) )
+                $order[] = $this->data['CustomReport']['OrderBy1'] . ' ' . $this->data['CustomReport']['OrderDirection'];
+            if ( isset($this->data['CustomReport']['OrderBy2']) )
+                $order[] = $this->data['CustomReport']['OrderBy2'] . ' ' . $this->data['CustomReport']['OrderDirection'];
             
             $tableColumnWidth = $this->getTableColumnWidth($fieldsLength,$fieldsType);
             $tableWidth = $this->getTableWidth($tableColumnWidth);
@@ -353,7 +269,7 @@ class CustomReportsController extends CustomReportingAppController {
                 $oneToManyTableWidth = $this->getTableWidth($oneToManyTableColumnWidth);                
                 asort($oneToManyFieldsPosition);
                 $oneToManyFieldsList = array_keys($oneToManyFieldsPosition);
-                $showNoRelated = $this->data['Report']['ShowNoRelated'];
+                $showNoRelated = $this->data['CustomReport']['ShowNoRelated'];
                 $recursive = 1;
             }
             
@@ -408,7 +324,8 @@ class CustomReportsController extends CustomReportingAppController {
 	/**
 	 * Get a list of all the Models we can report on, properly
 	 * respecting the Whitelist and Blacklist configurations
-	 * set in the bootstrap file.
+	 * set in the bootstrap file. Only include the top-level models
+	 * not the associated models.
 	 *
 	 * @return array Listing of Model Names
 	 */
@@ -420,18 +337,124 @@ class CustomReportsController extends CustomReportingAppController {
 			$models = App::objects('Model');
 		} else {
 			$models = Configure::read('CustomReporting.modelWhitelist');
-		}			
+			
+			// Note, some of the whitelist entries might not be string values,
+			// but instead array values of whitelisted associated models. In these
+			// cases, the actual model name is the *index* not the *value*. Let's
+			// get rid of the 2nd level arrays, and simply include the model name.
+			foreach ($models as $index => $value) {
+				if (!is_numeric($index)) {
+					unset($models[$index]);
+					$models[] = $index;
+				}
+			}
+		}
 		
 		// Now remove any models from the list that also exist on the blacklist
-		$modelBlacklist = Configure::read('ReportManager.modelBlackist');            
-        if ($modelBlacklist != false) {
+		$modelBlacklist = Configure::read('CustomReporting.modelBlacklist');
+        if ($modelBlacklist !== false) {
             foreach ($models as $index => $model) {
-				if (in_array($modelBlacklist, $model)) {
+				if (in_array($model, $modelBlacklist)) {
 					unset($models[$index]);
 				}
             }                
         }
 
-		return $models;
+		// Let's alphabetize the list for consistency, then return
+		// an array with the indexes and the values the model names.
+		// TODO: Replace the values with more human-friendly values
+		sort($models);
+		
+		return array_combine($models, $models);
+	}
+	
+	/**
+	 * Get a complete list of all the fields that we can report on
+	 * or filter by.
+	 * 
+	 * @return array Listing of all fields that are available
+	 *               array (
+	 *                 'PrimaryModel' => array(
+	 *                     'field1' => array (schema info...),
+	 *                     'field2' => array (schema info...),
+	 *                      ...
+	 *                  ),
+	 *                 'AssociatedModel1' => array(
+	 *                     'field1' => array (schema info...),
+	 *                     'field2' => array (schema info...),
+	 *                      ...
+	 *                  )
+	 *                 'AssociatedModel2' => array(
+	 *                     'field1' => array (schema info...),
+	 *                     'field2' => array (schema info...),
+	 *                      ...
+	 *                  )
+	 *               )
+	 */	
+	function _getCompleteFieldList($baseModelClass) {
+
+        $modelWhitelist = Configure::read('CustomReporting.modelWhitelist');
+        $modelBlacklist = Configure::read('CustomReporting.modelBlacklist');
+		
+		// Start with the base model
+		$completeSchema = array($baseModelClass => $this->_getFilteredListOfModelFields($baseModelClass));
+
+		// Add any associated models.
+		$associatedModels = $this->{$baseModelClass}->getAssociated();		
+        foreach ($associatedModels as $key => $value) {
+
+			// Compare these models to the list of allowed models in
+			// the whitelists and blacklists.
+			if (is_array($modelBlacklist) && in_array($key, $modelBlacklist)) {
+				// It's on the blacklist. Destroy it.
+				unset($associatedModels[$key]);
+			} elseif (isset($modelWhitelist[$baseModelClass]) && is_array($modelWhitelist[$baseModelClass]) && !in_array($key, $modelWhitelist[$baseModelClass])) {
+				// There is a whitelist, and it's not on it. Destroy it.
+				unset($associatedModels[$key]);
+			} else {
+	            $associatedModelClassName = $this->{$baseModelClass}->{$value}[$key]['className'];
+	    		$completeSchema[$key] = $this->_getFilteredListOfModelFields($associatedModelClassName);				
+			}
+		}
+				
+		return $completeSchema;
+	}
+	
+	/**
+	 * Get a list of the fields we can report on for this model, properly
+	 * respecting the global and model-specific blacklists defined in the
+	 * configuration.
+	 */
+	function _getFilteredListOfModelFields($modelClass) {
+		
+        $displayForeignKeys = Configure::read('CustomReporting.displayForeignKeys');
+        $globalFieldBlacklist = Configure::read('CustomReporting.globalFieldBlacklist');
+        $modelFieldBlacklist = Configure::read('CustomReporting.modelFieldBlacklist');
+		
+
+        $this->loadModel($modelClass);
+        $modelSchema = $this->{$modelClass}->schema();
+
+        
+        if (is_array($globalFieldBlacklist)) {
+            foreach ($globalFieldBlacklist as $field) {
+                unset($modelSchema[$field]);
+            }                
+        }
+
+		if (isset($modelFieldBlacklist[$modelClass])) {
+            foreach ($modelFieldBlacklist[$modelClass] as $field) {
+                unset($modelSchema[$field]);
+            }                			
+		}
+        
+        if (isset($displayForeignKeys) && $displayForeignKeys == false) { 
+            foreach($modelSchema as $field => $value) {
+                if ( substr($field,-3) == '_id' ) {
+                    unset($modelSchema[$field]);
+				}
+            }
+        }
+		return $modelSchema;
 	}
 }
