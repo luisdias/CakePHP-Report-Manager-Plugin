@@ -36,30 +36,6 @@ class CustomReportsController extends CustomReportingAppController {
         }
     }
 
-    public function ajaxGetOneToManyOptions() {
-        if ($this->request->is('ajax')) {
-            Configure::write('debug',0);
-            $this->autoRender = false;
-            $this->layout = null;
-
-            $modelClass = $this->request->data['model'];
-            $this->loadModel($modelClass);
-            $associatedModels = $this->{$modelClass}->getAssociated('hasMany');
-            $associatedModels = array_combine($associatedModels, $associatedModels);
-
-            $modelIgnoreList = Configure::read('ReportManager.modelIgnoreList');
-            if ( isset($modelIgnoreList) && is_array($modelIgnoreList)) {
-                foreach ($modelIgnoreList as $model) {
-                    if (isset($associatedModels[$model]));
-                        unset($associatedModels[$model]);
-                }                
-            }            
-            
-            $this->set('associatedModels',$associatedModels);
-            $this->render('list_one_to_many_options');
-        }
-    }
-
     // calculate the html table columns width
     public function getTableColumnWidth($fieldsLength=array(),$fieldsType=array()) {
         $minWidth = 4;
@@ -99,10 +75,10 @@ class CustomReportsController extends CustomReportingAppController {
         return $tableWidth;
     }
 
-    public function export2Xls(&$reportData = array(),&$fieldsList=array(), &$fieldsType=array(), &$oneToManyOption=null, &$oneToManyFieldsList=null, &$oneToManyFieldsType = null, &$showNoRelated = false ) {
-        App::import('Vendor', 'ReportManager.Excel');
+    public function export2Xls(&$reportData = array(),&$fieldsList=array(), &$fieldsType=array(), &$showNoRelated = false ) {
+        App::import('Vendor', 'CustomReporting.Excel');
         $xls = new Excel();      
-        $xls->buildXls($reportData,$fieldsList, $fieldsType, $oneToManyOption, $oneToManyFieldsList, $oneToManyFieldsType, $showNoRelated );
+        $xls->buildXls($reportData, $fieldsList, $fieldsType, $showNoRelated);
     }
 
     public function wizard($modelClass = null, $reportData = null) {
@@ -145,11 +121,6 @@ class CustomReportsController extends CustomReportingAppController {
             
 			$containList = array();
 			
-            $oneToManyFieldsList  = array();
-            $oneToManyFieldsPosition  = array();
-            $oneToManyFieldsType  = array();
-            $oneToManyFieldsLength = array();
-            
             foreach ($this->request->data  as $model => $fields) {
                 if ( is_array($fields) ) {
                     foreach ($fields  as $field => $parameters) {
@@ -208,14 +179,6 @@ class CustomReportsController extends CustomReportingAppController {
                                     $conditionsList[$model.'.'.$field.$criteria] = null;                                        
                                 }
                             }
-/*                            // One to many reports
-                            if ( $oneToManyOption != '') {
-                                if ( isset($parameters['Add']) && $model == $oneToManyOption ) {
-                                    $oneToManyFieldsPosition[$model.'.'.$field] = ( $parameters['Position']!='' ? $parameters['Position'] : 0 );
-                                    $oneToManyFieldsType[$model.'.'.$field] = $parameters['Type'];
-                                    $oneToManyFieldsLength[$model.'.'.$field] = $parameters['Length'];
-                                }                                    
-                            } */
 
                         } // is array parameters
                     } // foreach field => parameters
@@ -265,9 +228,6 @@ class CustomReportsController extends CustomReportingAppController {
                         $reportData, 
                         $fieldsList, 
                         $fieldsType, 
-                        $oneToManyOption, 
-                        $oneToManyFieldsList, 
-                        $oneToManyFieldsType, 
                         $showNoRelated );
             }
 
