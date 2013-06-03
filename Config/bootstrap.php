@@ -17,4 +17,14 @@ Configure::write('ReportManager.modelFieldIgnoreList',array(
     )
 ));
 Configure::write('ReportManager.reportPath', 'tmp'.DS.'reports'.DS);
+Configure::write('ReportManager.labelFieldList',array(
+    '*' => array(
+        'field1'=>'my field 1 label description',
+        'field2'=>'my field 2 label description',
+        'field3'=>'my field 3 label description'
+    ),
+    'MyModel' => array(
+        'field1' => 'my MyModel field 1 label description'
+    )
+));
 ?>
