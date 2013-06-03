@@ -1,4 +1,4 @@
-    <!-- Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br -->
+    <!-- Copyright (c) 2012-2013 Luis E. S. Dias - www.smartbyte.com.br -->
     <span class="floatRight"><?php echo h($this->Number->format($f,array(
         'places' => 2,
         'before' => '',
