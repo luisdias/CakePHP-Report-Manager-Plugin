@@ -1,0 +1,184 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-06-03 18:12-0000\n"
+"PO-Revision-Date: 2013-06-03 19:02-0000\n"
+"Last-Translator: LD <ld@internet.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__d:2;__dn:2,3\n"
+"X-Poedit-Basepath: D:\\xampp\\htdocs\\ReportManager\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: View/Elements/fields.ctp:7
+#: View/Elements/fields_dnd_table_header.ctp:6
+msgid "Add"
+msgstr "Incluir"
+
+#: View/Elements/fields.ctp:8
+#: View/Elements/order.ctp:7
+msgid "Field"
+msgstr "Campo"
+
+#: View/Elements/fields.ctp:9
+#: View/Elements/fields_dnd_table_header.ctp:8
+msgid "Position"
+msgstr "Posição"
+
+#: View/Elements/fields_dnd_table_header.ctp:7
+msgid "Model.Field"
+msgstr "Tabela.Campo"
+
+#: View/Elements/logical_operator.ctp:3
+msgid "Logical Operator"
+msgstr "Operador Lógico"
+
+#: View/Elements/order.ctp:8
+msgid "Order 1"
+msgstr "Ordem 1"
+
+#: View/Elements/order.ctp:9
+msgid "Order 2"
+msgstr "Ordem 2"
+
+#: View/Elements/order_direction.ctp:3
+msgid "Order Direction"
+msgstr "Direcção"
+
+#: View/Elements/report_style.ctp:3
+msgid "Report Style"
+msgstr "Estilo do relatório"
+
+#: View/Elements/report_style.ctp:38
+msgid "Show record counter"
+msgstr "Mostrar contador de itens"
+
+#: View/Elements/report_style.ctp:50
+msgid "Show items with no related records"
+msgstr "Mostrar itens sem itens relacionados"
+
+#: View/Elements/report_style.ctp:62
+msgid "Save report"
+msgstr "Gravar relatório"
+
+#: View/Reports/index.ctp:35
+msgid "Report Manager"
+msgstr "Report Manager"
+
+#: View/Reports/index.ctp:41
+msgid "New report"
+msgstr "Novo relatório"
+
+#: View/Reports/index.ctp:44
+msgid "Model"
+msgstr "Tabela"
+
+#: View/Reports/index.ctp:46
+#: View/Reports/index.ctp:82
+msgid "--Select--"
+msgstr "--Seleccionar--"
+
+#: View/Reports/index.ctp:52
+msgid "One to many option"
+msgstr "Opção de um para muitos"
+
+#: View/Reports/index.ctp:54
+msgid "<None>"
+msgstr "<Nenhum>"
+
+#: View/Reports/index.ctp:62
+msgid "New"
+msgstr "Novo"
+
+#: View/Reports/index.ctp:68
+msgid "OR"
+msgstr "OU"
+
+#: View/Reports/index.ctp:75
+msgid "Load report"
+msgstr "Carregar relatório"
+
+#: View/Reports/index.ctp:80
+msgid "Saved reports"
+msgstr "Relatórios gravados"
+
+#: View/Reports/index.ctp:89
+msgid "Delete"
+msgstr "Excluir"
+
+#: View/Reports/index.ctp:91
+msgid "Load"
+msgstr "Carregar"
+
+#: View/Reports/report_display.ctp:93
+msgid "Count:"
+msgstr "Contador:"
+
+#: View/Reports/report_display.ctp:95
+#: View/Reports/report_display_one_to_many.ctp:166
+msgid "Report Created"
+msgstr "Relatório criado"
+
+#: View/Reports/wizard.ctp:26
+msgid "Next"
+msgstr "Próximo"
+
+#: View/Reports/wizard.ctp:27
+msgid "Previous"
+msgstr "Anterior"
+
+#: View/Reports/wizard.ctp:28
+msgid "Finish"
+msgstr "Finalizar"
+
+#: View/Reports/wizard.ctp:41
+msgid "Step 1"
+msgstr "Passo 1"
+
+#: View/Reports/wizard.ctp:42
+msgid "Select fields"
+msgstr "Seleccionar campos"
+
+#: View/Reports/wizard.ctp:48
+msgid "Step 2"
+msgstr "Passo 2"
+
+#: View/Reports/wizard.ctp:49
+msgid "Set the filter"
+msgstr "Configurar o filtro"
+
+#: View/Reports/wizard.ctp:55
+msgid "Step 3"
+msgstr "Passo 3"
+
+#: View/Reports/wizard.ctp:56
+msgid "Select order"
+msgstr "Seleccione a ordem"
+
+#: View/Reports/wizard.ctp:62
+msgid "Step 4"
+msgstr "Passo 4"
+
+#: View/Reports/wizard.ctp:63
+msgid "Select style"
+msgstr "Seleccione o estilo"
+
+#: View/Reports/wizard.ctp:69
+msgid "Step 1 Fields"
+msgstr "Passo 1 Campos"
+
+#: View/Reports/wizard.ctp:124
+msgid "Step 2 Filter"
+msgstr "Passo 2 Filtro"
+
+#: View/Reports/wizard.ctp:135
+msgid "Step 3 Order"
+msgstr "Passo 3 Ordem"
+
+#: View/Reports/wizard.ctp:146
+msgid "Step 4 Style"
+msgstr "Passo 4 Estilo"
+
