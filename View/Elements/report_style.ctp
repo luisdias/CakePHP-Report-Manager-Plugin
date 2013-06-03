@@ -1,6 +1,6 @@
-    <!-- Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br -->
+    <!-- Copyright (c) 2012-2013 Luis E. S. Dias - www.smartbyte.com.br -->
     <fieldset>
-        <legend><?php echo __('Report Style'); ?></legend>
+        <legend><?php echo __d('report_manager','Report Style'); ?></legend>
         <table class="reportManagerReportStyleSelector" cellpadding="0" cellspacing="0">
 	<?php
         $styleOptions = array(
@@ -35,7 +35,7 @@
             
             echo '<tr>';
             echo '<td>';
-            echo __('Show record counter');
+            echo __d('report_manager','Show record counter');
             if (isset($this->data['Report']['ShowRecordCounter']))
                 $showRecordCounter = $this->data['Report']['ShowRecordCounter'];
             else
@@ -47,7 +47,7 @@
             if ($oneToManyOption != '') {
                 echo '<tr>';
                 echo '<td>';
-                echo __('Show items with no related records');
+                echo __d('report_manager','Show items with no related records');
                 if (isset($this->data['Report']['ShowNoRelated']))
                     $showNoRelated = $this->data['Report']['ShowNoRelated'];
                 else
@@ -59,7 +59,7 @@
             
             echo '<tr>';
             echo '<td>';
-            echo __('Save report');
+            echo __d('report_manager','Save report');
             if (isset($this->data['Report']['SaveReport']))
                 $saveReport = $this->data['Report']['SaveReport'];
             else

@@ -1,6 +1,6 @@
-    <!-- Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br -->
+    <!-- Copyright (c) 2012-2013 Luis E. S. Dias - www.smartbyte.com.br -->
     <fieldset>
-        <legend><?php echo __('Logical Operator'); ?></legend>
+        <legend><?php echo __d('report_manager','Logical Operator'); ?></legend>
         <table class="reportManagerLogicalOperatorSelector" cellpadding="0" cellspacing="0">
 	<?php
         $logicalOptions = array(

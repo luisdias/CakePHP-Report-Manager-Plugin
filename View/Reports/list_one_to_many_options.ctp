@@ -1,6 +1,6 @@
 <?php
 /*
-Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br
+Copyright (c) 2012-2013 Luis E. S. Dias - www.smartbyte.com.br
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -23,9 +23,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 echo $this->Form->input('ReportManager.one_to_many_option',array(
     'type'=>'select',    
-    'label'=>__('One to many option'),
+    'label'=>__d('report_manager','One to many option',true),
     'options'=>$associatedModels,
-    'empty'=>__('--Select--')
+    'empty'=>__d('report_manager','--Select--',true)
     ));
 
 ?>

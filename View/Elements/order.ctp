@@ -1,19 +1,19 @@
-    <!-- Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br -->
+    <!-- Copyright (c) 2012-2013 Luis E. S. Dias - www.smartbyte.com.br -->
     <fieldset>
         <legend><?php echo $modelClass; ?></legend>
         <table class="reportManagerOrderSelector" cellpadding="0" cellspacing="0">
             <thead>
                 <tr>
-                    <td><?php echo __('Field'); ?></td>
-                    <td class="reportManagerFieldOrder1"><?php echo __('Order 1'); ?></td>
-                    <td class="reportManagerFieldOrder2"><?php echo __('Order 2'); ?></td>                    
+                    <td><?php echo __d('report_manager','Field'); ?></td>
+                    <td class="reportManagerFieldOrder1"><?php echo __d('report_manager','Order 1'); ?></td>
+                    <td class="reportManagerFieldOrder2"><?php echo __d('report_manager','Order 2'); ?></td>                    
                 </tr>
             </thead>
 	<?php
 	foreach ($modelSchema as $field => $attributes): 
             echo '<tr>';
             echo '<td>';
-            echo $field;
+            echo ( isset($labelFieldList[$modelClass][$field]) ? $labelFieldList[$modelClass][$field] : ( isset($labelFieldList['*'][$field]) ? $labelFieldList['*'][$field] : $field ));            
             echo '</td>';
             echo '<td>';
             echo $this->Form->input($modelClass.'.'.$field.'.'.'OrderBy1',

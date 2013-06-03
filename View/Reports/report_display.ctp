@@ -1,6 +1,6 @@
 <?php
 /*
-Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br
+Copyright (c) 2012-2013 Luis E. S. Dias - www.smartbyte.com.br
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -90,8 +90,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
          <?php } ?>
     </table>
     <?php if ( $showRecordCounter ) { ?>    
-        <div class="counter">Count: <?php echo $counter;?></div>
+        <div class="counter"><?php echo __d('report_manager','Count:',true); ?><?php echo $counter;?></div>
     <?php } ?>
-    <div class="timestamp"><?php echo __('Report Created') . ' : ' . date('Y-m-d H:i:s'); ?></div>
+    <div class="timestamp"><?php echo __d('report_manager','Report Created',true) . ' : ' . date('Y-m-d H:i:s'); ?></div>
     <?php endif; ?>
 </div>

@@ -1,4 +1,4 @@
-    <!-- Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br -->
+    <!-- Copyright (c) 2012-2013 Luis E. S. Dias - www.smartbyte.com.br -->
 	<?php
 	foreach ($modelSchema as $field => $attributes): 
             echo '<tr>';
@@ -10,10 +10,11 @@
             echo $this->Form->checkbox($modelClass.'.'.$field.'.'.'Add',array('hiddenField' => true,'checked'=>$modelFieldAdd));
             echo '</td>';
             echo '<td>';
-            echo '<b><span class="checkAll">'.$modelClass.'</span></b>.'.$field;
+            echo '<b><span class="checkAll">'.$modelClass.'</span></b>.';
+            echo ( isset($labelFieldList[$modelClass][$field]) ? $labelFieldList[$modelClass][$field] : ( isset($labelFieldList['*'][$field]) ? $labelFieldList['*'][$field] : $field ));
             echo '</td>';
             echo '<td>';
-            echo $this->Form->input($modelClass.'.'.$field.'.'.'Position',array('label'=>'','size'=>'4','maxlength'=>'4','class'=>'position'));
+            echo $this->Form->input($modelClass.'.'.$field.'.'.'Position',array('type'=>'text','label'=>'','size'=>'4','maxlength'=>'4','class'=>'position'));
             $currType = ( isset($attributes['type']) ? $attributes['type'] : $attributes['Type'] );
             echo $this->Form->input($modelClass.'.'.$field.'.'.'Type',array('type'=>'hidden','value'=>$currType));
             $currLength = ( isset($attributes['length']) ? $attributes['length'] : 
