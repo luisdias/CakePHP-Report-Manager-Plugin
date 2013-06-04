@@ -50,7 +50,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                         <th>
                         <?php
                         $columns++;
-                        $displayField = substr($field, strpos($field, '.')+1);
+                        $modelClass = substr($field, 0,strpos($field, '.'));
+                        $displayField = strtolower(substr($field, strpos($field, '.')+1));
+                        $displayField = ( isset($labelFieldList[$modelClass][$displayField]) ? $labelFieldList[$modelClass][$displayField] : ( isset($labelFieldList['*'][$displayField]) ? $labelFieldList['*'][$displayField] : $displayField ));                        
                         $displayField = str_replace('_', ' ', $displayField);
                         $displayField = ucfirst($displayField);
                         echo $displayField; 
@@ -101,7 +103,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                             <th>
                             <?php
                             $oneToManyColumns++;
-                            $displayField = substr($field, strpos($field, '.')+1);
+                            $modelClass = substr($field, 0,strpos($field, '.'));
+                            $displayField = strtolower(substr($field, strpos($field, '.')+1));
+                            $displayField = ( isset($labelFieldList[$modelClass][$displayField]) ? $labelFieldList[$modelClass][$displayField] : ( isset($labelFieldList['*'][$displayField]) ? $labelFieldList['*'][$displayField] : $displayField ));
                             $displayField = str_replace('_', ' ', $displayField);
                             $displayField = ucfirst($displayField);
                             echo $displayField; 
@@ -151,7 +155,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                      <?php } ?>
                      <?php if ( $showRecordCounter ) { ?>
                         <tr class="footer">
-                            <td colspan="<?php echo $oneToManyColumns; ?>"><i>Count:</i> <?php echo $counter;?></td>
+                            <td colspan="<?php echo $oneToManyColumns; ?>"><i><?php echo __d('report_manager','Count:',true); ?></i> <?php echo $counter;?></td>
                         </tr>
                     <?php } ?>
                 </table>
@@ -163,6 +167,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             <?php } ; ?>
             <?php endforeach; ?>
         
-        <div class="timestamp"><?php echo _('Report Created') . ' : ' . date('Y-m-d H:i:s'); ?></div>
+        <div class="timestamp"><?php echo __d('report_manager','Report Created',true) . ' : ' . date('Y-m-d H:i:s'); ?></div>
     <?php endif; ?>
 </div>

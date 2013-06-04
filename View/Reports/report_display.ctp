@@ -41,7 +41,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                 <th>
                 <?php
                 $columns++;
-                $displayField = substr($field, strpos($field, '.')+1);
+                $modelClass = substr($field, 0,strpos($field, '.'));
+                $displayField = strtolower(substr($field, strpos($field, '.')+1));
+                $displayField = ( isset($labelFieldList[$modelClass][$displayField]) ? $labelFieldList[$modelClass][$displayField] : ( isset($labelFieldList['*'][$displayField]) ? $labelFieldList['*'][$displayField] : $displayField ));
                 $displayField = str_replace('_', ' ', $displayField);
                 $displayField = ucfirst($displayField);
                 echo $displayField; 
