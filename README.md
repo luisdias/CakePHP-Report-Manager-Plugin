@@ -2,7 +2,7 @@
 
 ## The report manager plugin can help users to create reports based on the application's models.
 
-**Changelog for version 0.4.5.2**  
+**Changelog for version 0.4.6**  
 * enhacement: labelFieldList - create user friendly field labels  
 * enhacement: localization files for european portuguese, spanish and brazilian portuguese.  
 * bugfix: Excel file export utf8 character encoding  
