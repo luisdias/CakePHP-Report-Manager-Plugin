@@ -2,6 +2,13 @@
 
 ## The report manager plugin can help users to create reports based on the application's models.
 
+**Changelog for version 0.4.5.2**  
+* enhacement: labelFieldList - create user friendly field labels  
+* enhacement: localization files for european portuguese, spanish and brazilian portuguese.  
+* bugfix: Excel file export utf8 character encoding  
+* minor: new css styles  
+* bugfix: use associated className to load associated model  
+
 **Changelog for version 0.4.5.1**  
 * bugfix: php keyword added to saveReport method  
 * bugfix: translation function correction   
