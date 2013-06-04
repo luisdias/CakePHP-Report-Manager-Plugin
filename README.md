@@ -101,6 +101,7 @@ Some parameters could be configured in the app/Plugin/ReportManager/Config/boots
 
 * Reports directory path  
 
+* User friendly field labels  
 
 ## Notes:  
 
