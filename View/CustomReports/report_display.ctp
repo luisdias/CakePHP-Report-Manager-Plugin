@@ -55,7 +55,7 @@
                         $floatFields[$field] += $reportItem[$params[0]][$params[1]];
                     }                        
                     else
-                        echo $reportItem[$params[0]][$params[1]]; 
+                        echo h($reportItem[$params[0]][$params[1]]);
                     ?>
                     </td>
                 <?php endforeach; ?>
