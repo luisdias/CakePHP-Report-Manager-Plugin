@@ -100,22 +100,22 @@ $(document).ready(function(){
 		html +='		<div class="close-button">X</div>';
 		html +='		<div>';
 		html +='			<label>Filter By: </label>';
-		html +='			<select name="Filters['+filterId+'][Field]">';
+		html +='			<select name="data[Filters]['+filterId+'][Field]">';
 		html +='			'+options+'';
 		html +='			</select>';
 		html +='		</div>';
 		html +='		<div class="grid_2">';
-		html +='			<input type="checkbox" name="Filters['+filterId+'][Not]" value="1" /><label>IS NOT</label>';
+		html +='			<input type="checkbox" name="data[Filters]['+filterId+'][Not]" value="1" /><label>IS NOT</label>';
 		html +='		</div>';
 		html +='		<div class="grid_2">';
-		html +='			<select name="Filters['+filterId+'][Operator]">';
+		html +='			<select name="data[Filters]['+filterId+'][Operator]">';
 		html +='				<option value="=" >equals</option>';
 		html +='				<option value="&gt;" >is greater than</option>';
 		html +='				<option value="&lt;" >is less than</option>';
 		html +='			</select>';
 		html +='		</div>';
 		html +='		<div class="grid_4">';
-		html +='			<input type="text" name="Filters['+filterId+'][Value]" />';
+		html +='			<input type="text" name="data[Filters]['+filterId+'][Value]" />';
 		html +='		</div>';
 		html +='	</div>';
 		
@@ -125,6 +125,22 @@ $(document).ready(function(){
 			showhidefilterlogic();
 		});
 		$html.appendTo($('#Filters'));
+		
+		// we need to apply the unusual select behaviour here, to the new select boxes
+		// TODO: put this in a jQuery plugin or something generic like that
+		$('#filter-'+filterId+' select').change(function(){
+			$val = $(this).val();
+			$(this).children().each(function(idx, elem){
+				$elem = $(elem);
+				if ($elem.attr('value') == $val){
+					$elem.attr('selected','selected');
+				} else {
+					$elem.removeAttr('selected');
+				}
+			});
+		});
+		
+		
 		showhidefilterlogic();
 	});
 	
