@@ -168,7 +168,7 @@ class CustomReportsController extends CustomReportingAppController {
 				}
 			}
 			if (count($conditionsList)>0) {
-				$logical = isset($this->data['CustomReport']['FilterLogic'])?$this->data['CustomReport']['FilterLogic']:'OR';
+				$logical = empty($this->data['CustomReport']['FilterLogic'])?'OR':$this->data['CustomReport']['FilterLogic'];
 				// for eaxmple, $conditions will be like array("OR" => array("Users.name = 'ian'","Users.fieldname < 5") )
 				$conditions[$logical] = $conditionsList;
 			}
