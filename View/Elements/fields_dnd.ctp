@@ -12,7 +12,7 @@
 		
 		echo '<div>';
 			
-			echo niceFieldName($fieldname);
+			echo Inflector::humanize(Inflector::underscore($class)) .' &gt; '. Inflector::humanize($field);
 			
 			echo $this->Form->input($fieldname.'.Position',array('label'=>'','size'=>'4','maxlength'=>'4','class'=>'position','type'=>'hidden'));
 
