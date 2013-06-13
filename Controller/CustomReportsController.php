@@ -67,11 +67,6 @@ class CustomReportsController extends CustomReportingAppController {
 
 		} else {
 		
-			// this debugging stuff is very useful 
-//			echo "<pre>";
-//			print_r($this->data);
-//			echo "</pre>";
-			
 			// get the list of fields to make available to the report
 			$modelSchema = $this->_getCompleteFieldList($modelClass);
 			
@@ -80,7 +75,6 @@ class CustomReportsController extends CustomReportingAppController {
 			/*     FIELDS    */
 			$fieldsList = array();
 			
-			// it's not clear why these are needed
 			$fieldsPosition = array();
 			$fieldsType = array();
 			$fieldsLength = array();
