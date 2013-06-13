@@ -19,7 +19,8 @@ class CustomReportsController extends CustomReportingAppController {
 			// Get the lists of models and saved reports, and pass them to the view
 			$models = $this->_getFilteredListOfModels();
 			$customReports = $this->CustomReport->find('all',array(
-				'fields' => array('id','title','created')
+				'fields' => array('id','title','created'),
+				'recursive' => -1
 			));			
 			$this->set(compact('models', 'customReports'));
 
