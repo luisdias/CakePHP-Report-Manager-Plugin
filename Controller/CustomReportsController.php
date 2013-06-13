@@ -199,9 +199,6 @@ class CustomReportsController extends CustomReportingAppController {
 				'conditions' => $conditions,
 				'contain' => $containList,
 			);
-//			echo "<pre>";
-//			print_r($params);
-//			echo "</pre>";
 			
 			$reportData = $this->{$modelClass}->find('all', $params);
 			
