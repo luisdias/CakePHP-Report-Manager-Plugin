@@ -8,20 +8,23 @@
  */
 
 class CustomReportsController extends CustomReportingAppController {
-    
-    public $uses = array('CustomReporting.CustomReport');
-    public $helpers = array('Number', 'Form');
-
-    public function index() {
 	
-        if (empty($this->request->data)) {
+	public $uses = array('CustomReporting.CustomReport');
+	public $helpers = array('Number', 'Form');
+
+	public function index() {
+	
+		if (empty($this->request->data)) {
 	
 			// Get the lists of models and saved reports, and pass them to the view
 			$models = $this->_getFilteredListOfModels();
-			$customReports = $this->CustomReport->find('list');			
-            $this->set(compact('models', 'customReports'));
+			$customReports = $this->CustomReport->find('all',array(
+				'fields' => array('id','title','created'),
+				'recursive' => -1
+			));			
+			$this->set(compact('models', 'customReports'));
 
-        } else {
+		} else {
 	
 			if (isset($this->request->data['CustomReport']['model'])) {
 				// TODO: validate the modelClass name - don't trust it
@@ -31,20 +34,20 @@ class CustomReportsController extends CustomReportingAppController {
 			}
 			
 			// Submitted data we couldn't handle, so simply redirect to the index.
-            $this->redirect(array('action'=>'index'));
+			$this->redirect(array('action'=>'index'));
 			return;
-        }
-    }
+		}
+	}
 
-    public function wizard($modelClass = null, $reportData = null) {
+	public function wizard($modelClass = null, $reportData = null) {
 		if (is_null($modelClass)) {
-            $this->Session->setFlash(__('Please select a model or a saved report'));
-            $this->redirect(array('action'=>'index'));			
+			$this->Session->setFlash(__('Please select a model or a saved report'));
+			$this->redirect(array('action'=>'index'));			
 			return;
 		}
 
-        if (empty($this->request->data)) {
-			// Let's get the list of fields to make available to the report
+		if (empty($this->request->data)) {
+			// get the list of fields to make available to the report
 			$modelSchema = $this->_getCompleteFieldList($modelClass);
 			
 			// We may be loading data from a previous report
@@ -56,138 +59,176 @@ class CustomReportsController extends CustomReportingAppController {
 				$this->request->data = $reportData;				
 			}
 
-            $this->set('modelClass',$modelClass);
-            $this->set('modelSchema',$modelSchema);
+			$this->set('modelClass',$modelClass);
+			$this->set('modelSchema',$modelSchema);
 
 			// Make sure we render the wizard view. We might have arrived here via /load
 			$this->render('wizard');
 
-        } else {
-			// Let's get the list of fields to make available to the report
+		} else {
+		
+			// get the list of fields to make available to the report
 			$modelSchema = $this->_getCompleteFieldList($modelClass);
-            
-            $fieldsList = array();
-            $fieldsPosition = array();
-            $fieldsType = array();
-            $fieldsLength = array();
-            
-            $conditions = array();
-            $conditionsList = array();
-            
-			$containList = array();
 			
-            foreach ($this->request->data  as $model => $fields) {
-                if ( is_array($fields) ) {
-                    foreach ($fields  as $field => $parameters) {
-                        if ( is_array($parameters) ) {                    
-                            if ( isset($modelSchema[$model]) ) {
-                                if ( $parameters['Add'] ) {
+			
+			/*****************/
+			/*     FIELDS    */
+			$fieldsList = array();
+			
+			$fieldsPosition = array();
+			$fieldsType = array();
+			$fieldsLength = array();
+			
+			$containList = array();
+			// loop through the fields, and see if any of them have the checkbox on
+			foreach ($this->request->data  as $model => $fields) {
+				if ( is_array($fields) ) {
+					foreach ($fields  as $field => $parameters) {
+						if ( is_array($parameters) ) {					  
+							if ( isset($modelSchema[$model]) ) {
+								if ( isset($parameters['Add']) && $parameters['Add'] == 1 ) {
+									
 									// If we haven't previously added it to the contain, then add it
 									if ($model != $modelClass && !in_array($model, $containList)) {
 										$containList[] = $model;
 									}
-                                    $fieldsPosition[$model.'.'.$field] = ( $parameters['Position'] != '' ? $parameters['Position'] : 0 );
-                                    $fieldsType[$model.'.'.$field] = $parameters['Type'];
-                                    $fieldsLength[$model.'.'.$field] = $parameters['Length'];
-                                }
-                                $criteria = '';                                    
-                                if ($parameters['Example'] != '' && $parameters['Filter']!='null' ) {
-                                    if ( $parameters['Not'] ) {
-                                        switch ($parameters['Filter']) {
-                                            case '=':
-                                                $criteria .= ' !'.$parameters['Filter'];
-                                                break;
-                                            case 'LIKE':
-                                                $criteria .= ' NOT '.$parameters['Filter'];
-                                                break;
-                                            case '>':
-                                                $criteria .= ' <=';
-                                                break;
-                                            case '<':
-                                                $criteria .= ' >=';
-                                                break;
-                                            case '>=':
-                                                $criteria .= ' <';
-                                                break;
-                                            case '<=':
-                                                $criteria .= ' >';
-                                                break;
-                                            case 'null':
-                                                $criteria = ' !=';
-                                                break;
-                                        }
-                                    } else {
-                                        if ($parameters['Filter']!='=') 
-                                            $criteria .= ' '.$parameters['Filter'];
-                                    }
+									$fieldsPosition[$model.'.'.$field] = ( $parameters['Position'] != '' ? $parameters['Position'] : 0 );
+									$fieldsType[$model.'.'.$field] = $parameters['Type'];
+									$fieldsLength[$model.'.'.$field] = $parameters['Length'];
+								}
+							}
+						} // is array parameters
+					} // foreach field => parameters
+				} // is array fields
+			} // foreach model => fields
 
-                                    if ($parameters['Filter']=='LIKE')
-                                        //$example = '%'. mysql_real_escape_string($parameters['Example']) . '%';
-                                        $example = '%'.$parameters['Example'] . '%';
-                                    else
-                                        //$example = mysql_real_escape_string($parameters['Example']);
-                                        $example = $parameters['Example'];
-
-                                    $conditionsList[$model.'.'.$field.$criteria] = $example;
-                                }
-                                if ( $parameters['Filter']=='null' ) {
-                                    $conditionsList[$model.'.'.$field.$criteria] = null;                                        
-                                }
-                            }
-
-                        } // is array parameters
-                    } // foreach field => parameters
-                    if (count($conditionsList)>0) {
-                        $conditions[$this->data['CustomReport']['Logical']] = $conditionsList;
-                    }
-                } // is array fields
-            } // foreach model => fields
-            asort($fieldsPosition);
-            $fieldsList = array_keys($fieldsPosition);
-            $order = array();
-            if ( isset($this->data['CustomReport']['OrderBy1']) )
-                $order[] = $this->data['CustomReport']['OrderBy1'] . ' ' . $this->data['CustomReport']['OrderDirection'];
-            if ( isset($this->data['CustomReport']['OrderBy2']) )
-                $order[] = $this->data['CustomReport']['OrderBy2'] . ' ' . $this->data['CustomReport']['OrderDirection'];
-            
-            $tableColumnWidth = $this->_getTableColumnWidth($fieldsLength,$fieldsType);
-            $tableWidth = $this->_getTableWidth($tableColumnWidth);
+			// at this point, $fieldsPosition looks like ["field1"=>3,"field2"=>2,"field3"=>1"]
+			asort($fieldsPosition);
+			$fieldsList = array_keys($fieldsPosition);
+			// now they're in order by position.
+			
+			
+			/*****************/
+			/*   FILTERING   */
+			$conditions = array();
+			$conditionsList = array();
+			if (!empty($this->request->data['Filters'])){
+				foreach($this->request->data['Filters'] as $filter){
+					
+					if (empty($filter['Value'])){
+						continue;
+					}
+					
+					// a filter looks like this: ['Field':'One', 'Operator':'=', 'Value':'eeeeee', 'Not':1]
+					$criteria = '';
+					// choose the right operator
+					if (isset($filter['Not']) && $filter['Not'] == 1){
+						// here we define all the opposites of the operator
+						switch ($filter['Operator']) {
+							case '=':
+								$criteria = '!=';
+								break;
+							case '>':
+								$criteria = '<=';
+								break;
+							case '<':
+								$criteria = '>=';
+								break;
+							default:
+								$criteria = '!=';
+								break;
+						}
+					} else {
+						// it's not a not. it is an is. tautologies are.
+						switch ($filter['Operator']) {
+							case '=':
+								$criteria = '';
+								break;
+							case '>':
+								$criteria = '>';
+								break;
+							case '<':
+								$criteria = '<';
+								break;
+							default:
+								$criteria = '';
+								break;
+						}
+					}
+					if ($criteria == ''){
+						$conditionsList[$filter['Field']] = $filter['Value'];
+					} else {
+						$conditionsList[$filter['Field']." ".$criteria] = $filter['Value'];
+					}
+				}
+			}
+			if (count($conditionsList)>0) {
+				$logical = empty($this->data['CustomReport']['FilterLogic'])?'OR':$this->data['CustomReport']['FilterLogic'];
+				// for eaxmple, $conditions will be like array("OR" => array("Users.name = 'ian'","Users.fieldname < 5") )
+				$conditions[$logical] = $conditionsList;
+			}
+			
+			
+			/*****************/
+			/*  SORT ORDER   */
+			$order = array();
+			
+			if ( isset($this->data['Sort']['primary']) ) {
+				$order[] = $this->data['Sort']['primary']['Field'] . ' ' . $this->data['Sort']['primary']['Direction'];
+			}
+			if ( isset($this->data['Sort']['secondary']) ) {
+				$order[] = $this->data['Sort']['secondary']['Field'] . ' ' . $this->data['Sort']['secondary']['Direction'];
+			}
+			
+			
+			/*****************/
+			/*    OTHER     */
+			
+			$tableColumnWidth = $this->_getTableColumnWidth($fieldsLength,$fieldsType);
+			$tableWidth = $this->_getTableWidth($tableColumnWidth);
 			$recursive = 1;
 
-            $reportData = $this->{$modelClass}->find('all',array(
-                'recursive' => $recursive,
-                'fields' => $fieldsList,
-                'order' => $order,
-                'conditions' => $conditions,
+			// here's where the real action takes place.
+			// everything prior to this line was just to set up these parameter arrays
+			
+			// let's build this separately so we can debug and look at it
+			$params = array(
+				'recursive' => $recursive,
+				'fields' => $fieldsList,
+				'order' => $order,
+				'conditions' => $conditions,
 				'contain' => $containList,
-            ));
+			);
+			
+			$reportData = $this->{$modelClass}->find('all', $params);
+			
 
-            $this->layout = 'report';
-                        
-            $this->set('tableColumnWidth',$tableColumnWidth);
-            $this->set('tableWidth',$tableWidth);
-            
-            $this->set('fieldList',$fieldsList);
-            $this->set('fieldsType',$fieldsType);
-            $this->set('fieldsLength',$fieldsLength);
-            $this->set('reportData',$reportData);
-            $this->set('reportName',$this->data['CustomReport']['Title']);
-            $this->set('reportStyle',$this->data['CustomReport']['Style']);
-            $this->set('showRecordCounter',$this->data['CustomReport']['ShowRecordCounter']);
+			$this->layout = 'report';
+						
+			$this->set('tableColumnWidth',$tableColumnWidth);
+			$this->set('tableWidth',$tableWidth);
+			
+			$this->set('fieldList',$fieldsList);
+			$this->set('fieldsType',$fieldsType);
+			$this->set('fieldsLength',$fieldsLength);
+			$this->set('reportData',$reportData);
+			$this->set('reportName',$this->data['CustomReport']['Title']);
+			$this->set('reportStyle',$this->data['CustomReport']['Style']);
+			$this->set('showRecordCounter',$this->data['CustomReport']['ShowRecordCounter']);
 
-            if ( $this->data['CustomReport']['Output'] == 'html') {
-                $this->render('report_display');
-            } else { // Excel file
-                $this->layout = null;
-                $this->_export2Xls(
-                        $reportData, 
-                        $fieldsList, 
-                        $fieldsType, 
-                        $showNoRelated );
-            }
-
-        }
-    }
+			if ( $this->data['CustomReport']['Output'] == 'html') {
+				$this->render('report_display');
+			} else { // Excel file
+				$this->layout = null;
+				$this->_export2Xls(
+					$reportData, 
+					$fieldsList, 
+					$fieldsType, 
+					$showNoRelated 
+				);
+			}
+		}
+	}
 
 	/**
 	 * Load up the data from a stored report, and push it into
@@ -369,13 +410,13 @@ class CustomReportsController extends CustomReportingAppController {
 		
 		// Now remove any models from the list that also exist on the blacklist
 		$modelBlacklist = Configure::read('CustomReporting.modelBlacklist');
-        if ($modelBlacklist !== false) {
-            foreach ($models as $index => $model) {
+		if ($modelBlacklist !== false) {
+			foreach ($models as $index => $model) {
 				if (in_array($model, $modelBlacklist)) {
 					unset($models[$index]);
 				}
-            }                
-        }
+			}				 
+		}
 
 		// Let's alphabetize the list for consistency, then return
 		// an array with the indexes and the values the model names.
@@ -390,35 +431,35 @@ class CustomReportsController extends CustomReportingAppController {
 	 * or filter by.
 	 * 
 	 * @return array Listing of all fields that are available
-	 *               array (
-	 *                 'PrimaryModel' => array(
-	 *                     'field1' => array (schema info...),
-	 *                     'field2' => array (schema info...),
-	 *                      ...
-	 *                  ),
-	 *                 'AssociatedModel1' => array(
-	 *                     'field1' => array (schema info...),
-	 *                     'field2' => array (schema info...),
-	 *                      ...
-	 *                  )
-	 *                 'AssociatedModel2' => array(
-	 *                     'field1' => array (schema info...),
-	 *                     'field2' => array (schema info...),
-	 *                      ...
-	 *                  )
-	 *               )
+	 *				  array (
+	 *					'PrimaryModel' => array(
+	 *						'field1' => array (schema info...),
+	 *						'field2' => array (schema info...),
+	 *						 ...
+	 *					 ),
+	 *					'AssociatedModel1' => array(
+	 *						'field1' => array (schema info...),
+	 *						'field2' => array (schema info...),
+	 *						 ...
+	 *					 )
+	 *					'AssociatedModel2' => array(
+	 *						'field1' => array (schema info...),
+	 *						'field2' => array (schema info...),
+	 *						 ...
+	 *					 )
+	 *				  )
 	 */	
 	function _getCompleteFieldList($baseModelClass) {
 
-        $modelWhitelist = Configure::read('CustomReporting.modelWhitelist');
-        $modelBlacklist = Configure::read('CustomReporting.modelBlacklist');
+		$modelWhitelist = Configure::read('CustomReporting.modelWhitelist');
+		$modelBlacklist = Configure::read('CustomReporting.modelBlacklist');
 		
 		// Start with the base model
 		$completeSchema = array($baseModelClass => $this->_getFilteredListOfModelFields($baseModelClass));
 
 		// Add any associated models.
 		$associatedModels = $this->{$baseModelClass}->getAssociated();		
-        foreach ($associatedModels as $key => $value) {
+		foreach ($associatedModels as $key => $value) {
 			// Only consider an associated model if it is a "HasOne" or "BelongsTo"
 			// Releationship. For HasMany or HasAndBelongsToMany, you should be using
 			// the association (or the relationship) model as the key centrepiece.
@@ -433,8 +474,8 @@ class CustomReportsController extends CustomReportingAppController {
 					// There is a whitelist, and it's not on it. Destroy it.
 					unset($associatedModels[$key]);
 				} else {
-		            $associatedModelClassName = $this->{$baseModelClass}->{$value}[$key]['className'];
-		    		$completeSchema[$key] = $this->_getFilteredListOfModelFields($associatedModelClassName);				
+					  $associatedModelClassName = $this->{$baseModelClass}->{$value}[$key]['className'];
+			  		$completeSchema[$key] = $this->_getFilteredListOfModelFields($associatedModelClassName);				
 				}
 			}
 		}
@@ -449,81 +490,81 @@ class CustomReportsController extends CustomReportingAppController {
 	 */
 	function _getFilteredListOfModelFields($modelClass) {
 		
-        $displayForeignKeys = Configure::read('CustomReporting.displayForeignKeys');
-        $globalFieldBlacklist = Configure::read('CustomReporting.globalFieldBlacklist');
-        $modelFieldBlacklist = Configure::read('CustomReporting.modelFieldBlacklist');
+		$displayForeignKeys = Configure::read('CustomReporting.displayForeignKeys');
+		$globalFieldBlacklist = Configure::read('CustomReporting.globalFieldBlacklist');
+		$modelFieldBlacklist = Configure::read('CustomReporting.modelFieldBlacklist');
 		
 
-        $this->loadModel($modelClass);
-        $modelSchema = $this->{$modelClass}->schema();
+		$this->loadModel($modelClass);
+		$modelSchema = $this->{$modelClass}->schema();
 
-        
-        if (is_array($globalFieldBlacklist)) {
-            foreach ($globalFieldBlacklist as $field) {
-                unset($modelSchema[$field]);
-            }                
-        }
+		
+		if (is_array($globalFieldBlacklist)) {
+			foreach ($globalFieldBlacklist as $field) {
+				unset($modelSchema[$field]);
+			}				 
+		}
 
 		if (isset($modelFieldBlacklist[$modelClass])) {
-            foreach ($modelFieldBlacklist[$modelClass] as $field) {
-                unset($modelSchema[$field]);
-            }                			
+			foreach ($modelFieldBlacklist[$modelClass] as $field) {
+				unset($modelSchema[$field]);
+			}				 			
 		}
-        
-        if (isset($displayForeignKeys) && $displayForeignKeys == false) { 
-            foreach($modelSchema as $field => $value) {
-                if ( substr($field,-3) == '_id' ) {
-                    unset($modelSchema[$field]);
+		
+		if (isset($displayForeignKeys) && $displayForeignKeys == false) { 
+			foreach($modelSchema as $field => $value) {
+				if ( substr($field,-3) == '_id' ) {
+					unset($modelSchema[$field]);
 				}
-            }
-        }
+			}
+		}
 		return $modelSchema;
 	}
 
-    // calculate the html table columns width
-    public function _getTableColumnWidth($fieldsLength=array(),$fieldsType=array()) {
-        $minWidth = 4;
-        $maxWidth = 25;
-        $tableColumnWidth = array();
-        foreach ($fieldsLength as $field => $length): 
-            if ( $length != '') {
-                if ( $length < $maxWidth ) 
-                    $width = $length * 9;
-                else
-                    $width = $maxWidth * 9;
-                if ( $length < $minWidth ) 
-                    $width = $length * 40;                
-                $tableColumnWidth[$field] = $width;
-            } else {
-                $fieldType = $fieldsType[$field];
-                switch ($fieldType) {
-                    case "date":
-                        $width = 120;
-                        break;
-                    case "float":
-                        $width = 150;
-                        break;                
-                    default:
-                        $width = 120;
-                        break;
-                }
-                $tableColumnWidth[$field] = $width;
-            }
-        endforeach; 
-        return $tableColumnWidth;
-    }
-    
-    // calculate the html table width
-    public function _getTableWidth($tableColumnWidth = array()) {
-        $tableWidth = array_sum($tableColumnWidth);
-        return $tableWidth;
-    }
+	// calculate the html table columns width
+	public function _getTableColumnWidth($fieldsLength=array(),$fieldsType=array()) {
+		$minWidth = 4;
+		$maxWidth = 25;
+		$tableColumnWidth = array();
+		foreach ($fieldsLength as $field => $length): 
+			if ( $length != '') {
+				if ( $length < $maxWidth ) 
+					$width = $length * 9;
+				else
+					$width = $maxWidth * 9;
+				if ( $length < $minWidth ) 
+					$width = $length * 40;				  
+				$tableColumnWidth[$field] = $width;
+			} else {
+				$fieldType = $fieldsType[$field];
+				switch ($fieldType) {
+					case "date":
+						$width = 120;
+						break;
+					case "float":
+						$width = 150;
+						break;				  
+					default:
+						$width = 120;
+						break;
+				}
+				$tableColumnWidth[$field] = $width;
+			}
+		endforeach; 
+		return $tableColumnWidth;
+	}
+	
+	// calculate the html table width
+	public function _getTableWidth($tableColumnWidth = array()) {
+		$tableWidth = array_sum($tableColumnWidth);
+		return $tableWidth;
+	}
 
-    public function _export2Xls(&$reportData = array(),&$fieldsList=array(), &$fieldsType=array(), &$showNoRelated = false ) {
-        App::import('Vendor', 'CustomReporting.Excel');
-        $xls = new Excel();      
-        $xls->buildXls($reportData, $fieldsList, $fieldsType, $showNoRelated);
-    }
+	public function _export2Xls(&$reportData = array(),&$fieldsList=array(), &$fieldsType=array(), &$showNoRelated = false ) {
+		App::import('Vendor', 'CustomReporting.Excel');
+		$xls = new Excel();		 
+		$xls->buildXls($reportData, $fieldsList, $fieldsType, $showNoRelated);
+	}
 
 
 }

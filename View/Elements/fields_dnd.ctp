@@ -1,25 +1,27 @@
-    <!-- Copyright (c) 2012 Luis E. S. Dias - www.smartbyte.com.br -->
-	<?php
-	foreach ($modelSchema as $field => $attributes): 
-            echo '<tr>';
-            echo '<td>';
-            if (isset($this->data[$modelClass][$field]['Add']))
-                $modelFieldAdd = $this->data[$modelClass][$field]['Add'];
-            else
-                $modelFieldAdd = true;
-            echo $this->Form->checkbox($modelClass.'.'.$field.'.'.'Add',array('hiddenField' => true,'checked'=>$modelFieldAdd));
-            echo '</td>';
-            echo '<td>';
-            echo '<b><span class="checkAll">'.$modelClass.'</span></b>.'.$field;
-            echo '</td>';
-            echo '<td>';
-            echo $this->Form->input($modelClass.'.'.$field.'.'.'Position',array('label'=>'','size'=>'4','maxlength'=>'4','class'=>'position'));
-            $currType = ( isset($attributes['type']) ? $attributes['type'] : $attributes['Type'] );
-            echo $this->Form->input($modelClass.'.'.$field.'.'.'Type',array('type'=>'hidden','value'=>$currType));
-            $currLength = ( isset($attributes['length']) ? $attributes['length'] : 
-                ( isset($attributes['Length']) ? $attributes['Length'] : 10) );
-            echo $this->Form->input($modelClass.'.'.$field.'.'.'Length',array('type'=>'hidden','value'=>$currLength));
-            echo '</td>';          
-            echo '</tr>';
-        endforeach;
-        ?>
+<?php
+	list($class,$field) = explode(".",$fieldname);
+	echo '<div class="sortable-field">';
+		
+		echo '<div class="left">';
+			$modelFieldAdd = true;
+			if (isset($fieldarray['add'])) {
+				$modelFieldAdd = $fieldarray['add'];
+			}
+			echo $this->Form->checkbox($fieldname.'.Add',array('hiddenField' => true,'checked'=>$modelFieldAdd, 'class'=>'fieldCheckbox'));
+		echo '</div>';
+		
+		echo '<div>';
+			
+			echo Inflector::humanize(Inflector::underscore($class)) .' &gt; '. Inflector::humanize($field);
+			
+			echo $this->Form->input($fieldname.'.Position',array('label'=>'','size'=>'4','maxlength'=>'4','class'=>'position','type'=>'hidden'));
+
+			$currType = ( isset($fieldarray['type']) ? $fieldarray['type'] : $fieldarray['Type'] );
+			echo $this->Form->input($fieldname.'.Type',array('type'=>'hidden','value'=>$currType));
+			
+			$currLength = ( isset($fieldarray['length']) ? $fieldarray['length'] : ( isset($fieldarray['Length']) ? $fieldarray['Length'] : 10) );			
+			echo $this->Form->input($fieldname.'.Length',array('type'=>'hidden','value'=>$currLength));
+			
+		echo '</div>';          
+	echo '</div>';
+?>
