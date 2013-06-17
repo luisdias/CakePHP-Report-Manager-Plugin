@@ -1,1 +1,1 @@
-<div class="reportManagerFieldSelector <?php echo $sortableClass; ?>">
+<ul id="sortableList" class="reportManagerFieldSelector <?php echo $sortableClass; ?>">

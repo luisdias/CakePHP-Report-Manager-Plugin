@@ -224,14 +224,15 @@ $(document).ready(function() {
         $(this).closest("tr").css("background-color", this.checked ? "#eee" : "");
     });
 
-    $( ".sortable1" ).sortable({
-        items: "div.sortable-field",
-        axis: 'y',
-        stop: function(event, ui) {
-            $('input.position').reNumberPosition();
-        }
-    });    
-    
+	$( "#sortableList" ).sortable({
+		items: "li.sortable-field",
+		handle: '.handle',
+		axis: 'y',
+		stop: function(event, ui) {
+			$('input.position').reNumberPosition();
+		}
+	});
+	
     $('.checkAll').click(function () {
         model = $(this).text();
         $("tr :checkbox[name^=\"data["+model+"]\"][name*='[Add]']").each(function(){
