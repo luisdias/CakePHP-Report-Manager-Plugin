@@ -22,8 +22,8 @@
         
         echo $this->Form->create();
         echo $this->Form->input('model',array(
-            'type'=>'select',            
-            'label'=>__('Model'),
+            'type'=>'select',
+            'label'=>__('Record'),
             'options' => $models,
             'empty'=>__('--Select--')
             ));        
