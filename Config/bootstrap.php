@@ -23,15 +23,28 @@ Configure::write('CustomReporting.displayForeignKeys', false);
  * the CustomReporting.modelBlackList setting.
  */
 Configure::write('CustomReporting.modelWhitelist',	array(
-    'User' => array (
+	'AssignmentRecord',
+	'Application',
+	'ApplicationNote',
+	'EmployeeRecord',
+	'CustomFieldRecord',
+	'Event',
+	'Goal',
+	'IncidentReport',
+	'JobPosting',
+	'LeaveRequest',
+	'LeaveTransaction',
+	'LoggedAction',
+	'Log',
+	'SkillRating',
+	'TimeEntry',
+	'User' => array (
 		'Group',
 		'CurrentEmployeeRecord',
 		'CurrentAssignmentRecord',
 		'GoalParticipation',
 	),
-	'AssignmentRecord',
-	'Application',
-	'ApplicationNote',
+	'WorkHourRecord'
 ));
 
 /**
@@ -56,13 +69,15 @@ Configure::write('CustomReporting.modelBlacklist',array(
  * can add them to the modelFieldBlacklist setting below
  */
 Configure::write('CustomReporting.globalFieldBlacklist', array(
-    'id',
+	'id',
 	'password',
 	'lft',
 	'rght',
-	'field1',
-	'field2',
-	'field3',
+	'show_onboarding_videos',
+	'show_welcome',
+	'syncable',
+	'effective_server_time',
+	'status'
 ));
 
 Configure::write('CustomReporting.modelFieldBlacklist',array(
