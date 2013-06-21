@@ -11,7 +11,15 @@
 				if (isset($fieldarray['add'])) {
 					$modelFieldAdd = $fieldarray['add'];
 				}
-				echo $this->Form->checkbox($fieldname.'.Add',array('hiddenField' => true,'checked'=>$modelFieldAdd, 'class'=>'fieldCheckbox'));
+				echo $this->Form->checkbox(
+					$fieldname.'.Add',
+						array(
+							'hiddenField' => true,
+							'checked'=>$modelFieldAdd, 
+							'class'=>'fieldCheckbox',
+							'data-fieldName' => $class . "." . $field
+						)
+					);
 			echo '</div>';
 			
 			echo '<div>';

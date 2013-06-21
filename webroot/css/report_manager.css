@@ -8,8 +8,8 @@
 input[type="radio"] {
     float: left;
     clear: left;
-    margin-top: 3px;
-    margin-right: 2px;
+    margin-top: 13px; 
+    margin-right: 8px;
 }
 input[type="checkbox"] {
     float: left;
