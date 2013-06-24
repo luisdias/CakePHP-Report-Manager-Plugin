@@ -38,7 +38,8 @@ $(document).ready(function(){
 	// these classes were suggested in the jQuery UI vertical menu demo
 	$('#newtabs')
 		.tabs()
-		.addClass( "ui-tabs-vertical ui-helper-clearfix" );
+		.addClass( "ui-helper-clearfix" )
+		.addClass( "ui-tabs-vertical" );
 	$( "#newtabs li" )
 		.removeClass( "ui-corner-top" )
 		.addClass( "ui-corner-left" );
@@ -168,15 +169,23 @@ $(document).ready(function(){
 		
 		// change all the fieldselectors, so they only show options for the checked fields
 		var options = '';
+		var numChecked = 0;
 		for(var i=0;i<checkboxes.length;i++){
 			var $checkbox = $(checkboxes[i]);
 			if($checkbox.prop('checked')){
 				options += '<option value="' + $checkbox.data('fieldname') + '">' + fieldsArray[$checkbox.data('fieldname')] + '</option>';
+				numChecked++;
 			}
 		}
 		selects.each(function(idx, elem){
 			$(elem).children().remove().end().append($(options));
 		});
+		
+		// if there are no checkboxes checked, that changes some other things... you can't add a filter, and you 
+		// also can't do any sorting
+		if (numChecked == 0){
+			$('#AddNewFilter').prop('disabled') = true;
+		}
 		
 	}
 	
