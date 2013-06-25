@@ -14,7 +14,7 @@
 </script>
 
 <?php echo $this->Html->script(array('https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')); ?>
-<?php echo $this->Html->css('/CustomReporting/css/report_manager.css'); ?>
+<?php echo $this->Html->css('/AdHocReporting/css/report_manager.css'); ?>
 
 <div class="reportManager index form">
     <h2><?php echo __('Custom Reports');?></h2>
@@ -39,12 +39,12 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach($customReports as $id => $customReport): ?>
+			<?php foreach($adHocReports as $id => $adHocReport): ?>
 			<tr>
-				<td><?php echo $this->Html->link($customReport, array('action' => 'view', $id), array('target' => '_blank')); ?></td>
+				<td><?php echo $this->Html->link($adHocReport, array('action' => 'view', $id), array('target' => '_blank')); ?></td>
 				<td>
 					<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $id)); ?> | 
-					<?php echo $this->Html->link(__('Delete'), array('action' => 'delete', $id), null, sprintf(__('Are you sure you want to delete "%s"?'), $customReport)); ?> | 
+					<?php echo $this->Html->link(__('Delete'), array('action' => 'delete', $id), null, sprintf(__('Are you sure you want to delete "%s"?'), $adHocReport)); ?> | 
 					<?php echo $this->Html->link(__('Copy'), array('action' => 'duplicate', $id)); ?>
 				</td>
 			</tr>

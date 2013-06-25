@@ -316,17 +316,17 @@ $(document).ready(function() {
 	 * When clicking the save button, over-ride the target attribute,
 	 * the form action, and then submit the form
 	 */
-	$("#CustomReportSave").click(function(e) {
+	$("#AdHocReportSave").click(function(e) {
 		e.preventDefault();
 		var $saveForm = $(this).parents('form');
 		
 		// Depending on whether there is an ID already, we're going
 		// to be editing or saving
-		var id = $("#CustomReportId").val();
+		var id = $("#AdHocReportId").val();
 		if(id == undefined || id == '') {
-			$saveForm.attr('action', '/custom_reporting/custom_reports/add');
+			$saveForm.attr('action', '/ad_hoc_reporting/ad_hoc_reports/add');
 		} else {
-			$saveForm.attr('action', '/custom_reporting/custom_reports/edit/'+id);
+			$saveForm.attr('action', '/ad_hoc_reporting/ad_hoc_reports/edit/'+id);
 		}
 		$saveForm.attr('target', '');
 		$saveForm.submit();			

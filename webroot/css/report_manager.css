@@ -11,21 +11,11 @@ input[type="radio"] {
     margin-top: 13px; 
     margin-right: 8px;
 }
-input[type="checkbox"] {
-    float: left;
-    clear: left;
-    margin-top: 3px;
-    margin-right: 5px;
-}
 
 .checkbox  label {
     clear: none;
     text-align: left;
     width: 400px;
-}
-
-label {
-    float: left;
 }
 
 table thead td {
@@ -64,10 +54,6 @@ table thead td {
     width: 80px;
 }
 
-.reportManager.index label {
-    width: 200px;
-}
-
 .reportManager.index select {
     width: 200px;
 }
@@ -99,10 +85,6 @@ table thead td {
 
 .reportManager.index fieldset {
     height: 120px;
-}
-
-.reportManager.index label {
-    width: 80px;
 }
 
 .reportManager.index input[type="submit"] {

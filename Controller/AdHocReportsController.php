@@ -7,9 +7,9 @@
  * Redistributions of files must retain the above copyright notice.
  */
 
-class CustomReportsController extends CustomReportingAppController {
+class AdHocReportsController extends AdHocReportingAppController {
 	
-	public $uses = array('CustomReporting.CustomReport');
+	public $uses = array('AdHocReporting.AdHocReport');
 	public $helpers = array('Number', 'Form');
 
 	public function index() {
@@ -18,17 +18,17 @@ class CustomReportsController extends CustomReportingAppController {
 	
 			// Get the lists of models and saved reports, and pass them to the view
 			$models = $this->_getFilteredListOfModels();
-			$customReports = $this->CustomReport->find('all',array(
+			$adHocReports = $this->AdHocReport->find('all',array(
 				'fields' => array('id','title','created'),
 				'recursive' => -1
 			));			
-			$this->set(compact('models', 'customReports'));
+			$this->set(compact('models', 'adHocReports'));
 
 		} else {
 	
-			if (isset($this->request->data['CustomReport']['model'])) {
+			if (isset($this->request->data['AdHocReport']['model'])) {
 				// TODO: validate the modelClass name - don't trust it
-				$modelIndex = $this->data['CustomReport']['model'];
+				$modelIndex = $this->data['AdHocReport']['model'];
 				$this->redirect(array('action' => 'wizard', $modelIndex));
 				return;
 			}
@@ -163,7 +163,7 @@ class CustomReportsController extends CustomReportingAppController {
 				}
 			}
 			if (count($conditionsList)>0) {
-				$logical = empty($this->data['CustomReport']['FilterLogic'])?'OR':$this->data['CustomReport']['FilterLogic'];
+				$logical = empty($this->data['AdHocReport']['FilterLogic'])?'OR':$this->data['AdHocReport']['FilterLogic'];
 				// for eaxmple, $conditions will be like array("OR" => array("Users.name = 'ian'","Users.fieldname < 5") )
 				$conditions[$logical] = $conditionsList;
 			}
@@ -212,11 +212,11 @@ class CustomReportsController extends CustomReportingAppController {
 			$this->set('fieldsType',$fieldsType);
 			$this->set('fieldsLength',$fieldsLength);
 			$this->set('reportData',$reportData);
-			$this->set('reportName',$this->data['CustomReport']['Title']);
-			$this->set('reportStyle',$this->data['CustomReport']['Style']);
-			$this->set('showRecordCounter',$this->data['CustomReport']['ShowRecordCounter']);
+			$this->set('reportName',$this->data['AdHocReport']['Title']);
+			$this->set('reportStyle',$this->data['AdHocReport']['Style']);
+			$this->set('showRecordCounter',$this->data['AdHocReport']['ShowRecordCounter']);
 
-			if ( $this->data['CustomReport']['Output'] == 'html') {
+			if ( $this->data['AdHocReport']['Output'] == 'html') {
 				$this->render('report_display');
 			} else { // Excel file
 				$this->layout = null;
@@ -241,23 +241,23 @@ class CustomReportsController extends CustomReportingAppController {
 			return;			
 		}
 		
-		$customReport = $this->CustomReport->find('first', array('conditions' => array('id' => $id)));
-		if (!$customReport || empty($customReport)) {
+		$adHocReport = $this->AdHocReport->find('first', array('conditions' => array('id' => $id)));
+		if (!$adHocReport || empty($adHocReport)) {
 			$this->Session->setFlash(__('Sorry, we could not load that report'));
 			$this->redirect(array('action'=>'index'));
 			return;
 		} else {
-			$reportData = unserialize($customReport['CustomReport']['options']);
+			$reportData = unserialize($adHocReport['AdHocReport']['options']);
 			if ($reportData === false) {
 				$this->Session->setFlash(__('Sorry, but that report appears to be corrupted.'));
 				$this->redirect(array('action'=>'index'));
 				return;
 			}
 			
-			$reportData['CustomReport'] = array_merge($reportData['CustomReport'], $customReport['CustomReport']);
+			$reportData['AdHocReport'] = array_merge($reportData['AdHocReport'], $adHocReport['AdHocReport']);
 			$this->request->data = $reportData;				
 			
-			return($this->wizard($reportData['CustomReport']['modelClass']));
+			return($this->wizard($reportData['AdHocReport']['modelClass']));
 		}
 	}
 	
@@ -275,20 +275,20 @@ class CustomReportsController extends CustomReportingAppController {
 		}
 		
 		// Set a title, giving it a default if there isn't one already
-		$reportTitle = empty($this->request->data['CustomReport']['Title']) ? 'New Report' : trim($this->request->data['CustomReport']['Title']);
+		$reportTitle = empty($this->request->data['AdHocReport']['Title']) ? 'New Report' : trim($this->request->data['AdHocReport']['Title']);
 		
-		$data = array('CustomReport' => array(
+		$data = array('AdHocReport' => array(
 			'title' => $reportTitle,
 			'options' => serialize($reportOptions),
 		));
 		
-		$this->CustomReport->create();
-		if ($this->CustomReport->save($data)) {
+		$this->AdHocReport->create();
+		if ($this->AdHocReport->save($data)) {
 			$this->redirect(array('action'=>'index'));
 			return;
 		} else {
 			$this->Session->setFlash(__('Sorry, but we could not save your report'));
-			return $this->wizard($this->request->data['CustomReport']['modelClass'], $this->request->data);
+			return $this->wizard($this->request->data['AdHocReport']['modelClass'], $this->request->data);
 		}
 	}
 	
@@ -301,20 +301,20 @@ class CustomReportsController extends CustomReportingAppController {
 		
 		if (empty($this->request->data)) {
 			
-			$customReport = $this->CustomReport->find('first', array('conditions' => array('id' => $id)));
-			if (!$customReport || empty($customReport)) {
+			$adHocReport = $this->AdHocReport->find('first', array('conditions' => array('id' => $id)));
+			if (!$adHocReport || empty($adHocReport)) {
 				$this->Session->setFlash(__('Sorry, we could not load that report'));
 				$this->redirect(array('action'=>'index'));
 				return;
 			} else {
-				$reportData = unserialize($customReport['CustomReport']['options']);
+				$reportData = unserialize($adHocReport['AdHocReport']['options']);
 				if ($reportData === false) {
 					$this->Session->setFlash(__('Sorry, but that report appears to be corrupted.'));
 					$this->redirect(array('action'=>'index'));
 					return;
 				}
-				$reportData['CustomReport'] = array_merge($reportData['CustomReport'], $customReport['CustomReport']);
-				return($this->wizard($reportData['CustomReport']['modelClass'], $reportData));
+				$reportData['AdHocReport'] = array_merge($reportData['AdHocReport'], $adHocReport['AdHocReport']);
+				return($this->wizard($reportData['AdHocReport']['modelClass'], $reportData));
 			}
 			
 		} else {
@@ -325,30 +325,30 @@ class CustomReportsController extends CustomReportingAppController {
 				unset($reportOptions['_Token']);
 			}				
 
-			$data = array('CustomReport' => array(
+			$data = array('AdHocReport' => array(
 				'id' => $id,
-				'title' => $this->request->data['CustomReport']['Title'],
+				'title' => $this->request->data['AdHocReport']['Title'],
 				'options' => serialize($reportOptions),
 			));
 		
-			if ($this->CustomReport->save($data)) {
+			if ($this->AdHocReport->save($data)) {
 				$this->redirect(array('action'=>'index'));
 				return;
 			} else {
 				$this->Session->setFlash(__('Sorry, but we could not save your report'));
-				return $this->wizard($this->request->data['CustomReport']['modelClass'], $this->request->data);
+				return $this->wizard($this->request->data['AdHocReport']['modelClass'], $this->request->data);
 			}
 		}
 	}
 
 	function delete($id = null) {
 		if (is_null($id)) {
-			$this->Session->setFlash(__('Invalid Custom Report'));
+			$this->Session->setFlash(__('Invalid Ad-hoc Report'));
 			$this->redirect(array('action'=>'index'));
 			return;
 		}
 		
-		if (!$this->CustomReport->delete($id)) {
+		if (!$this->AdHocReport->delete($id)) {
 			$this->Session->setFlash(__('Delete failed. Please try again.'));
 		}
 		$this->redirect(array('action'=>'index'));		
@@ -356,24 +356,24 @@ class CustomReportsController extends CustomReportingAppController {
 	
 	function duplicate($id = null) {
 		if (is_null($id)) {
-			$this->Session->setFlash(__('Invalid Custom Report'));
+			$this->Session->setFlash(__('Invalid Ad-hoc Report'));
 			$this->redirect(array('action'=>'index'));
 			return;
 		}
 		
-		$customReport = $this->CustomReport->find('first', array('conditions' => array('id' => $id)));
+		$adHocReport = $this->AdHocReport->find('first', array('conditions' => array('id' => $id)));
 		
 		// Clear out the ID, update the title, and save a copy
-		unset($customReport['CustomReport']['id']);
-		$customReport['CustomReport']['title'] = 'Copy of ' . $customReport['CustomReport']['title'];
+		unset($adHocReport['AdHocReport']['id']);
+		$adHocReport['AdHocReport']['title'] = 'Copy of ' . $adHocReport['AdHocReport']['title'];
 		
 		// Also update the title that's stored in the form data
-		$customReportOptions = unserialize($customReport['CustomReport']['options']);
-		$customReportOptions['CustomReport']['Title'] = $customReport['CustomReport']['title'] ;
-		$customReport['CustomReport']['options'] = serialize($customReportOptions);
+		$adHocReportOptions = unserialize($adHocReport['AdHocReport']['options']);
+		$adHocReportOptions['AdHocReport']['Title'] = $adHocReport['AdHocReport']['title'] ;
+		$adHocReport['AdHocReport']['options'] = serialize($adHocReportOptions);
 		
-		$this->CustomReport->create();
-		if (!$this->CustomReport->save($customReport)) {
+		$this->AdHocReport->create();
+		if (!$this->AdHocReport->save($adHocReport)) {
 			$this->Session->setFlash(__('Sorry, but we could not save a copy of this report'));			
 		}
 		$this->redirect(array('action'=>'index'));		
@@ -391,10 +391,10 @@ class CustomReportsController extends CustomReportingAppController {
 		
 		// If we have a whitelist then we will use that. If there is no whitelist,
 		// then we will start with the complete list of models in the application.
-		if (Configure::read('CustomReporting.modelWhitelist') == false) {
+		if (Configure::read('AdHocReporting.modelWhitelist') == false) {
 			$models = App::objects('Model');
 		} else {
-			$models = Configure::read('CustomReporting.modelWhitelist');
+			$models = Configure::read('AdHocReporting.modelWhitelist');
 			
 			// Note, some of the whitelist entries might not be string values,
 			// but instead array values of whitelisted associated models. In these
@@ -409,7 +409,7 @@ class CustomReportsController extends CustomReportingAppController {
 		}
 		
 		// Now remove any models from the list that also exist on the blacklist
-		$modelBlacklist = Configure::read('CustomReporting.modelBlacklist');
+		$modelBlacklist = Configure::read('AdHocReporting.modelBlacklist');
 		if ($modelBlacklist !== false) {
 			foreach ($models as $index => $model) {
 				if (in_array($model, $modelBlacklist)) {
@@ -451,8 +451,8 @@ class CustomReportsController extends CustomReportingAppController {
 	 */	
 	function _getCompleteFieldList($baseModelClass) {
 
-		$modelWhitelist = Configure::read('CustomReporting.modelWhitelist');
-		$modelBlacklist = Configure::read('CustomReporting.modelBlacklist');
+		$modelWhitelist = Configure::read('AdHocReporting.modelWhitelist');
+		$modelBlacklist = Configure::read('AdHocReporting.modelBlacklist');
 		
 		// Start with the base model
 		$completeSchema = array($baseModelClass => $this->_getFilteredListOfModelFields($baseModelClass));
@@ -490,9 +490,9 @@ class CustomReportsController extends CustomReportingAppController {
 	 */
 	function _getFilteredListOfModelFields($modelClass) {
 		
-		$displayForeignKeys = Configure::read('CustomReporting.displayForeignKeys');
-		$globalFieldBlacklist = Configure::read('CustomReporting.globalFieldBlacklist');
-		$modelFieldBlacklist = Configure::read('CustomReporting.modelFieldBlacklist');
+		$displayForeignKeys = Configure::read('AdHocReporting.displayForeignKeys');
+		$globalFieldBlacklist = Configure::read('AdHocReporting.globalFieldBlacklist');
+		$modelFieldBlacklist = Configure::read('AdHocReporting.modelFieldBlacklist');
 		
 
 		$this->loadModel($modelClass);
@@ -561,7 +561,7 @@ class CustomReportsController extends CustomReportingAppController {
 	}
 
 	public function _export2Xls(&$reportData = array(),&$fieldsList=array(), &$fieldsType=array(), &$showNoRelated = false ) {
-		App::import('Vendor', 'CustomReporting.Excel');
+		App::import('Vendor', 'AdHocReporting.Excel');
 		$xls = new Excel();		 
 		$xls->buildXls($reportData, $fieldsList, $fieldsType, $showNoRelated);
 	}

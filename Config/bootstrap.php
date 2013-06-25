@@ -9,7 +9,7 @@
  * If set to false, then all fields that match the pattern *_id will
  * be excluded from the reports.
  */
-Configure::write('CustomReporting.displayForeignKeys', false);
+Configure::write('AdHocReporting.displayForeignKeys', false);
 
 
 
@@ -20,10 +20,15 @@ Configure::write('CustomReporting.displayForeignKeys', false);
  * reports on this list of models. If set to false, then the
  * system will present the full list of models in the system.
  * In either case, we will also remove any models included in
- * the CustomReporting.modelBlackList setting.
+ * the AdHocReporting.modelBlackList setting.
+ *
+ * if this list is false, then everything is included.
+ * if this list is an array, then only the models in the array are included. It becomes
+ * an exclusive whitelist. 
+ * The blacklist is still applied to whatever is allowed here.
  */
-if (!is_array(Configure::read('CustomReporting.modelWhitelist'))) {
-	Configure::write('CustomReporting.modelWhitelist',	array(
+if (!is_array(Configure::read('AdHocReporting.modelWhitelist'))) {
+	Configure::write('AdHocReporting.modelWhitelist',	array(
 		'Users',
 		'Categories',
 		'Hobbies',
@@ -41,8 +46,8 @@ if (!is_array(Configure::read('CustomReporting.modelWhitelist'))) {
  * for the root model. Any models included with a BelongsTo or
  * HasMany relationship will not reference this list.
  */
-if (!is_array(Configure::read('CustomReporting.modelBlacklist'))) {
-	Configure::write('CustomReporting.modelBlacklist',array(
+if (!is_array(Configure::read('AdHocReporting.modelBlacklist'))) {
+	Configure::write('AdHocReporting.modelBlacklist',array(
 		'SecretThings',
 		'PrivateObjects',
 	));
@@ -55,8 +60,8 @@ if (!is_array(Configure::read('CustomReporting.modelBlacklist'))) {
  * in reports. If you have any model-specific fields to exclude, you
  * can add them to the modelFieldBlacklist setting below
  */
-if (!is_array(Configure::read('CustomReporting.globalFieldBlacklist'))) {
-	Configure::write('CustomReporting.globalFieldBlacklist', array(
+if (!is_array(Configure::read('AdHocReporting.globalFieldBlacklist'))) {
+	Configure::write('AdHocReporting.globalFieldBlacklist', array(
 		'id',
 		'password',
 		'secret',
@@ -64,8 +69,8 @@ if (!is_array(Configure::read('CustomReporting.globalFieldBlacklist'))) {
 	));
 }
 
-if (!is_array(Configure::read('CustomReporting.modelFieldBlacklist'))) {
-	Configure::write('CustomReporting.modelFieldBlacklist',array(
+if (!is_array(Configure::read('AdHocReporting.modelFieldBlacklist'))) {
+	Configure::write('AdHocReporting.modelFieldBlacklist',array(
 		'User' => array(
 			'api_key',		
 			'field1'=>'field1',
