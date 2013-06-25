@@ -38,7 +38,8 @@ $(document).ready(function(){
 	// these classes were suggested in the jQuery UI vertical menu demo
 	$('#newtabs')
 		.tabs()
-		.addClass( "ui-tabs-vertical ui-helper-clearfix" );
+		.addClass( "ui-helper-clearfix" )
+		.addClass( "ui-tabs-vertical" );
 	$( "#newtabs li" )
 		.removeClass( "ui-corner-top" )
 		.addClass( "ui-corner-left" );
@@ -47,7 +48,19 @@ $(document).ready(function(){
 	// apply the master/slave relationship to the checkboxes
 	function checkthemall(master, slaves){
 		master.click(function(){
+			
+			if ($('#Filters .filter').length > 0){
+				if ($(this).prop('checked') == false){
+					if (confirm('Unchecking all fields will also remove all filters. Continue?')){
+						$('#Filters .filter').remove();
+					} else {
+						return false;
+					}
+				}
+			}
+			
 			slaves.prop('checked',$(this).prop('checked'));
+			onCheckboxChange()
 		});
 		var testslaves = function(){
 			var allchecked = true;
@@ -65,9 +78,11 @@ $(document).ready(function(){
 		slaves.click(testslaves);
 	}
 	checkthemall($('#fieldsCheckAll'), $('.sortable-field .fieldCheckbox'));
+	onCheckboxChange();
 	
+
 	
-	$('.filter .close-button').click(function(){
+	$('.filter .closeButton').click(function(){
 		$(this).closest('.filter').remove();
 		showhidefilterlogic();
 	});
@@ -82,6 +97,7 @@ $(document).ready(function(){
 	}
 	showhidefilterlogic();
 	
+	
 	$('#AddNewFilter').click(function(){
 		
 		var filterId = Math.floor((Math.random()*10000000)+1); 
@@ -94,33 +110,16 @@ $(document).ready(function(){
 			options += '<option value="'+f+'">'+fieldsArray[f]+'</option>';
 		}
 		
-		// this markup is the same as that which is genreated by the View.
-		html = '';
-		html +='	<div class="filter" id="filter-'+filterId+'">';
-		html +='		<div class="close-button">X</div>';
-		html +='		<div>';
-		html +='			<label>Filter By: </label>';
-		html +='			<select name="data[Filters]['+filterId+'][Field]">';
-		html +='			'+options+'';
-		html +='			</select>';
-		html +='		</div>';
-		html +='		<div class="grid_2">';
-		html +='			<input type="checkbox" name="data[Filters]['+filterId+'][Not]" value="1" /><label>IS NOT</label>';
-		html +='		</div>';
-		html +='		<div class="grid_2">';
-		html +='			<select name="data[Filters]['+filterId+'][Operator]">';
-		html +='				<option value="=" >equals</option>';
-		html +='				<option value="&gt;" >is greater than</option>';
-		html +='				<option value="&lt;" >is less than</option>';
-		html +='			</select>';
-		html +='		</div>';
-		html +='		<div class="grid_4">';
-		html +='			<input type="text" name="data[Filters]['+filterId+'][Value]" />';
-		html +='		</div>';
-		html +='	</div>';
+		$html = $('#filter-template').clone();
+		$html.removeClass('hidden');
+		$html.removeAttr('id');
+		$html.find('select,input').each(function(idx, elem){
+			$elem = $(elem);
+			$name = $elem.attr("name").replace('template',filterId);
+			$elem.attr("name",$name);
+		});
 		
-		$html = $(html);
-		$html.find('.close-button').click(function(){
+		$html.find('.closeButton').click(function(){
 			$(this).closest('.filter').remove();
 			showhidefilterlogic();
 		});
@@ -162,6 +161,73 @@ $(document).ready(function(){
 	$('#step-4-prev').click(function(){
 		$('#newtabs').tabs({'active':2});
 	});
+	
+	function onCheckboxChange(){
+		var newoptionlist = [];
+		var checkboxes = $('.reportManager .fieldCheckbox');
+		var selects = $('.fieldSelectBox');
+		
+		// change all the fieldselectors, so they only show options for the checked fields
+		var options = '';
+		var numChecked = 0;
+		for(var i=0;i<checkboxes.length;i++){
+			var $checkbox = $(checkboxes[i]);
+			if($checkbox.prop('checked')){
+				options += '<option value="' + $checkbox.data('fieldname') + '">' + fieldsArray[$checkbox.data('fieldname')] + '</option>';
+				numChecked++;
+			}
+		}
+		selects.each(function(idx, elem){
+			$(elem).children().remove().end().append($(options));
+		});
+		
+		// if there are no checkboxes checked, that changes some other things... you can't add a filter, and you 
+		// also can't do any sorting
+		if (numChecked == 0){
+			$('#AddNewFilter').prop('disabled') = true;
+		}
+		
+	}
+	
+	/* crazy field & filter dependency behaviours. woot! */
+	$('.reportManager .fieldCheckbox').click(function(){
+		
+		// if we're unchecking a box, we might also be removing a filter that uses this field
+		if ($(this).prop('checked')){
+			// we add this field to the list that populates all the select boxes!
+			//alert('is checked');
+		} else {
+			// check if this is one of the selected options in any of the filters
+			
+			var fieldname = $(this).data('fieldname');
+			
+			var filterstoremove = [];
+			$('#Filters select.fieldSelectBox').each(function(idx, elem){
+				if (fieldname == $(elem).val()){
+					filterstoremove.push(elem); // we're pushing the actual element into the array. handy!
+				}
+			});
+			if (filterstoremove.length > 0) {
+				if (confirm('Hiding this field will remove ' +(filterstoremove.length)+ ' filter'+(filterstoremove.length==1?'':'s')+' that use'+(filterstoremove.length==1?'s':'')+' this field. Are you OK with that?')){
+					for(var i=0;i<filterstoremove.length;i++){
+						$(filterstoremove[i]).closest('.filter').remove();
+						showhidefilterlogic();
+					}
+				} else {
+					return false;
+				}
+			}
+			
+		}
+		
+		onCheckboxChange();
+		
+		
+	});
+	
+	
+	
+	
 	
 });
 
@@ -224,14 +290,15 @@ $(document).ready(function() {
         $(this).closest("tr").css("background-color", this.checked ? "#eee" : "");
     });
 
-    $( ".sortable1" ).sortable({
-        items: "div.sortable-field",
-        axis: 'y',
-        stop: function(event, ui) {
-            $('input.position').reNumberPosition();
-        }
-    });    
-    
+	$( "#sortableList" ).sortable({
+		items: "li.sortable-field",
+		handle: '.handle',
+		axis: 'y',
+		stop: function(event, ui) {
+			$('input.position').reNumberPosition();
+		}
+	});
+	
     $('.checkAll').click(function () {
         model = $(this).text();
         $("tr :checkbox[name^=\"data["+model+"]\"][name*='[Add]']").each(function(){

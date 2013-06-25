@@ -22,17 +22,16 @@ Configure::write('CustomReporting.displayForeignKeys', false);
  * In either case, we will also remove any models included in
  * the CustomReporting.modelBlackList setting.
  */
-Configure::write('CustomReporting.modelWhitelist',	array(
-    'User' => array (
-		'Group',
-		'CurrentEmployeeRecord',
-		'CurrentAssignmentRecord',
-		'GoalParticipation',
-	),
-	'AssignmentRecord',
-	'Application',
-	'ApplicationNote',
-));
+if (!is_array(Configure::read('CustomReporting.modelWhitelist'))) {
+	Configure::write('CustomReporting.modelWhitelist',	array(
+		'Users',
+		'Categories',
+		'Hobbies',
+		'Widgets',
+		'Foo',
+		'Bar'
+	));
+}
 
 /**
  * A Blacklist of Models that should not be made available
@@ -42,11 +41,12 @@ Configure::write('CustomReporting.modelWhitelist',	array(
  * for the root model. Any models included with a BelongsTo or
  * HasMany relationship will not reference this list.
  */
-Configure::write('CustomReporting.modelBlacklist',array(
-    'AppModel',
-	'CustomReport',
-));
-
+if (!is_array(Configure::read('CustomReporting.modelBlacklist'))) {
+	Configure::write('CustomReporting.modelBlacklist',array(
+		'SecretThings',
+		'PrivateObjects',
+	));
+}
 
 /**
  * A Blacklist of Fields to be excluded from reports
@@ -55,23 +55,24 @@ Configure::write('CustomReporting.modelBlacklist',array(
  * in reports. If you have any model-specific fields to exclude, you
  * can add them to the modelFieldBlacklist setting below
  */
-Configure::write('CustomReporting.globalFieldBlacklist', array(
-    'id',
-	'password',
-	'lft',
-	'rght',
-	'field1',
-	'field2',
-	'field3',
-));
+if (!is_array(Configure::read('CustomReporting.globalFieldBlacklist'))) {
+	Configure::write('CustomReporting.globalFieldBlacklist', array(
+		'id',
+		'password',
+		'secret',
+		'private'
+	));
+}
 
-Configure::write('CustomReporting.modelFieldBlacklist',array(
-    'User' => array(
-		'api_key',		
-        'field1'=>'field1',
-        'field2'=>'field2',
-        'field3'=>'field3',
-    )
-));
+if (!is_array(Configure::read('CustomReporting.modelFieldBlacklist'))) {
+	Configure::write('CustomReporting.modelFieldBlacklist',array(
+		'User' => array(
+			'api_key',		
+			'field1'=>'field1',
+			'field2'=>'field2',
+			'field3'=>'field3',
+		)
+	));
+}
 
 ?>
