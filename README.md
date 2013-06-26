@@ -4,7 +4,7 @@ The report manager plugin can help users to create reports based on the applicat
 ## Installation  
 _Option 1: Manual_
 
-1. Download this: http://github.com/TribeHR/CakePHP-Ad-Hoc-Reporting-Plugin/zipball/master
+1. Download this: http://github.com/TribeHR/ad_hoc_reporting/zipball/master
 2. Unzip that download.
 3. Copy the resulting folder to `app/Plugin`
 4. Rename the folder you just copied to `AdHocReporting`
@@ -13,7 +13,7 @@ _Option 2: GIT Submodule_
 
 In your app directory type:
 ```bash
-git submodule add git://github.com/TribeHR/CakePHP-Ad-Hoc-Reporting-Plugin.git Plugin/AdHocReporting
+git submodule add git://github.com/TribeHR/ad_hoc_reporting.git Plugin/AdHocReporting
 git submodule init
 git submodule update
 ```
@@ -22,7 +22,7 @@ _Option 3: GIT Clone_
 
 In your plugin directory type
 ```bash
-git clone git://github.com/TribeHR/CakePHP-Ad-Hoc-Reporting-Plugin.git AdHocReporting
+git clone git://github.com/TribeHR/ad_hoc_reporting.git AdHocReporting
 ```
 
 ## Setup
@@ -41,7 +41,7 @@ If you are using an ACL, add ACO entries for
 - AdHocReporting/AdHocReports/edit
 - AdHocReporting/AdHocReports/wizard
 - AdHocReporting/AdHocReports/view
-- AdHocReporting/AdHocReports/copy
+- AdHocReporting/AdHocReports/duplicate
 
 ## Credits
 
