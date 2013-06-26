@@ -16,35 +16,35 @@
         
             echo '<tr>';
             echo '<td>';
-            echo $this->Form->input('CustomReport.Style',array('type'=>'select','options'=>$styleOptions));            
+            echo $this->Form->input('AdHocReport.Style',array('type'=>'select','options'=>$styleOptions));            
             echo '</td>';             
             echo '</tr>';
 
             echo '<tr>';
             echo '<td>';
-            echo $this->Form->input('CustomReport.Output',array('type'=>'select','options'=>$outputOptions));            
+            echo $this->Form->input('AdHocReport.Output',array('type'=>'select','options'=>$outputOptions));            
             echo '</td>';             
             echo '</tr>';
             
             echo '<tr>';
             echo '<td>';
             echo __('Show record counter');
-            if (isset($this->data['CustomReport']['ShowRecordCounter']))
-                $showRecordCounter = $this->data['CustomReport']['ShowRecordCounter'];
+            if (isset($this->data['AdHocReport']['ShowRecordCounter']))
+                $showRecordCounter = $this->data['AdHocReport']['ShowRecordCounter'];
             else
                 $showRecordCounter = true;
-            echo $this->Form->checkbox('CustomReport.ShowRecordCounter',array('hiddenField' => true,'checked'=>$showRecordCounter));                     
+            echo $this->Form->checkbox('AdHocReport.ShowRecordCounter',array('hiddenField' => true,'checked'=>$showRecordCounter));                     
             echo '</td>';             
             echo '</tr>';            
             
             echo '<tr>';
             echo '<td>';
             echo __('Show items with no related records');
-            if (isset($this->data['CustomReport']['ShowNoRelated']))
-                $showNoRelated = $this->data['CustomReport']['ShowNoRelated'];
+            if (isset($this->data['AdHocReport']['ShowNoRelated']))
+                $showNoRelated = $this->data['AdHocReport']['ShowNoRelated'];
             else
                 $showNoRelated = false;
-            echo $this->Form->checkbox('CustomReport.ShowNoRelated',array('hiddenField' => true,'checked'=>$showNoRelated));
+            echo $this->Form->checkbox('AdHocReport.ShowNoRelated',array('hiddenField' => true,'checked'=>$showNoRelated));
             echo '</td>';             
             echo '</tr>';
                   

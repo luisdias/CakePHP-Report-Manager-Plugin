@@ -9,20 +9,20 @@
 ?>
 <?php
 
-echo $this->Html->css('/CustomReporting/css/report_manager.css');
-echo $this->Html->css('/CustomReporting/css/smart_wizard.css');
+echo $this->Html->css('/AdHocReporting/css/report_manager.css');
+echo $this->Html->css('/AdHocReporting/css/smart_wizard.css');
 echo $this->Html->script(array('https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'));
 echo $this->Html->script(array('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js'));
-echo $this->Html->script(array('/CustomReporting/js/jquery.smartWizard-2.0.js','/CustomReporting/js/default.js'));
+echo $this->Html->script(array('/AdHocReporting/js/jquery.smartWizard-2.0.js','/AdHocReporting/js/default.js'));
 ?>
 
 <div class="reportManager form">
-	<h2><?php echo __('Custom Report'); ?></h2>
-	<?php echo $this->Form->create('CustomReport',array('url' => array('action' => 'wizard', $modelClass), 'target'=>'_blank', 'id' => 'ReportWizardForm', $modelClass)); ?>
-	<?php echo $this->Form->input('CustomReport.modelClass',array('type'=>'hidden','value'=>$modelClass)); ?>
-	<?php echo $this->Form->input('CustomReport.Title',array('size'=>'80','label' => 'Title', 'maxlength'=>'100')); ?>
-	<?php echo $this->Form->input('CustomReport.id',array('type' => 'hidden')); ?>
-	<?php echo $this->Form->submit(__('Save'), array('id'=>'CustomReportSave')); ?>
+	<h2><?php echo __('Ad-hoc Report'); ?></h2>
+	<?php echo $this->Form->create('AdHocReport',array('url' => array('action' => 'wizard', $modelClass), 'target'=>'_blank', 'id' => 'ReportWizardForm', $modelClass)); ?>
+	<?php echo $this->Form->input('AdHocReport.modelClass',array('type'=>'hidden','value'=>$modelClass)); ?>
+	<?php echo $this->Form->input('AdHocReport.Title',array('size'=>'80','label' => 'Title', 'maxlength'=>'100')); ?>
+	<?php echo $this->Form->input('AdHocReport.id',array('type' => 'hidden')); ?>
+	<?php echo $this->Form->submit(__('Save'), array('id'=>'AdHocReportSave')); ?>
 	<div id="wizard" class="swMain">
 	  <ul>
 	    <li><a href="#step-1">
@@ -62,8 +62,8 @@ echo $this->Html->script(array('/CustomReporting/js/jquery.smartWizard-2.0.js','
 	        <?php
 
 	        echo $this->Element('fields_dnd_table_header',array(
-	            'plugin '=> 'CustomReporting',
-	            'title' => __('Custom Reporting'),
+	            'plugin '=> 'AdHocReporting',
+	            'title' => __('Ad-Hoc Reporting'),
 	            'sortableClass' => 'sortable1'));        
 
 			foreach($modelSchema as $model => $schema) {
@@ -73,7 +73,7 @@ echo $this->Html->script(array('/CustomReporting/js/jquery.smartWizard-2.0.js','
 		            'modelSchema' => $schema));
 			}
         
-	        echo $this->Element('fields_dnd_table_close',array('plugin'=>'CustomReporting'));
+	        echo $this->Element('fields_dnd_table_close',array('plugin'=>'AdHocReporting'));
 
 	        ?>
 
@@ -84,7 +84,7 @@ echo $this->Html->script(array('/CustomReporting/js/jquery.smartWizard-2.0.js','
 	        <?php      
 	        echo $this->Element('logical_operator');
 			foreach($modelSchema as $model => $schema) {
-	        	echo $this->Element('filter',array('plugin'=>'CustomReporting','modelClass' => $model, 'modelSchema' => $schema));
+	        	echo $this->Element('filter',array('plugin'=>'AdHocReporting','modelClass' => $model, 'modelSchema' => $schema));
 			}
 	        ?> 
 	  </div>                      
@@ -93,7 +93,7 @@ echo $this->Html->script(array('/CustomReporting/js/jquery.smartWizard-2.0.js','
 	        <?php
 	        echo $this->Element('order_direction');
 			foreach($modelSchema as $model => $schema) {
-	        	echo $this->Element('order',array('plugin'=>'CustomReporting','modelClass'=>$model,'modelSchema'=>$schema));
+	        	echo $this->Element('order',array('plugin'=>'AdHocReporting','modelClass'=>$model,'modelSchema'=>$schema));
 	        }
 	        ?> 
 	  </div>

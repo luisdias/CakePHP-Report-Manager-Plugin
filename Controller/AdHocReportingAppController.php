@@ -1,6 +1,6 @@
 <?php
 
-class CustomReportingAppController extends AppController {
+class AdHocReportingAppController extends AppController {
 	
 	function beforeFilter() {
 		return parent::beforeFilter();		

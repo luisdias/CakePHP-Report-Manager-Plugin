@@ -6,11 +6,12 @@
 
 		echo '<div class="content">';
 		
-			echo '<div class="left">';
+			echo '<div class="checkbox">';
 				$modelFieldAdd = true;
 				if (isset($fieldarray['add'])) {
 					$modelFieldAdd = $fieldarray['add'];
 				}
+				
 				echo $this->Form->checkbox(
 					$fieldname.'.Add',
 						array(
@@ -20,11 +21,13 @@
 							'data-fieldName' => $class . "." . $field
 						)
 					);
-			echo '</div>';
+//			echo '</div>';
 			
-			echo '<div>';
+//			echo '<div>';
 				
+				echo '<label for="'.$class . Inflector::camelize($field) . 'Add'.'">';
 				echo Inflector::humanize(Inflector::underscore($class)) .' &gt; '. Inflector::humanize($field);
+				echo "</label>";
 				
 				echo $this->Form->input($fieldname.'.Position',array('label'=>'','size'=>'4','maxlength'=>'4','class'=>'position','type'=>'hidden'));
 	
