@@ -80,4 +80,30 @@ if (!is_array(Configure::read('AdHocReporting.modelFieldBlacklist'))) {
 	));
 }
 
+
+/**
+ *
+ * The Explicit list is a list defining exactly what models and fields are allowed.
+ * if this is anything other than null, then it does what a blacklist and whitelist 
+ * do when combined together. If something is on this list, it's allowed. If it's not
+ * on this list, then it's not allowed. 
+ *
+ * The whitelists and blacklists still work and are still applied. But you could just
+ * use this explicit list instead of both of them.
+ * The downside of an explicit list is that the reports aren't going to be responsive to
+ * changes in the models. If that's OK, then the explicit list is a good thing.
+ * 
+ */
+if (!is_array(Configure::read('AdHocReporting.modelFieldExplicitList'))) {
+	Configure::write('AdHocReporting.modelFieldExplicitList', array(
+		'Users' => array(
+			'first_name',
+			'last_name',
+			'email',
+			'twitter_handle'
+		)
+	));
+}
+ 
+
 ?>
