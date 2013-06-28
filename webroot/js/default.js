@@ -112,7 +112,7 @@ $(document).ready(function(){
 		
 		$html = $('#filter-template').clone();
 		$html.removeClass('hidden');
-		$html.removeAttr('id');
+		$html.attr('id', 'filter-'+filterId);
 		$html.find('select,input').each(function(idx, elem){
 			$elem = $(elem);
 			$name = $elem.attr("name").replace('template',filterId);
