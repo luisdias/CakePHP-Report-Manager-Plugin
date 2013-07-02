@@ -5,10 +5,22 @@
  * Licensed under The MIT License. See LICENSE file for details.
  * Redistributions of files must retain the above copyright notice.
  */
+
+
+img.logo {
+    float: left;
+    margin: 4px 50px 0 10px;
+}
+
+.details {
+    float: left;
+    margin: 15px 0;
+}
+
 #reportManagerDisplay .reportName {
     font-size: 19pt; 
 	font-weight: bold;
-   color: #333333;
+    color: #333333;
 }
 
 #reportManagerDisplay .timestamp {
@@ -86,5 +98,9 @@ table {
 }
 
 .col {
-    width: 100px
+    width: 100px;
+}
+
+@media print {
+
 }
