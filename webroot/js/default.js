@@ -177,8 +177,24 @@ $(document).ready(function(){
 				numChecked++;
 			}
 		}
+		
 		selects.each(function(idx, elem){
-			$(elem).children().remove().end().append($(options));
+			$elem = $(elem);
+			// get the selected option
+			var selectedoption = $elem.val();
+			// replace all the options with the new list
+			$elem.children().remove().end().append($(options));
+			// re-select it, if it exists!
+			$elem.val(selectedoption);
+			// force in the selected attribute, so that previews work
+			$elem.children().each(function(idx, opt){
+				$opt = $(opt);
+				if ($opt.attr('value') == selectedoption){
+					$opt.attr('selected','selected');
+				} else {
+					$opt.removeAttr('selected');
+				}
+			})
 		});
 		
 		// if there are no checkboxes checked, that changes some other things... you can't add a filter, and you 
