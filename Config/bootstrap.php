@@ -16,12 +16,6 @@ Configure::write('AdHocReporting.displayForeignKeys', false);
 /**
  * A Whitelist of Models to report on
  *
- * If set to an array, then we will only allow the users to run
- * reports on this list of models. If set to false, then the
- * system will present the full list of models in the system.
- * In either case, we will also remove any models included in
- * the AdHocReporting.modelBlackList setting.
- *
  * if this list is false, then everything is included.
  * if this list is an array, then only the models in the array are included. It becomes
  * an exclusive whitelist. 
@@ -41,9 +35,11 @@ if (!is_array(Configure::read('AdHocReporting.modelWhitelist'))) {
 /**
  * A Blacklist of Models that should not be made available
  *
- * If set to an array, then we will not allow the users to run
- * reports on on any models. In this list. Note, this is only 
- * for the root model. Any models included with a BelongsTo or
+ * this list is an array of models that should not be made available.
+ * this list becomes useful if the AdHocReporting.modelWhitelist is 
+ * set to false, to allow all models to be reported upon. This blacklist
+ * will allow the administrator to omit certain models from the reports.
+ * Note, this is only for the root model. Any models included with a BelongsTo or
  * HasMany relationship will not reference this list.
  */
 if (!is_array(Configure::read('AdHocReporting.modelBlacklist'))) {
@@ -58,7 +54,7 @@ if (!is_array(Configure::read('AdHocReporting.modelBlacklist'))) {
  *
  * This blacklist will be removed from ALL models that are included
  * in reports. If you have any model-specific fields to exclude, you
- * can add them to the modelFieldBlacklist setting below
+ * can add them to the modelFieldBlacklist setting below.
  */
 if (!is_array(Configure::read('AdHocReporting.globalFieldBlacklist'))) {
 	Configure::write('AdHocReporting.globalFieldBlacklist', array(
@@ -68,7 +64,10 @@ if (!is_array(Configure::read('AdHocReporting.globalFieldBlacklist'))) {
 		'private'
 	));
 }
-
+/**
+ * A Blacklist of Spoecific Model-Field combinations
+ * This blacklist will be applied to remove fields from specific models.
+ */
 if (!is_array(Configure::read('AdHocReporting.modelFieldBlacklist'))) {
 	Configure::write('AdHocReporting.modelFieldBlacklist',array(
 		'User' => array(
@@ -82,17 +81,17 @@ if (!is_array(Configure::read('AdHocReporting.modelFieldBlacklist'))) {
 
 
 /**
+ * Model-Field Explicit List
  *
- * The Explicit list is a list defining exactly what models and fields are allowed.
- * if this is anything other than null, then it does what a blacklist and whitelist 
- * do when combined together. If something is on this list, it's allowed. If it's not
- * on this list, then it's not allowed. 
- *
- * The whitelists and blacklists still work and are still applied. But you could just
- * use this explicit list instead of both of them.
- * The downside of an explicit list is that the reports aren't going to be responsive to
- * changes in the models. If that's OK, then the explicit list is a good thing.
+ * If this list is not null, then it becomes an exclusive whitelist.
+ * If you'd rather use the whitelists and blacklists by themselves, then make this
+ * option be NULL.
  * 
+ * Anything on this list is allowed to be included in a report, and anything 
+ * omitted from this list is not allowed to be included in a report.
+ * 
+ * The blacklists defined above are still applied too.
+ *
  */
 if (!is_array(Configure::read('AdHocReporting.modelFieldExplicitList'))) {
 	Configure::write('AdHocReporting.modelFieldExplicitList', array(
