@@ -125,7 +125,9 @@ if (!is_array(Configure::read('AdHocReporting.modelFieldBlacklist'))) {
  * 
  * The blacklists defined above are still applied too.
  *
- */
+ * @todo - the explicit list currently does not support wildcard notation to "include all"
+ */ 
+ 
 if (!is_array(Configure::read('AdHocReporting.modelFieldExplicitList'))) {
 	Configure::write('AdHocReporting.modelFieldExplicitList', array(
 		'Users' => array(
