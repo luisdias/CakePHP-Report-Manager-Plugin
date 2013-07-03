@@ -7,8 +7,10 @@
             'ledger'=>'Ledger',
             'banded'=>'Banded',
             'presentation'=>'Presentation',
-            'casual'=>'Casual'
-            );
+            'casual'=>'Casual',
+            'simple'=>'Simple',
+            'styled'=>'Styled',
+        );
         $outputOptions = array(
             'html' => 'HTML',
             'xls' => 'Excel'

@@ -1,0 +1,120 @@
+/**
+ * Copyright (c) 2013 TribeHR Corp - http://tribehr.com
+ * 
+ * Licensed under The MIT License. See LICENSE file for details.
+ * Redistributions of files must retain the above copyright notice.
+ */
+
+body {
+    font-family: Arial;
+    font-size: 15px;
+}
+
+img {
+    margin-top: 12px !important;
+}
+
+h1 {
+    color: #f38f00;
+    font-weight: normal;
+    margin: 0 0 2px;
+    font-size: 1.75em;
+}
+
+h2 {
+    color: #979797;
+    font-weight: normal;
+    margin: 0;
+    font-size: 1.35em;
+}
+
+.details .timestamp {
+    margin-top: 7px;
+    font-size: .8em;
+    color: #857367;
+    border-radius: 3px;
+    background-color: #efe8e2;
+    padding: 2px 5px;
+}
+
+#reportManagerDisplay .reportName {
+    font-size: 19pt; 
+	font-weight: bold;
+    color: #333333;
+}
+
+#reportManagerDisplay .timestamp {
+    margin-top: 15px;
+    font-size: 8pt; 
+	font-weight: normal;
+    color: #333333;
+    float: left;
+    clear: both;
+}
+
+#reportManagerDisplay .report
+{
+    margin: 0px;
+    padding: 0px;
+    border-top-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-style: none;
+    border-color: #cccccc;
+    border-collapse: collapse;
+    font-size: 11pt;
+	font-weight: bold;
+    color: #ffffff;
+    background-color: #fcfcfc;
+}
+
+#reportManagerDisplay .report tr.header th
+{
+    background: #857367;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-style: none;
+    border-color: #e4d9ce;
+    font-size: 10pt;
+	font-weight: normal;
+    color: #ffffff;
+    text-align: left;
+}
+
+
+#reportManagerDisplay .report tr.body td
+{
+    background: none;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-style: none;
+    border-color: #fff;
+    text-align: left;
+    font-size: 9pt;
+	font-weight: normal;
+    color: #555555;
+}
+
+#reportManagerDisplay .report tr.footer td
+{
+    background: #333333;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-style: solid;
+    border-color: #fff;
+    font-size: 9pt;
+	font-weight: normal;
+    color: #ffffff;
+    text-align: left;
+}
+
+.altrow { 
+    background-color: #F2F2F2;
+}

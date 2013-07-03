@@ -7,7 +7,16 @@
  * Redistributions of files must retain the above copyright notice.
  */
 ?>
-<h1><?php echo ($reportName == '' ? 'Report Manager' : $reportName);?></h1>
+
+    <img src="/img/tribehr_logo.png" alt="TribeHR" width="116" height="83" class="logo" /> 
+    <div class="details">
+        <h1><?php echo ($reportName == '' ? 'Ad-Hoc Report' : $reportName);?></h1>
+        <h2><?php echo h($settings['Config']['name']); ?></h2>
+        <div class="timestamp">Report Generated : <strong><?php echo date('Y-m-d H:i:s'); ?></strong></div>
+    </div>
+
+
+
 <div id="reportManagerDisplay">
     <?php 
     $counter = 0;
@@ -16,11 +25,6 @@
     ?>     
     <?php if (!empty($reportData)):?>
     <table cellpadding = "0" cellspacing = "0" class="report" width="<?php echo $tableWidth;?>">
-        <colgroup>
-            <?php foreach ($tableColumnWidth as $field => $width): ?>
-            <col width="<?php echo $width;?>">
-            <?php endforeach; ?>                    
-        </colgroup>        
         <tr class="header">
                 <?php foreach ($fieldList as $field): ?>
                 <th>
@@ -75,7 +79,7 @@
          <?php } ?>
     </table>
     <?php if ( $showRecordCounter ) { ?>    
-        <div class="counter">Count: <?php echo $counter;?></div>
+        <div class="counter">Total Records: <?php echo $counter;?></div>
     <?php } ?>
     <div class="timestamp"><?php echo __('Report Generated') . ' : ' . date('Y-m-d H:i:s'); ?></div>
     <?php endif; ?>
