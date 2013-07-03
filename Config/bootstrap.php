@@ -41,7 +41,7 @@ Configure::write('AdHocReporting.displayForeignKeys', false);
 
 	AdHocReporting.modelFieldExplicitList
 		- the explicit list, if you choose to use it, is an explicit list of models and fields in
-		  a nested array structure. If something is on ths list, then it is allowed. If it is not on
+		  a nested array structure. If something is on this list, then it is allowed. If it is not on
 		  the list, it's omitted.
  	
 	ALL of these lists are employed to prune your model & field collection. If any of them are not null, then 
@@ -99,7 +99,7 @@ if (!is_array(Configure::read('AdHocReporting.globalFieldBlacklist'))) {
 	));
 }
 /**
- * A Blacklist of Spoecific Model-Field combinations
+ * A Blacklist of Specific Model-Field combinations
  * This blacklist will be applied to remove fields from specific models.
  */
 if (!is_array(Configure::read('AdHocReporting.modelFieldBlacklist'))) {
