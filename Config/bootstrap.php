@@ -21,7 +21,17 @@ Configure::write('AdHocReporting.displayForeignKeys', false);
 	that are meaningless to the user, Models that contain secure information, or fields that contain
 	private data.
 	
-	This plugin provides five tools for removing inappropriate models and fields from your reports.
+	The initial list of models and fields starts out as what Cake returns as the *schema*. Anything that isn't already
+	returned in that list will not appear in the reports.
+	
+	Note: the Schema does not include "generated fields" created by after_find()
+	
+	Once the schema is received from Cake, that list is *pruned* to remove models and fields that are not 
+	appropriate for reporting. This plugin provides five such tools for removing inappropriate models and 
+	fields from your reports.
+	
+	These five lists do not ADD to the list. They can only REMOVE from it.
+	If a list is null, then its effect is moot & it does nothing.
 	
 	AdHocReporting.modelWhitelist
 		- if not null, this list will include only the models that are in the list. 
