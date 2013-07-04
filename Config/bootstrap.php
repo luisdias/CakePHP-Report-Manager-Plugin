@@ -17,18 +17,15 @@ Configure::write('AdHocReporting.displayForeignKeys', false);
 	Regarding Whitelists and Blacklists and Explicit Lists
 	
 	The Schema will return an array of models and fields that may be included in your reports.
-	But you probably don't want to have all thsoe fields showing. There are probably `id` columns
+	But you probably don't want to have all those fields showing. There are probably `id` columns
 	that are meaningless to the user, Models that contain secure information, or fields that contain
 	private data.
-	
-	The initial list of models and fields starts out as what Cake returns as the *schema*. Anything that isn't already
-	returned in that list will not appear in the reports.
-	
-	Note: the Schema does not include "generated fields" created by after_find()
 	
 	Once the schema is received from Cake, that list is *pruned* to remove models and fields that are not 
 	appropriate for reporting. This plugin provides five such tools for removing inappropriate models and 
 	fields from your reports.
+	
+	You can only apply whitelists and blacklists to fields that are in the Schema.
 	
 	These five lists do not ADD to the list. They can only REMOVE from it.
 	If a list is null, then its effect is moot & it does nothing.
