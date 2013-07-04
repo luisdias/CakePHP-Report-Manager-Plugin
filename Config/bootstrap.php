@@ -41,8 +41,8 @@ Configure::write('AdHocReporting.displayForeignKeys', false);
 
 	AdHocReporting.modelFieldExplicitList
 		- the explicit list, if you choose to use it, is an explicit list of models and fields in
-		  a nested array structure. If something is on this list, then it is allowed. If it is not on
-		  the list, it's omitted.
+		  a nested array structure. If something is not on the list, it's omitted. The other black- and 
+		  white- lists are still applied.
  	
 	ALL of these lists are employed to prune your model & field collection. If any of them are not null, then 
 	they apply their inclusion or exclusion to prevent the consumption of inappropriate data.
