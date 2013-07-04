@@ -200,7 +200,7 @@ $(document).ready(function(){
 		// if there are no checkboxes checked, that changes some other things... you can't add a filter, and you 
 		// also can't do any sorting
 		if (numChecked == 0){
-			$('#AddNewFilter').prop('disabled') = true;
+			$('#AddNewFilter').prop('disabled', true);
 		}
 		
 	}
