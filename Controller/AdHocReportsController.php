@@ -163,7 +163,8 @@ class AdHocReportsController extends AdHocReportingAppController {
 				}
 			}
 			if (count($conditionsList)>0) {
-				$logical = empty($this->data['AdHocReport']['FilterLogic'])?'OR':$this->data['AdHocReport']['FilterLogic'];
+				// Constrain the values to be either OR or AND
+				$logical = (isset($this->data['AdHocReport']['FilterLogic']) && $this->data['AdHocReport']['FilterLogic'] == "OR") ? "OR" : "AND";
 				// for eaxmple, $conditions will be like array("OR" => array("Users.name = 'ian'","Users.fieldname < 5") )
 				$conditions[$logical] = $conditionsList;
 			}
