@@ -467,19 +467,14 @@ class AdHocReportsController extends AdHocReportingAppController {
 				// if the model is not bound, then bind it!
 				if (!isset( $associatedModels[$anotherModel] )){
 					
-					// use a try-catch, because this could fail spectacularly
-					try {
-						$this->{$baseModelClass}->bindModel(
-							array( 'belongsTo' => array(
-									$anotherModel => array(
-										'className' => $anotherModel
-									)
-								) 
-							)
-						);
-					} catch(Exception $e) {
-						// @todo: put some logging here
-					}
+					$this->{$baseModelClass}->bindModel(
+						array( 'belongsTo' => array(
+								$anotherModel => array(
+									'className' => $anotherModel
+								)
+							) 
+						)
+					);
 					
 				}
 				
