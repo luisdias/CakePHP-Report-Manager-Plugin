@@ -466,7 +466,7 @@ class AdHocReportsController extends AdHocReportingAppController {
 			foreach ($modelWhitelist[$baseModelClass] as $anotherModel) {
 				// if the model is not bound, then bind it!
 				if (!isset( $associatedModels[$anotherModel] )){
-					// interesting to mention that this doesn't cause problems if $anotherModelClass is a bogus string.
+					
 					$this->{$baseModelClass}->bindModel(
 						array( 'belongsTo' => array(
 								$anotherModel => array(
@@ -503,7 +503,7 @@ class AdHocReportsController extends AdHocReportingAppController {
 					$allowThisAssociatedModel = false;
 				}
 				
-				if ($allowThisAssociatedModel){
+				if (!$allowThisAssociatedModel){
 					unset($associatedModels[$key]);
 				} else {
 					$associatedModelClassName = $this->{$baseModelClass}->{$value}[$key]['className'];
