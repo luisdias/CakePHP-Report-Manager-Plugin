@@ -466,7 +466,7 @@ class AdHocReportsController extends AdHocReportingAppController {
 			foreach ($modelWhitelist[$baseModelClass] as $anotherModel) {
 				// if the model is not bound, then bind it!
 				if (!isset( $associatedModels[$anotherModel] )){
-					
+					// interesting to mention that this doesn't cause problems if $anotherModelClass is a bogus string.
 					$this->{$baseModelClass}->bindModel(
 						array( 'belongsTo' => array(
 								$anotherModel => array(
@@ -492,23 +492,20 @@ class AdHocReportsController extends AdHocReportingAppController {
 				// Compare these models to the list of allowed models in
 				// the whitelists and blacklists.
 				
-				$getThisAssociatedModel = true;
+				$allowThisAssociatedModel = true;
 				if (is_array($explicitList) && !isset($explicitList[$key])) {
-					$getThisAssociatedModel = false;
-					unset($associatedModels[$key]);
+					$allowThisAssociatedModel = false;
 				} 
 				if (is_array($modelBlacklist) && in_array($key, $modelBlacklist)) {
-					$getThisAssociatedModel = false;
-					// It's on the blacklist. Destroy it.
-					unset($associatedModels[$key]);
+					$allowThisAssociatedModel = false;
 				} 
 				if (isset($modelWhitelist[$baseModelClass]) && is_array($modelWhitelist[$baseModelClass]) && !in_array($key, $modelWhitelist[$baseModelClass])) {
-					$getThisAssociatedModel = false;
-					// There is a whitelist, and it's not on it. Destroy it.
-					unset($associatedModels[$key]);
+					$allowThisAssociatedModel = false;
 				}
 				
-				if ($getThisAssociatedModel){
+				if ($allowThisAssociatedModel){
+					unset($associatedModels[$key]);
+				} else {
 					$associatedModelClassName = $this->{$baseModelClass}->{$value}[$key]['className'];
 			  		$completeSchema[$key] = $this->_getFilteredListOfModelFields($associatedModelClassName);				
 				}
