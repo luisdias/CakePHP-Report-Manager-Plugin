@@ -453,12 +453,41 @@ class AdHocReportsController extends AdHocReportingAppController {
 
 		$modelWhitelist = Configure::read('AdHocReporting.modelWhitelist');
 		$modelBlacklist = Configure::read('AdHocReporting.modelBlacklist');
+		$explicitList = Configure::read('AdHocReporting.modelFieldExplicitList');
 		
 		// Start with the base model
 		$completeSchema = array($baseModelClass => $this->_getFilteredListOfModelFields($baseModelClass));
 
 		// Add any associated models.
-		$associatedModels = $this->{$baseModelClass}->getAssociated();		
+		$associatedModels = $this->{$baseModelClass}->getAssociated();
+		
+		// dynamic bindings, based on the structure defined AdHocReporting.modelWhitelist
+		if (isset($modelWhitelist[$baseModelClass])) {
+			foreach ($modelWhitelist[$baseModelClass] as $anotherModel) {
+				// if the model is not bound, then bind it!
+				if (!isset( $associatedModels[$anotherModel] )){
+					
+					// use a try-catch, because this could fail spectacularly
+					try {
+						$this->{$baseModelClass}->bindModel(
+							array( 'belongsTo' => array(
+									$anotherModel => array(
+										'className' => $anotherModel
+									)
+								) 
+							)
+						);
+					} catch(Exception $e) {
+						// @todo: put some logging here
+					}
+					
+				}
+				
+			}
+		}
+
+		$associatedModels = $this->{$baseModelClass}->getAssociated();
+		
 		foreach ($associatedModels as $key => $value) {
 			// Only consider an associated model if it is a "HasOne" or "BelongsTo"
 			// Releationship. For HasMany or HasAndBelongsToMany, you should be using
@@ -467,14 +496,25 @@ class AdHocReportsController extends AdHocReportingAppController {
 				
 				// Compare these models to the list of allowed models in
 				// the whitelists and blacklists.
+				
+				$getThisAssociatedModel = true;
+				if (is_array($explicitList) && !isset($explicitList[$key])) {
+					$getThisAssociatedModel = false;
+					unset($associatedModels[$key]);
+				} 
 				if (is_array($modelBlacklist) && in_array($key, $modelBlacklist)) {
+					$getThisAssociatedModel = false;
 					// It's on the blacklist. Destroy it.
 					unset($associatedModels[$key]);
-				} elseif (isset($modelWhitelist[$baseModelClass]) && is_array($modelWhitelist[$baseModelClass]) && !in_array($key, $modelWhitelist[$baseModelClass])) {
+				} 
+				if (isset($modelWhitelist[$baseModelClass]) && is_array($modelWhitelist[$baseModelClass]) && !in_array($key, $modelWhitelist[$baseModelClass])) {
+					$getThisAssociatedModel = false;
 					// There is a whitelist, and it's not on it. Destroy it.
 					unset($associatedModels[$key]);
-				} else {
-					  $associatedModelClassName = $this->{$baseModelClass}->{$value}[$key]['className'];
+				}
+				
+				if ($getThisAssociatedModel){
+					$associatedModelClassName = $this->{$baseModelClass}->{$value}[$key]['className'];
 			  		$completeSchema[$key] = $this->_getFilteredListOfModelFields($associatedModelClassName);				
 				}
 			}
@@ -493,12 +533,25 @@ class AdHocReportsController extends AdHocReportingAppController {
 		$displayForeignKeys = Configure::read('AdHocReporting.displayForeignKeys');
 		$globalFieldBlacklist = Configure::read('AdHocReporting.globalFieldBlacklist');
 		$modelFieldBlacklist = Configure::read('AdHocReporting.modelFieldBlacklist');
+		$explicitList = Configure::read('AdHocReporting.modelFieldExplicitList');
 		
+		if (is_array($explicitList)) {
+			if (!isset($explicitList[$modelClass])) {
+				return null;
+			}
+		}
 
 		$this->loadModel($modelClass);
 		$modelSchema = $this->{$modelClass}->schema();
 
-		
+		if (is_array($explicitList)) {
+			foreach($modelSchema as $field => $value) {
+				if (!in_array($field, $explicitList[$modelClass]) ) {
+					unset($modelSchema[$field]);
+				}
+			}
+		}
+
 		if (is_array($globalFieldBlacklist)) {
 			foreach ($globalFieldBlacklist as $field) {
 				unset($modelSchema[$field]);
