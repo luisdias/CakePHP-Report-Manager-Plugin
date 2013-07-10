@@ -9,8 +9,11 @@
  * If set to false, then all fields that match the pattern *_id will
  * be excluded from the reports.
  */
-Configure::write('AdHocReporting.displayForeignKeys', false);
 
+$AdHocReportingdisplayForeignKeys = Configure::read('AdHocReporting.displayForeignKeys');
+if (empty($AdHocReportingdisplayForeignKeys)) {
+	Configure::write('AdHocReporting.displayForeignKeys', false);
+}
 
 
 /**
