@@ -541,28 +541,24 @@ class AdHocReportsController extends AdHocReportingAppController {
 		$modelFieldBlacklist = Configure::read('AdHocReporting.modelFieldBlacklist');
 		$explicitList = Configure::read('AdHocReporting.modelFieldExplicitList');
 		
+		// if the model is explicitly blocked, there's no need to look up the fields in it
 		if (is_array($explicitList)) {
 			if (!isset($explicitList[$modelClass])) {
 				return null;
 			}
 		}
-
-		$this->loadModel($modelClass);
+		
+		$this->loadModel($modelClass); // @todo: handle if the modelClass is not a real class 
 		$modelSchema = $this->{$modelClass}->schema();
-
-
+		
 		if (is_array($explicitList)) {
 			foreach($modelSchema as $field => $value) {
 				if (!in_array($field, $explicitList[$modelClass]) ) {
-		
-		if (isset($modelFieldExplicitList) && is_array($modelFieldExplicitList)){
-			foreach ($modelSchema as $field=>$value) {
-				if (!in_array($field, $modelFieldExplicitList[$modelClass] )) {
 					unset($modelSchema[$field]);
 				}
 			}
 		}
-
+		
 		if (is_array($globalFieldBlacklist)) {
 			foreach ($globalFieldBlacklist as $field) {
 				unset($modelSchema[$field]);
