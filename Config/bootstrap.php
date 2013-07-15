@@ -11,7 +11,7 @@
  */
 
 $AdHocReportingdisplayForeignKeys = Configure::read('AdHocReporting.displayForeignKeys'); // Configure::read returns null if the key doesn't exist. We don't need to test for isset() below.
-if (!is_bool($AdHocReportingdisplayForeignKeys)){ // if it's true, we leave it as true. if it's false, we do nothing. if it's anything else, including null... we make it false.
+if (!is_bool($AdHocReportingdisplayForeignKeys)) { // if it's true, we leave it as true. if it's false, we do nothing. if it's anything else, including null... we make it false.
 	Configure::write('AdHocReporting.displayForeignKeys', false);
 }
 
