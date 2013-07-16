@@ -489,6 +489,7 @@ class AdHocReportsController extends AdHocReportingAppController {
 				
 			}
 		}
+		$associatedModels = $this->{$baseModelClass}->getAssociated();
 
 		foreach ($associatedModels as $key => $value) {
 			// Only consider an associated model if it is a "HasOne" or "BelongsTo"
