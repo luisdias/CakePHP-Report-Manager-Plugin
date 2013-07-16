@@ -141,6 +141,8 @@ $(document).ready(function(){
 		
 		
 		showhidefilterlogic();
+		
+		return false;
 	});
 	
 	$('#step-1-next').click(function(){
