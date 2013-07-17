@@ -68,13 +68,21 @@ if (!is_bool($AdHocReportingdisplayForeignKeys)) { // if it's true, we leave it 
  * an exclusive whitelist. 
  * The blacklist is still applied to whatever is allowed here.
  *
- * Members of this list may have a child array consisting of model names.
- * The child models should be ones that are associated with the parent models via a foreign key,
- * with either a "hasOne" or "belongsTo" relationship. If no association is defined in the 
- * schema, then this plugin will dynamically bind the models with a "belongsTo" relationship.
+ * How to use child arrays
+ * 
+ *    Members of this list may have a child array consisting of model names. These are models 
+ *    that are associated with the model being reported upon. In your report, these models will 
+ *    contribute additional columns of related information.
+ * 
+ *    In those child arrays, list the models that have a "hasOne" or "belongsTo" relationship to the parent. 
+ *    Only those two relationship types are allowed in a report. If the relationship is something other than 
+ *    "hasOne" or "belongsTo", then that model can't be included in a report.
+ *    If you list a model that has no association at all, the plugin will try to bind it with a "belongsTo" relationship.
+ *    If you exclude an associated model from the child list, then it won't appear in the reports.
  * 
  * If a member of this list has no child array, then the default behaviour is to include all
- * models that are associated in the schema.
+ * models that are associated with "hasOne" or "belongsTo" in the schema.
+ *
  */
 if (!is_array(Configure::read('AdHocReporting.modelWhitelist'))) {
 	Configure::write('AdHocReporting.modelWhitelist',	array(
