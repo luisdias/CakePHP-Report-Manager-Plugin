@@ -468,7 +468,19 @@ class AdHocReportsController extends AdHocReportingAppController {
 		// Start with the base model
 		$completeSchema = array($baseModelClass => $this->_getFilteredListOfModelFields($baseModelClass));
 		// Add any associated models.
-		$associatedModels = $this->{$baseModelClass}->getAssociated();
+		$associatedModels = $this->$baseModelClass->getAssociated();
+		
+		/**
+		* For each child-model in the whitelist, we check if there is an association in the schema.
+		* If there is no association in the schema, we do a dynamic binding. Provided the foreign keys 
+		* exist in the database, this will enable us to join models into a single report using a 
+		* "belongsTo" relationship.
+		* 
+		* Inclusion into a report like this is only effective if the relationship is "belongsTo" or "hasOne".
+		* As you can see a little farther below, it's only those two relationships that are allowed to be 
+		* included in a report anyhow. For our dynamic bindings, we apply a "belongsTo" relationship.
+		* 
+		*/ 
 		
 		// dynamic bindings, based on the structure defined AdHocReporting.modelWhitelist
 		if (isset($modelWhitelist[$baseModelClass])) {
@@ -476,7 +488,7 @@ class AdHocReportsController extends AdHocReportingAppController {
 				// if the model is not bound, then bind it!
 				if (!isset( $associatedModels[$anotherModel] )){
 					
-					$this->{$baseModelClass}->bindModel(
+					$this->$baseModelClass->bindModel(
 						array( 'belongsTo' => array(
 								$anotherModel => array(
 									'className' => $anotherModel
@@ -489,8 +501,8 @@ class AdHocReportsController extends AdHocReportingAppController {
 				
 			}
 		}
-		$associatedModels = $this->{$baseModelClass}->getAssociated();
-
+		$associatedModels = $this->$baseModelClass->getAssociated();
+		
 		foreach ($associatedModels as $key => $value) {
 			// Only consider an associated model if it is a "HasOne" or "BelongsTo"
 			// Releationship. For HasMany or HasAndBelongsToMany, you should be using

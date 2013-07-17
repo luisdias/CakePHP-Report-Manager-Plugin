@@ -67,12 +67,21 @@ if (!is_bool($AdHocReportingdisplayForeignKeys)) { // if it's true, we leave it 
  * if this list is an array, then only the models in the array are included. It becomes
  * an exclusive whitelist. 
  * The blacklist is still applied to whatever is allowed here.
+ *
+ * Members of this list may have a child array consisting of model names.
+ * The child models should be ones that are associated with the parent models via a foreign key,
+ * with either a "hasOne" or "belongsTo" relationship. If no association is defined in the 
+ * schema, then this plugin will dynamically bind the models with a "belongsTo" relationship.
  */
 if (!is_array(Configure::read('AdHocReporting.modelWhitelist'))) {
 	Configure::write('AdHocReporting.modelWhitelist',	array(
 		'Users',
 		'Categories',
-		'Hobbies',
+		'Hobbies' => array(
+			'Arts',
+			'Crafts',
+			'Collections'
+		),
 		'Widgets',
 		'Foo',
 		'Bar'
