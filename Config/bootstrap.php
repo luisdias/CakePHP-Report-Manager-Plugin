@@ -72,6 +72,9 @@ if (!is_bool($AdHocReportingdisplayForeignKeys)) { // if it's true, we leave it 
  * The child models should be ones that are associated with the parent models via a foreign key,
  * with either a "hasOne" or "belongsTo" relationship. If no association is defined in the 
  * schema, then this plugin will dynamically bind the models with a "belongsTo" relationship.
+ * 
+ * If a member of this list has no child array, then the default behaviour is to include all
+ * models that are associated in the schema.
  */
 if (!is_array(Configure::read('AdHocReporting.modelWhitelist'))) {
 	Configure::write('AdHocReporting.modelWhitelist',	array(
