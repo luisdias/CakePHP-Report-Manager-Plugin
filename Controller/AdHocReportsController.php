@@ -461,16 +461,48 @@ class AdHocReportsController extends AdHocReportingAppController {
 	 *				  )
 	 */	
 	function _getCompleteFieldList($baseModelClass) {
-		
 		$modelWhitelist = Configure::read('AdHocReporting.modelWhitelist');
 		$modelBlacklist = Configure::read('AdHocReporting.modelBlacklist');
 		$modelFieldExplicitList = Configure::read('AdHocReporting.modelFieldExplicitList');
 		
 		// Start with the base model
 		$completeSchema = array($baseModelClass => $this->_getFilteredListOfModelFields($baseModelClass));
-		
 		// Add any associated models.
-		$associatedModels = $this->{$baseModelClass}->getAssociated();
+		$associatedModels = $this->$baseModelClass->getAssociated();
+		
+		/**
+		* For each child-model in the whitelist, we check if there is an association in the schema.
+		* If there is no association in the schema, we do a dynamic binding. Provided the foreign keys 
+		* exist in the database, this will enable us to join models into a single report using a 
+		* "belongsTo" relationship.
+		* 
+		* Inclusion into a report like this is only effective if the relationship is "belongsTo" or "hasOne".
+		* As you can see a little farther below, it's only those two relationships that are allowed to be 
+		* included in a report anyhow. For our dynamic bindings, we try a "belongsTo" relationship.
+		* 
+		*/ 
+		
+		// dynamic bindings, based on the structure defined AdHocReporting.modelWhitelist
+		if (isset($modelWhitelist[$baseModelClass])) {
+			foreach ($modelWhitelist[$baseModelClass] as $anotherModel) {
+				// if the model is not bound, then bind it!
+				if (!isset( $associatedModels[$anotherModel] )){
+					
+					$this->$baseModelClass->bindModel(
+						array( 'belongsTo' => array(
+								$anotherModel => array(
+									'className' => $anotherModel
+								)
+							) 
+						)
+					);
+					
+				}
+				
+			}
+		}
+		$associatedModels = $this->$baseModelClass->getAssociated();
+		
 		foreach ($associatedModels as $key => $value) {
 			// Only consider an associated model if it is a "HasOne" or "BelongsTo"
 			// Releationship. For HasMany or HasAndBelongsToMany, you should be using
@@ -479,25 +511,28 @@ class AdHocReportsController extends AdHocReportingAppController {
 				
 				// Compare these models to the list of allowed models in
 				// the whitelists and blacklists.
+				$allowThisAssociatedModel = true;
+
 				if (is_array($modelFieldExplicitList)){
 					if (!isset($modelFieldExplicitList[$key])){
-						unset($associatedModels[$key]);
+						$allowThisAssociatedModel = false;
 					}
 				}
 				if (is_array($modelBlacklist)) {
 					if (in_array($key, $modelBlacklist)){
-						// It's on the blacklist. Destroy it.
-						unset($associatedModels[$key]);
+						$allowThisAssociatedModel = false;
 					}
 				} 
+
 				if (isset($modelWhitelist[$baseModelClass]) && is_array($modelWhitelist[$baseModelClass])){
 					if (!in_array($key, $modelWhitelist[$baseModelClass])){
-						// There is a whitelist, and it's not on it. Destroy it.
-						unset($associatedModels[$key]);
+						$allowThisAssociatedModel = false;
 					}
 				}
 				
-				if (isset($associatedModels[$key])){
+				if (!$allowThisAssociatedModel){
+					unset($associatedModels[$key]);
+				} else {
 					$associatedModelClassName = $this->{$baseModelClass}->{$value}[$key]['className'];
 					$completeSchema[$key] = $this->_getFilteredListOfModelFields($associatedModelClassName);				
 				}
@@ -517,18 +552,21 @@ class AdHocReportsController extends AdHocReportingAppController {
 		$displayForeignKeys = Configure::read('AdHocReporting.displayForeignKeys');
 		$globalFieldBlacklist = Configure::read('AdHocReporting.globalFieldBlacklist');
 		$modelFieldBlacklist = Configure::read('AdHocReporting.modelFieldBlacklist');
-		$modelFieldExplicitList = Configure::read('AdHocReporting.modelFieldExplicitList');
+		$explicitList = Configure::read('AdHocReporting.modelFieldExplicitList');
 		
-		if (!isset($modelFieldExplicitList[$modelClass])){
-			return array();
+		// if the model is explicitly blocked, there's no need to look up the fields in it
+		if (is_array($explicitList)) {
+			if (!isset($explicitList[$modelClass])) {
+				return null;
+			}
 		}
 		
-		$this->loadModel($modelClass);
+		$this->loadModel($modelClass); // @todo: handle if the modelClass is not a real class 
 		$modelSchema = $this->{$modelClass}->schema();
 		
-		if (isset($modelFieldExplicitList) && is_array($modelFieldExplicitList)){
-			foreach ($modelSchema as $field=>$value) {
-				if (!in_array($field, $modelFieldExplicitList[$modelClass] )) {
+		if (is_array($explicitList)) {
+			foreach($modelSchema as $field => $value) {
+				if (!in_array($field, $explicitList[$modelClass]) ) {
 					unset($modelSchema[$field]);
 				}
 			}
