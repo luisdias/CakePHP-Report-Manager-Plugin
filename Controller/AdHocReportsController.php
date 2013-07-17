@@ -478,7 +478,7 @@ class AdHocReportsController extends AdHocReportingAppController {
 		* 
 		* Inclusion into a report like this is only effective if the relationship is "belongsTo" or "hasOne".
 		* As you can see a little farther below, it's only those two relationships that are allowed to be 
-		* included in a report anyhow. For our dynamic bindings, we apply a "belongsTo" relationship.
+		* included in a report anyhow. For our dynamic bindings, we try a "belongsTo" relationship.
 		* 
 		*/ 
 		
