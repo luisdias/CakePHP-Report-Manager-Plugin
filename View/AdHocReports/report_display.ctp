@@ -10,7 +10,7 @@
 
     <img src="/img/tribehr_logo.png" alt="TribeHR" width="116" height="83" class="logo" /> 
     <div class="details">
-        <h1><?php echo ($reportName == '' ? 'Ad-Hoc Report' : $reportName);?></h1>
+        <h1><?php echo ($reportName == '' ? 'Ad-Hoc Report' : h($reportName));?></h1>
         <h2><?php echo h($settings['Config']['name']); ?></h2>
         <div class="timestamp">Report Generated : <strong><?php echo date('Y-m-d H:i:s'); ?></strong></div>
     </div>
