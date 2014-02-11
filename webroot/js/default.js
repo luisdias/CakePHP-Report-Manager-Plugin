@@ -203,6 +203,8 @@ $(document).ready(function(){
 		// also can't do any sorting
 		if (numChecked == 0){
 			$('#AddNewFilter').prop('disabled', true);
+		} else {
+			$('#AddNewFilter').prop('disabled', false);
 		}
 		
 	}
